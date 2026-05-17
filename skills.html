@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills & Expertise — Rama Adin</title>
+  <meta name="description" content="Explore Rama Adin's technical skills — frontend, backend, design tools, and more. Click any skill for details." />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/lightbox.css" />
+  <link rel="stylesheet" href="css/skills.css" />
+  <link rel="stylesheet" href="css/admin-login.css" />
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <span class="section-label" style="justify-content: center;">What I Know</span>
+    <h1 class="page-header__title reveal">Skills & <span class="text-accent">Expertise</span></h1>
+    <p class="page-header__subtitle reveal stagger-1">Technologies and tools I use to bring ideas to life</p>
+  </header>
+
+  <!-- Filter Tabs -->
+  <section class="section--compact">
+    <div class="container">
+      <div class="filter-tabs reveal" id="skill-filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="Frontend">Frontend</button>
+        <button class="filter-tab" data-filter="Backend">Backend</button>
+        <button class="filter-tab" data-filter="Tools">Tools</button>
+        <button class="filter-tab" data-filter="Design">Design</button>
+      </div>
+
+      <!-- Skills Grid -->
+      <div class="skills-grid" id="skills-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Skill Detail Modal -->
+  <div class="skill-modal" id="skill-modal">
+    <div class="skill-modal__overlay" id="skill-modal-overlay"></div>
+    <div class="skill-modal__content" id="skill-modal-content">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin-config.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/skills.js"></script>
+</body>
+</html>

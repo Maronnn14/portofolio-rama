@@ -1,0 +1,308 @@
+/* ============================================
+   ADMIN LOGIN MODAL + NAVBAR AUTH STYLES
+   ============================================ */
+
+/* ====== Login Modal ====== */
+.login-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-out);
+}
+
+.login-modal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.login-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.login-modal__card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.4s var(--ease-out);
+  z-index: 1;
+}
+
+.login-modal.open .login-modal__card {
+  transform: translateY(0) scale(1);
+}
+
+.login-modal__card.shake {
+  animation: shake 0.4s var(--ease-out);
+}
+
+.login-modal__close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.login-modal__close:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.login-modal__header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.login-modal__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--space-lg);
+  background: var(--accent-glow);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  color: var(--accent);
+}
+
+.login-modal__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.login-modal__subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.login-modal__error {
+  padding: var(--space-md);
+  background: var(--error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-size: var(--fs-sm);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.login-modal__password-wrap {
+  position: relative;
+}
+
+.login-modal__toggle-pw {
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: var(--space-xs);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.login-modal__toggle-pw:hover {
+  color: var(--text-primary);
+}
+
+.login-modal__submit {
+  margin-top: var(--space-sm);
+}
+
+.login-modal__lockout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-2xl);
+  color: var(--warning);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+/* ====== Navbar Admin Elements ====== */
+.navbar__admin-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--ease-out);
+  border: none;
+  background: none;
+  margin-left: var(--space-md);
+}
+
+.navbar__admin-lock:hover {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.navbar__admin-badge {
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  color: var(--bg-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  margin-left: var(--space-md);
+  transition: transform var(--duration-fast) var(--ease-spring);
+}
+
+.navbar__admin-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Admin Dropdown */
+.admin-dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-sm));
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-sm);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: all 0.2s var(--ease-out);
+  z-index: 600;
+}
+
+.admin-dropdown.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.admin-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.admin-dropdown__item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.admin-dropdown__item--danger:hover {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.admin-dropdown__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-xs) 0;
+}
+
+/* ====== Admin Mode Banner ====== */
+.admin-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-lg);
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+  color: var(--bg-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  animation: slideInDown 0.4s var(--ease-out);
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.admin-banner__close {
+  position: absolute;
+  right: var(--space-lg);
+  background: none;
+  border: none;
+  color: var(--bg-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--duration-fast);
+}
+
+.admin-banner__close:hover {
+  opacity: 1;
+}
+
+/* Push navbar down when banner is visible */
+.admin-banner ~ #navbar-placeholder .navbar {
+  top: 28px;
+}
+
+@media (max-width: 768px) {
+  .login-modal__card {
+    margin: var(--space-lg);
+    padding: var(--space-xl);
+  }
+}

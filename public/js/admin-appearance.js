@@ -16,10 +16,85 @@ const COLOR_PRESETS = [
   { name: 'Slate', value: '#94a3b8' },
 ];
 
+/* ---- Color Utility Helpers ---- */
+
+/** Convert a HEX color string (e.g. "#d4a853") to an {r, g, b} object. */
+function hexToRgb(hex) {
+  hex = hex.replace(/^#/, '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const n = parseInt(hex, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+/** Convert an {r, g, b} object back to a "#rrggbb" HEX string. */
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+}
+
+/** Return a HEX color lightened by `percent` (0-100). */
+function lightenHex(hex, percent) {
+  const { r, g, b } = hexToRgb(hex);
+  const t = percent / 100;
+  return rgbToHex(
+    r + (255 - r) * t,
+    g + (255 - g) * t,
+    b + (255 - b) * t
+  );
+}
+
+/** Return a HEX color darkened by `percent` (0-100). */
+function darkenHex(hex, percent) {
+  const { r, g, b } = hexToRgb(hex);
+  const t = 1 - percent / 100;
+  return rgbToHex(r * t, g * t, b * t);
+}
+
+/* ---- Centralized Accent Variable Setter ---- */
+
+/**
+ * Sets ALL accent-related CSS custom properties on :root so that
+ * every element referencing any of these variables updates in sync.
+ */
+function setAllAccentVars(hex) {
+  const root = document.documentElement.style;
+  const { r, g, b } = hexToRgb(hex);
+
+  root.setProperty('--accent',             hex);
+  root.setProperty('--accent-light',       lightenHex(hex, 15));
+  root.setProperty('--accent-dark',        darkenHex(hex, 15));
+  root.setProperty('--accent-glow',        `rgba(${r}, ${g}, ${b}, 0.15)`);
+  root.setProperty('--accent-glow-strong', `rgba(${r}, ${g}, ${b}, 0.3)`);
+  root.setProperty('--border-accent',      `rgba(${r}, ${g}, ${b}, 0.3)`);
+  root.setProperty('--shadow-glow',        `0 0 30px rgba(${r}, ${g}, ${b}, 0.15)`);
+  root.setProperty('--shadow-glow-strong', `0 0 50px rgba(${r}, ${g}, ${b}, 0.25)`);
+}
+
+/**
+ * Removes ALL accent-related inline overrides from :root so the
+ * browser falls back to the defaults declared in variables.css.
+ */
+function removeAllAccentVars() {
+  const root = document.documentElement.style;
+  [
+    '--accent',
+    '--accent-light',
+    '--accent-dark',
+    '--accent-glow',
+    '--accent-glow-strong',
+    '--border-accent',
+    '--shadow-glow',
+    '--shadow-glow-strong',
+  ].forEach(v => root.removeProperty(v));
+}
+
+/* ---- Persistence ---- */
+
 function getAppearance() {
   try { return JSON.parse(localStorage.getItem(APPEARANCE_KEY) || '{}'); } catch { return {}; }
 }
 function saveAppearance(s) { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(s)); }
+
+/* ---- Render Appearance Panel ---- */
 
 function renderAppearance(container) {
   const app = getAppearance();
@@ -100,18 +175,20 @@ function selectPreset(c) {
   event.target.classList.add('active');
 }
 
+/* ---- Apply / Reset ---- */
+
 function applyAccent() {
   const c = document.getElementById('accent-hex').value;
   if (!/^#[0-9a-f]{6}$/i.test(c)) { AdminUI.toast('Invalid color', 'error'); return; }
   const a = getAppearance(); a.accentColor = c; saveAppearance(a);
-  document.documentElement.style.setProperty('--accent', c);
+  setAllAccentVars(c);
   AdminAuth.logAction('Updated', 'Accent color: ' + c);
   AdminUI.toast('Accent color applied!');
 }
 
 function resetAccent() {
   const a = getAppearance(); delete a.accentColor; saveAppearance(a);
-  document.documentElement.style.removeProperty('--accent');
+  removeAllAccentVars();
   AdminUI.toast('Reset to default');
   renderAppearance(document.getElementById('admin-content'));
 }

@@ -14,8 +14,26 @@ function applyAppearanceSettings() {
   try {
     const appearance = JSON.parse(localStorage.getItem('portfolio_appearance') || '{}');
     if (appearance.accentColor) {
-      document.documentElement.style.setProperty('--accent', appearance.accentColor);
-      document.documentElement.style.setProperty('--accent-gold', appearance.accentColor);
+      // If admin-appearance.js is loaded (admin page), use its centralized helper
+      if (typeof setAllAccentVars === 'function') {
+        setAllAccentVars(appearance.accentColor);
+      } else {
+        // Replicate the full logic for front-end pages where admin-appearance.js is not loaded
+        const hex = appearance.accentColor;
+        const _hexToRgb = (h) => { h = h.replace('#',''); const n = parseInt(h,16); return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 }; };
+        const _lighten = (h, p) => { const {r,g,b} = _hexToRgb(h); const t=p/100; return '#'+[r+(255-r)*t,g+(255-g)*t,b+(255-b)*t].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); };
+        const _darken  = (h, p) => { const {r,g,b} = _hexToRgb(h); const t=1-p/100; return '#'+[r*t,g*t,b*t].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); };
+        const { r, g, b } = _hexToRgb(hex);
+        const root = document.documentElement.style;
+        root.setProperty('--accent',             hex);
+        root.setProperty('--accent-light',       _lighten(hex, 15));
+        root.setProperty('--accent-dark',        _darken(hex, 15));
+        root.setProperty('--accent-glow',        `rgba(${r}, ${g}, ${b}, 0.15)`);
+        root.setProperty('--accent-glow-strong', `rgba(${r}, ${g}, ${b}, 0.3)`);
+        root.setProperty('--border-accent',      `rgba(${r}, ${g}, ${b}, 0.3)`);
+        root.setProperty('--shadow-glow',        `0 0 30px rgba(${r}, ${g}, ${b}, 0.15)`);
+        root.setProperty('--shadow-glow-strong', `0 0 50px rgba(${r}, ${g}, ${b}, 0.25)`);
+      }
     }
     if (appearance.borderRadius !== undefined) {
       document.documentElement.style.setProperty('--radius-lg', appearance.borderRadius + 'px');

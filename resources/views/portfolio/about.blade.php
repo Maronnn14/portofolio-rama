@@ -3,10 +3,6 @@
 @section('title', "About Me — Rama Adin")
 @section('description', "Learn about Rama Adin — background, experience, interests, and journey as a Full Stack Developer.")
 
-@push('styles')
-  <link rel="stylesheet" href="{{ asset('css/about.css') }}" />
-@endpush
-
 @section('content')
 <!-- Page Header -->
   <header class="page-header">

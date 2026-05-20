@@ -3,10 +3,6 @@
 @section('title', "Contact — Rama Adin")
 @section('description', "Get in touch with Rama Adin — full stack developer available for freelance, collaboration, and new opportunities.")
 
-@push('styles')
-  <link rel="stylesheet" href="{{ asset('css/contact.css') }}" />
-@endpush
-
 @section('content')
 <!-- Page Header -->
   <header class="page-header">

@@ -1,4 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
+@import '../../public/css/variables.css';
+@import '../../public/css/reset.css';
+@import '../../public/css/global.css';
+@import '../../public/css/components.css';
+@import '../../public/css/admin-login.css';
+@import '../../public/css/lightbox.css';
+@import '../../public/css/home.css';
+@import '../../public/css/about.css';
+@import '../../public/css/skills.css';
+@import '../../public/css/projects.css';
+@import '../../public/css/contact.css';
+@import '../../public/css/admin.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

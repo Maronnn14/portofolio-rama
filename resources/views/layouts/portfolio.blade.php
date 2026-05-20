@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@yield('title', 'Rama Adin - Full Stack Developer')</title>
   <meta name="description" content="@yield('description', 'Full Stack Developer crafting digital experiences with code and creativity.')" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <link rel="stylesheet" href="{{ asset('css/variables.css') }}" />
   <link rel="stylesheet" href="{{ asset('css/reset.css') }}" />
@@ -23,12 +24,7 @@
 
   @stack('after_footer')
 
-  <script>
-    window.PORTFOLIO_DB_DATA = @json($portfolioDatabaseData ?? []);
-    window.PORTFOLIO_DB_MESSAGES = @json($portfolioDatabaseMessages ?? []);
-    window.PORTFOLIO_API_BASE = @json(url('/api'));
-  </script>
-  <script src="{{ asset('js/database-sync.js') }}"></script>
+  <script src="{{ asset('js/api-client.js') }}"></script>
   <script src="{{ asset('js/data.js') }}"></script>
   <script src="{{ asset('js/admin-config.js') }}"></script>
   <script src="{{ asset('js/admin-auth.js') }}"></script>

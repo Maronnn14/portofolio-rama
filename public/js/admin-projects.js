@@ -1,15 +1,23 @@
 /* ============================================
-   ADMIN PROJECTS — CRUD Manager
+   ADMIN PROJECTS — CRUD Manager (API-backed)
    ============================================ */
 
-function renderProjects(container) {
-  const data = DataStore.getData();
-  const projects = data.projects || [];
+let _adminProjects = [];
+
+async function renderProjects(container) {
+  container.innerHTML = '<div class="admin-loading"><span class="spinner"></span> Loading projects...</div>';
+
+  try {
+    _adminProjects = await API.projects.list();
+  } catch (err) {
+    container.innerHTML = '<div class="admin-empty"><div class="admin-empty__icon">⚠️</div><h3 class="admin-empty__title">Failed to load projects</h3><p class="admin-empty__text">' + err.message + '</p></div>';
+    return;
+  }
 
   container.innerHTML = `
     <div class="admin-section-card">
       <div class="admin-section-card__header">
-        <h3 class="admin-section-card__title">Projects (${projects.length})</h3>
+        <h3 class="admin-section-card__title">Projects (${_adminProjects.length})</h3>
         <div style="display:flex;gap:var(--space-md);align-items:center;">
           <input type="text" class="form-input" placeholder="Search projects..." id="project-search"
                  style="width:200px;padding:var(--space-sm) var(--space-md);" />
@@ -17,12 +25,11 @@ function renderProjects(container) {
         </div>
       </div>
       <div id="admin-projects-table">
-        ${renderProjectsTable(projects)}
+        ${renderProjectsTable(_adminProjects)}
       </div>
     </div>
   `;
 
-  // Bind search
   const search = document.getElementById('project-search');
   if (search) {
     search.addEventListener('input', () => {
@@ -59,11 +66,10 @@ function renderProjectsTable(projects) {
 }
 
 function openProjectModal(editIndex = null) {
-  const data = DataStore.getData();
   const isEdit = editIndex !== null;
-  const proj = isEdit ? data.projects[editIndex] : {};
+  const proj = isEdit ? _adminProjects[editIndex] : {};
 
-  let thumbBase64 = proj.thumbnail || '';
+  let thumbnailUrl = proj.thumbnail || '';
 
   const formHTML = `
     <div class="admin-form" style="max-width:100%;">
@@ -73,11 +79,11 @@ function openProjectModal(editIndex = null) {
       </div>
       <div class="form-group">
         <label class="form-label">Short Description *</label>
-        <input type="text" class="form-input" id="proj-short" value="${AdminUI.escapeHtml(proj.shortDesc || '')}" />
+        <input type="text" class="form-input" id="proj-short" value="${AdminUI.escapeHtml(proj.short_desc || '')}" />
       </div>
       <div class="form-group">
         <label class="form-label">Full Description</label>
-        <textarea class="form-textarea" id="proj-desc" rows="4">${AdminUI.escapeHtml(proj.description || '')}</textarea>
+        <textarea class="form-textarea" id="proj-desc" rows="4">${AdminUI.escapeHtml(proj.full_desc || '')}</textarea>
       </div>
       <div class="admin-form__row">
         <div class="form-group">
@@ -105,16 +111,16 @@ function openProjectModal(editIndex = null) {
       <div class="admin-form__row">
         <div class="form-group">
           <label class="form-label">Live Demo URL</label>
-          <input type="url" class="form-input" id="proj-demo" value="${AdminUI.escapeHtml(proj.liveUrl || '')}" placeholder="https://..." />
+          <input type="url" class="form-input" id="proj-demo" value="${AdminUI.escapeHtml(proj.live_url || '')}" placeholder="https://..." />
         </div>
         <div class="form-group">
           <label class="form-label">Source Code URL</label>
-          <input type="url" class="form-input" id="proj-repo" value="${AdminUI.escapeHtml(proj.repoUrl || '')}" placeholder="https://github.com/..." />
+          <input type="url" class="form-input" id="proj-repo" value="${AdminUI.escapeHtml(proj.source_url || '')}" placeholder="https://github.com/..." />
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">Thumbnail</label>
-        <div id="proj-thumb-upload">${AdminUI.createImageUpload(thumbBase64)}</div>
+        <div id="proj-thumb-upload">${AdminUI.createImageUpload(thumbnailUrl)}</div>
       </div>
       <div class="form-group" style="display:flex;align-items:center;gap:var(--space-xl);">
         <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;">
@@ -130,58 +136,68 @@ function openProjectModal(editIndex = null) {
 
   const { modal, close } = AdminUI.openModal(isEdit ? 'Edit Project' : 'Add Project', formHTML, { maxWidth: '700px' });
 
-  // Init tech tags
   AdminUI.createTagInput(document.getElementById('proj-tech-tags'), [...(proj.tech || [])]);
 
-  // Bind image upload
   const uploadZone = modal.querySelector('.admin-upload-zone');
   if (uploadZone) {
-    AdminUI.bindImageUpload(uploadZone.id, (base64) => { thumbBase64 = base64; });
+    AdminUI.bindStoredImageUpload(uploadZone.id, (url) => { thumbnailUrl = url; }, { folder: 'projects' });
   }
 
-  // Save
-  document.getElementById('proj-save').addEventListener('click', () => {
+  document.getElementById('proj-save').addEventListener('click', async () => {
     const name = document.getElementById('proj-name').value.trim();
-    const shortDesc = document.getElementById('proj-short').value.trim();
-    if (!name || !shortDesc) { AdminUI.toast('Name and description required', 'error'); return; }
+    const short_desc = document.getElementById('proj-short').value.trim();
+    if (!name || !short_desc) { AdminUI.toast('Name and description required', 'error'); return; }
 
     const techEl = document.getElementById('proj-tech-tags');
     const tech = Array.from(techEl.querySelectorAll('.admin-tag-input__tag')).map(t => t.textContent.replace('×','').trim());
 
-    const newProj = {
-      id: proj.id || AdminUI.generateId('proj'),
-      name, shortDesc,
-      description: document.getElementById('proj-desc').value.trim(),
+    const payload = {
+      name, short_desc,
+      full_desc: document.getElementById('proj-desc').value.trim(),
       category: document.getElementById('proj-category').value,
       status: document.getElementById('proj-status').value,
       tech,
-      thumbnail: thumbBase64 || proj.thumbnail || 'https://picsum.photos/seed/' + Date.now() + '/800/500',
-      liveUrl: document.getElementById('proj-demo').value.trim(),
-      repoUrl: document.getElementById('proj-repo').value.trim(),
+      thumbnail: thumbnailUrl || proj.thumbnail || 'https://picsum.photos/seed/' + Date.now() + '/800/500',
+      live_url: document.getElementById('proj-demo').value.trim(),
+      source_url: document.getElementById('proj-repo').value.trim(),
       featured: document.getElementById('proj-featured').checked,
       gallery: proj.gallery || [],
     };
 
-    const d = DataStore.getData();
-    if (isEdit) { d.projects[editIndex] = newProj; } else { d.projects.unshift(newProj); }
-    DataStore.saveAll(d);
-    AdminAuth.logAction(isEdit ? 'Updated' : 'Created', `Project: ${name}`);
-    AdminUI.toast(`Project ${isEdit ? 'updated' : 'added'}!`);
-    close();
-    renderProjects(document.getElementById('admin-content'));
+    const saveBtn = document.getElementById('proj-save');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      if (isEdit) {
+        await API.projects.update(proj.id, payload);
+      } else {
+        await API.projects.create(payload);
+      }
+      AdminAuth.logAction(isEdit ? 'Updated' : 'Created', `Project: ${name}`);
+      AdminUI.toast(`Project ${isEdit ? 'updated' : 'added'}!`);
+      close();
+      renderProjects(document.getElementById('admin-content'));
+    } catch (err) {
+      AdminUI.toast(err.message || 'Failed to save project', 'error');
+      saveBtn.disabled = false;
+      saveBtn.textContent = isEdit ? 'Update Project' : 'Add Project';
+    }
   });
 
   document.getElementById('proj-cancel').addEventListener('click', close);
 }
 
 function deleteProject(index) {
-  const data = DataStore.getData();
-  const proj = data.projects[index];
-  AdminUI.confirm('Delete Project', `Delete "${proj.name}"? This is permanent.`, () => {
-    data.projects.splice(index, 1);
-    DataStore.saveAll(data);
-    AdminAuth.logAction('Deleted', `Project: ${proj.name}`);
-    AdminUI.toast('Project deleted');
-    renderProjects(document.getElementById('admin-content'));
+  const proj = _adminProjects[index];
+  AdminUI.confirm('Delete Project', `Delete "${proj.name}"? This is permanent.`, async () => {
+    try {
+      await API.projects.delete(proj.id);
+      AdminAuth.logAction('Deleted', `Project: ${proj.name}`);
+      AdminUI.toast('Project deleted');
+      renderProjects(document.getElementById('admin-content'));
+    } catch (err) {
+      AdminUI.toast(err.message || 'Failed to delete project', 'error');
+    }
   });
 }

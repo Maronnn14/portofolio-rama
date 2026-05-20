@@ -21,7 +21,7 @@
       <div class="about-story__grid">
         <div class="about-story__image-col reveal-left">
           <div class="about-story__image-wrapper">
-            <img src="https://picsum.photos/seed/ramaprofile/400/500" alt="Rama Adin" class="about-story__image" loading="lazy" />
+            <img src="https://picsum.photos/seed/ramaprofile/400/500" alt="Rama Adin" class="about-story__image" id="about-profile-image" loading="lazy" />
             <div class="about-story__image-accent"></div>
           </div>
           <div class="about-story__stats">
@@ -83,13 +83,21 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      await PortfolioData.load(true);
       const d = PORTFOLIO_DATA;
+
+      const aboutImage = document.getElementById('about-profile-image');
+      const aboutImageSrc = d.personal.aboutProfileImage || d.personal.photo || d.personal.profileImage;
+      if (aboutImage && aboutImageSrc) {
+        aboutImage.src = aboutImageSrc;
+      }
 
       // Render bio
       const storyEl = document.getElementById('about-story-text');
       if (storyEl) {
-        storyEl.innerHTML = d.personal.fullBio
+        const story = d.personal.fullBio || d.personal.shortBio || 'No background story has been added yet.';
+        storyEl.innerHTML = story
           .split('\n\n')
           .map(p => `<p>${p.trim()}</p>`)
           .join('');

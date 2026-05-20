@@ -4,19 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class Skill extends Model
 {
     protected $fillable = [
         'name',
-        'short_desc',
-        'full_desc',
         'category',
-        'status',
-        'thumbnail',
-        'tech',
-        'live_url',
-        'source_url',
-        'featured',
+        'icon',
+        'teaser',
+        'description',
+        'proficiency',
+        'level',
+        'related_projects',
         'gallery',
         'sort_order',
     ];
@@ -24,9 +22,9 @@ class Project extends Model
     protected function casts(): array
     {
         return [
-            'tech' => 'array',
+            'proficiency' => 'integer',
+            'related_projects' => 'array',
             'gallery' => 'array',
-            'featured' => 'boolean',
             'sort_order' => 'integer',
         ];
     }

@@ -201,6 +201,63 @@ const AdminUI = {
     });
   },
 
+  bindStoredImageUpload(containerId, onUpload, options = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const input = container.querySelector('input[type="file"]');
+    if (!input) return;
+
+    const maxSize = options.maxSize || 5 * 1024 * 1024;
+    const folder = options.folder || 'profile';
+
+    const uploadFile = async (file) => {
+      if (!file) return;
+      if (file.size > maxSize) {
+        this.toast(`Image is too large. Max ${Math.round(maxSize / 1024 / 1024)}MB`, 'error');
+        return;
+      }
+
+      const textEl = container.querySelector('.admin-upload-zone__text');
+      const originalText = textEl ? textEl.innerHTML : '';
+      if (textEl) textEl.innerHTML = 'Uploading...';
+
+      try {
+        const result = await API.media.uploadImage(file, folder);
+        const imageUrl = result.url;
+        const existingImg = container.querySelector('img');
+
+        if (existingImg) {
+          existingImg.src = imageUrl;
+        } else {
+          const iconEl = container.querySelector('.admin-upload-zone__icon');
+          if (iconEl) {
+            iconEl.outerHTML = `<img src="${imageUrl}" alt="Upload" style="max-width:200px;max-height:150px;border-radius:8px;margin-bottom:8px;" />`;
+          }
+        }
+
+        if (textEl) {
+          textEl.innerHTML = 'Click to change<br><small style="color:var(--text-muted);">Uploaded. Save changes to apply.</small>';
+        }
+        if (onUpload) onUpload(imageUrl);
+      } catch (err) {
+        if (textEl) textEl.innerHTML = originalText;
+        this.toast(err.message || 'Failed to upload image', 'error');
+      }
+    };
+
+    input.addEventListener('change', (e) => uploadFile(e.target.files[0]));
+    container.addEventListener('dragover', (e) => { e.preventDefault(); container.classList.add('dragover'); });
+    container.addEventListener('dragleave', () => container.classList.remove('dragover'));
+    container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      container.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        uploadFile(e.dataTransfer.files[0]);
+      }
+    });
+  },
+
   /* ---- Status Badge ---- */
   badge(text, type = 'default') {
     const colors = {

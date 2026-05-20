@@ -3,11 +3,6 @@
 @section('title', "Skills & Expertise — Rama Adin")
 @section('description', "Explore Rama Adin's technical skills — frontend, backend, design tools, and more. Click any skill for details.")
 
-@push('styles')
-  <link rel="stylesheet" href="{{ asset('css/lightbox.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/skills.css') }}" />
-@endpush
-
 @section('content')
 <!-- Page Header -->
   <header class="page-header">

@@ -3,10 +3,6 @@
 @section('title', "Projects — Rama Adin")
 @section('description', "Explore Rama Adin's portfolio of web development projects — full-stack applications, frontends, and more.")
 
-@push('styles')
-  <link rel="stylesheet" href="{{ asset('css/projects.css') }}" />
-@endpush
-
 @section('content')
 <!-- Page Header -->
   <header class="page-header">

@@ -9,9 +9,14 @@
 /* ====== Contact Grid ====== */
 .contact-grid {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: var(--space-3xl);
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: clamp(var(--space-2xl), 5vw, var(--space-3xl));
   align-items: start;
+}
+
+.contact-info,
+.contact-form-wrapper {
+  min-width: 0;
 }
 
 /* ====== Info Cards ====== */
@@ -30,6 +35,10 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   transition: border-color var(--transition-base), transform var(--transition-base);
+}
+
+.contact-info__card > div:last-child {
+  min-width: 0;
 }
 
 .contact-info__card:hover {
@@ -65,6 +74,7 @@
   color: var(--text-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
+  overflow-wrap: anywhere;
 }
 
 a.contact-info__value:hover {
@@ -95,7 +105,7 @@ a.contact-info__value:hover {
 
 .contact-socials__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
   gap: var(--space-sm);
 }
 
@@ -143,7 +153,7 @@ a.contact-info__value:hover {
 
 .contact-form__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-lg);
 }
 
@@ -215,6 +225,10 @@ a.contact-info__value:hover {
   transition: border-color var(--transition-base);
 }
 
+.github-profile__info {
+  min-width: 0;
+}
+
 .github-profile__card:hover {
   border-color: var(--accent-gold);
 }
@@ -235,12 +249,14 @@ a.contact-info__value:hover {
   font-family: var(--font-heading);
   color: var(--text-primary);
   font-size: var(--text-lg);
+  overflow-wrap: anywhere;
 }
 
 .github-profile__info p {
   color: var(--text-secondary);
   font-size: var(--text-sm);
   margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 
 .github-profile__info a {
@@ -248,17 +264,19 @@ a.contact-info__value:hover {
   text-decoration: none;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
+  overflow-wrap: anywhere;
 }
 
 .github-repos {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: var(--space-lg);
   width: 100%;
   max-width: 900px;
 }
 
 .github-repo {
+  min-width: 0;
   padding: var(--space-xl);
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
@@ -277,6 +295,7 @@ a.contact-info__value:hover {
   color: var(--accent-gold);
   margin-bottom: var(--space-sm);
   font-size: var(--text-base);
+  overflow-wrap: anywhere;
 }
 
 .github-repo__desc {
@@ -284,6 +303,7 @@ a.contact-info__value:hover {
   font-size: var(--text-sm);
   margin-bottom: var(--space-md);
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .github-repo__meta {
@@ -322,6 +342,12 @@ a.contact-info__value:hover {
 }
 
 @media (max-width: 480px) {
+  .contact-info__card,
+  .github-profile__card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .contact-form__row {
     grid-template-columns: 1fr;
   }
@@ -331,6 +357,6 @@ a.contact-info__value:hover {
   }
 
   .contact-socials__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
   }
 }

@@ -7,12 +7,8 @@
   <meta name="description" content="@yield('description', 'Full Stack Developer crafting digital experiences with code and creativity.')" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <link rel="stylesheet" href="{{ asset('css/variables.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/reset.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/components.css') }}" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   @stack('styles')
-  <link rel="stylesheet" href="{{ asset('css/admin-login.css') }}" />
 </head>
 <body>
 

@@ -7,12 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <link rel="stylesheet" href="{{ asset('css/variables.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/reset.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/components.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/admin-login.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/admin.css') }}" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="admin-body">
   @yield('content')

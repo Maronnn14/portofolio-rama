@@ -3,11 +3,6 @@
 @section('title', "Rama Adin — Full Stack Developer")
 @section('description', "Full Stack Developer crafting digital experiences with code and creativity. View my portfolio, projects, and skills.")
 
-@push('styles')
-  <link rel="stylesheet" href="{{ asset('css/lightbox.css') }}" />
-  <link rel="stylesheet" href="{{ asset('css/home.css') }}" />
-@endpush
-
 @section('content')
 <!-- Navbar -->
 <!-- ====== HERO SECTION ====== -->

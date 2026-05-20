@@ -2,7 +2,8 @@
    GALLERY.JS — Masonry grid with lightbox
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await PortfolioData.load();
   renderGallery();
 });
 
@@ -10,7 +11,7 @@ function renderGallery() {
   const container = document.getElementById('gallery-grid');
   if (!container) return;
 
-  const images = PORTFOLIO_DATA.galleryImages;
+  const images = PortfolioData.galleryImages;
 
   container.innerHTML = images.map((img, i) => `
     <div class="gallery-item reveal stagger-${Math.min((i % 8) + 1, 8)}" 

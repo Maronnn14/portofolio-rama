@@ -24,10 +24,10 @@
       </div>
       <h1 class="hero__title">
         <span class="hero__greeting" id="hero-greeting"></span>
-        <span class="hero__name">Rama <span class="text-accent">Adin</span></span>
+        <span class="hero__name" id="hero-name"><span id="hero-name-first">Rama</span> <span class="text-accent" id="hero-name-accent">Adin</span></span>
       </h1>
       <p class="hero__role" id="hero-role"></p>
-      <p class="hero__tagline">Crafting digital experiences with code & creativity</p>
+      <p class="hero__tagline" id="hero-tagline">Crafting digital experiences with code & creativity</p>
       <div class="hero__cta">
         <a href="projects.html" class="btn btn--primary btn--lg">
           See My Work
@@ -49,13 +49,13 @@
     <div class="container">
       <div class="about-preview__grid reveal">
         <div class="about-preview__image-wrapper">
-          <img src="https://picsum.photos/seed/ramaprofile/400/400" alt="Rama Adin - Profile Photo" class="about-preview__image" loading="lazy" />
+          <img src="https://picsum.photos/seed/ramaprofile/400/400" alt="Rama Adin - Profile Photo" class="about-preview__image" id="home-profile-image" loading="lazy" />
           <div class="about-preview__image-border"></div>
         </div>
-        <div class="about-preview__content">
+          <div class="about-preview__content">
           <span class="section-label">About Me</span>
-          <h2 class="section-heading">Hello, I'm <span class="text-accent">Rama</span></h2>
-          <p class="about-preview__bio">
+          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">Rama</span></h2>
+          <p class="about-preview__bio" id="home-about-bio">
             A passionate developer who transforms ideas into elegant, functional digital solutions.
             With a keen eye for detail and a love for clean code, I build applications that make a difference.
           </p>

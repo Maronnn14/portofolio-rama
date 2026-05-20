@@ -39,7 +39,10 @@ function initHeroAnimations() {
     setTimeout(() => {
       typeWriter(greetingEl, "Hi there, I'm", 60, () => {
         if (roleEl) {
-          typeWriter(roleEl, '> Full Stack Developer', 40);
+          const roleText = (PORTFOLIO_DATA.personal && PORTFOLIO_DATA.personal.role)
+            ? `> ${PORTFOLIO_DATA.personal.role}`
+            : '> Full Stack Developer';
+          typeWriter(roleEl, roleText, 40);
         }
       });
     }, 500);

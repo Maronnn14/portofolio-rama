@@ -634,6 +634,20 @@
 
 @media (max-width: 480px) {
   .gallery-grid {
-    columns: 2;
+    columns: 1;
+  }
+  .mb-form-wrapper {
+    padding: var(--space-md);
+  }
+  .mb-card {
+    padding: var(--space-md);
+  }
+  .hero__cta {
+    flex-direction: column;
+    margin-bottom: var(--space-2xl);
+  }
+  .hero__cta .btn {
+    width: 100%;
+    justify-content: center;
   }
 }

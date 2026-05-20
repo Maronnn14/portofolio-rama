@@ -206,6 +206,25 @@
       mobileToggle.addEventListener('click', () => {
         sidebar.classList.toggle('mobile-open');
       });
+
+      // Auto-dismiss sidebar on nav link click (mobile)
+      sidebar.addEventListener('click', (e) => {
+        const item = e.target.closest('.admin-nav__item');
+        if (item && window.innerWidth <= 768) {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+
+      // Click outside mobile sidebar to dismiss
+      document.addEventListener('click', (e) => {
+        if (sidebar.classList.contains('mobile-open')) {
+          const clickedInsideSidebar = sidebar.contains(e.target);
+          const clickedToggle = mobileToggle.contains(e.target);
+          if (!clickedInsideSidebar && !clickedToggle) {
+            sidebar.classList.remove('mobile-open');
+          }
+        }
+      });
     });
   </script>
 </body>

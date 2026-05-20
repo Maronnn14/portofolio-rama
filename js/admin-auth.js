@@ -349,13 +349,41 @@ function onLoginSuccess() {
 function updateNavbarAuthState() {
   const lockIcon = document.getElementById('navbar-admin-lock');
   const adminBadge = document.getElementById('navbar-admin-badge');
+  const mobileAdmin = document.getElementById('navbar-mobile-admin');
+  const mobileDashboard = document.getElementById('navbar-mobile-dashboard');
+  const mobileLogout = document.getElementById('navbar-mobile-logout');
 
   if (AdminAuth.isAuthenticated()) {
     if (lockIcon) lockIcon.style.display = 'none';
     if (adminBadge) adminBadge.style.display = 'flex';
+    if (mobileAdmin) mobileAdmin.style.display = 'none';
+    if (mobileDashboard) mobileDashboard.style.display = '';
+    if (mobileLogout) mobileLogout.style.display = '';
   } else {
     if (lockIcon) lockIcon.style.display = 'flex';
     if (adminBadge) adminBadge.style.display = 'none';
+    if (mobileAdmin) mobileAdmin.style.display = '';
+    if (mobileDashboard) mobileDashboard.style.display = 'none';
+    if (mobileLogout) mobileLogout.style.display = 'none';
+  }
+
+  // Bind dropdown event handlers once
+  const dropdown = document.getElementById('admin-dropdown');
+  if (dropdown && !dropdown._eventsBound) {
+    dropdown._eventsBound = true;
+
+    // Prevent clicks inside the dropdown from bubbling up to the badge toggle
+    dropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Close dropdown when clicking anywhere outside the badge
+    document.addEventListener('click', (e) => {
+      const badge = document.getElementById('navbar-admin-badge');
+      if (badge && !badge.contains(e.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
   }
 }
 
@@ -385,7 +413,8 @@ function openLoginModal() {
 }
 
 /* ---- Admin Dropdown Toggle ---- */
-function toggleAdminDropdown() {
+function toggleAdminDropdown(e) {
+  if (e) e.stopPropagation();
   const dropdown = document.getElementById('admin-dropdown');
   if (dropdown) dropdown.classList.toggle('open');
 }
@@ -397,6 +426,13 @@ function adminLogout() {
   if (banner) banner.remove();
   const dropdown = document.getElementById('admin-dropdown');
   if (dropdown) dropdown.classList.remove('open');
+
+  // Close mobile menu if open
+  const hamburger = document.querySelector('.navbar__hamburger');
+  const mobileMenu = document.querySelector('.navbar__mobile-menu');
+  if (hamburger) hamburger.classList.remove('open');
+  if (mobileMenu) mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 /* Make available globally */
@@ -406,3 +442,4 @@ if (typeof window !== 'undefined') {
   window.toggleAdminDropdown = toggleAdminDropdown;
   window.adminLogout = adminLogout;
 }
+

@@ -36,26 +36,28 @@ function renderProjects(container) {
 function renderProjectsTable(projects) {
   if (!projects.length) return '<div class="admin-empty"><div class="admin-empty__icon">📁</div><h3 class="admin-empty__title">No projects</h3><p class="admin-empty__text">Add your first project.</p></div>';
 
-  return `<table class="admin-table">
-    <thead><tr><th style="width:50px;"></th><th>Name</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
-    <tbody>
-      ${projects.map((p, i) => `
-        <tr data-name="${AdminUI.escapeHtml(p.name)}">
-          <td><img src="${p.thumbnail}" alt="" style="width:40px;height:30px;object-fit:cover;border-radius:4px;background:var(--bg-tertiary);" onerror="this.style.display='none'" /></td>
-          <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(p.name)}</td>
-          <td>${AdminUI.badge(p.category || 'Uncategorized', 'accent')}</td>
-          <td>${AdminUI.badge(p.status === 'draft' ? 'Draft' : 'Published', p.status === 'draft' ? 'warning' : 'success')}</td>
-          <td>${p.featured ? '⭐' : '—'}</td>
-          <td>
-            <div class="admin-table__actions">
-              <button class="admin-table__btn" onclick="openProjectModal(${i})">✏️</button>
-              <button class="admin-table__btn admin-table__btn--danger" onclick="deleteProject(${i})">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      `).join('')}
-    </tbody>
-  </table>`;
+  return `<div class="admin-table-responsive">
+    <table class="admin-table">
+      <thead><tr><th style="width:50px;"></th><th>Name</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${projects.map((p, i) => `
+          <tr data-name="${AdminUI.escapeHtml(p.name)}">
+            <td><img src="${p.thumbnail}" alt="" style="width:40px;height:30px;object-fit:cover;border-radius:4px;background:var(--bg-tertiary);" onerror="this.style.display='none'" /></td>
+            <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(p.name)}</td>
+            <td>${AdminUI.badge(p.category || 'Uncategorized', 'accent')}</td>
+            <td>${AdminUI.badge(p.status === 'draft' ? 'Draft' : 'Published', p.status === 'draft' ? 'warning' : 'success')}</td>
+            <td>${p.featured ? '⭐' : '—'}</td>
+            <td>
+              <div class="admin-table__actions">
+                <button class="admin-table__btn" onclick="openProjectModal(${i})">✏️</button>
+                <button class="admin-table__btn admin-table__btn--danger" onclick="deleteProject(${i})">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>`;
 }
 
 function openProjectModal(editIndex = null) {

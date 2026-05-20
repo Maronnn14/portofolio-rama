@@ -335,4 +335,8 @@
   .skills-grid {
     grid-template-columns: 1fr;
   }
+
+  .skill-modal__gallery {
+    grid-template-columns: 1fr;
+  }
 }

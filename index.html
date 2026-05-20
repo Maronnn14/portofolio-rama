@@ -14,6 +14,24 @@
   <link rel="stylesheet" href="css/lightbox.css" />
   <link rel="stylesheet" href="css/home.css" />
   <link rel="stylesheet" href="css/admin-login.css" />
+  <script>
+    // Pre-read profile photo from localStorage synchronously to prevent flash-of-wrong-image
+    (function() {
+      var FALLBACK_PROFILE = 'https://picsum.photos/seed/ramaprofile/400/400';
+      try {
+        var stored = localStorage.getItem('portfolio_data_store');
+        if (stored) {
+          var parsed = JSON.parse(stored);
+          var photo = (parsed.personal && (parsed.personal.photo || parsed.personal.profileImage)) || '';
+          window.__profileImageSrc = photo || FALLBACK_PROFILE;
+        } else {
+          window.__profileImageSrc = FALLBACK_PROFILE;
+        }
+      } catch(e) {
+        window.__profileImageSrc = FALLBACK_PROFILE;
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -59,7 +77,8 @@
     <div class="container">
       <div class="about-preview__grid reveal">
         <div class="about-preview__image-wrapper">
-          <img src="https://picsum.photos/seed/ramaprofile/400/400" alt="Rama Adin - Profile Photo" class="about-preview__image" loading="lazy" />
+          <img id="about-preview-profile-image" alt="Rama Adin - Profile Photo" class="about-preview__image" loading="eager" />
+          <script>document.getElementById('about-preview-profile-image').src = window.__profileImageSrc;</script>
           <div class="about-preview__image-border"></div>
         </div>
         <div class="about-preview__content">

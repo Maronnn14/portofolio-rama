@@ -11,6 +11,24 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/about.css" />
   <link rel="stylesheet" href="css/admin-login.css" />
+  <script>
+    // Pre-read profile photo from localStorage synchronously to prevent flash-of-wrong-image
+    (function() {
+      var FALLBACK_PROFILE = 'https://picsum.photos/seed/ramaprofile/400/500';
+      try {
+        var stored = localStorage.getItem('portfolio_data_store');
+        if (stored) {
+          var parsed = JSON.parse(stored);
+          var photo = (parsed.personal && (parsed.personal.photo || parsed.personal.profileImage)) || '';
+          window.__profileImageSrc = photo || FALLBACK_PROFILE;
+        } else {
+          window.__profileImageSrc = FALLBACK_PROFILE;
+        }
+      } catch(e) {
+        window.__profileImageSrc = FALLBACK_PROFILE;
+      }
+    })();
+  </script>
 </head>
 <body>
   <div id="navbar-placeholder"></div>
@@ -28,7 +46,8 @@
       <div class="about-story__grid">
         <div class="about-story__image-col reveal-left">
           <div class="about-story__image-wrapper">
-            <img src="https://picsum.photos/seed/ramaprofile/400/500" alt="Rama Adin" class="about-story__image" loading="lazy" />
+            <img id="about-profile-image" alt="Rama Adin" class="about-story__image" loading="eager" />
+            <script>document.getElementById('about-profile-image').src = window.__profileImageSrc;</script>
             <div class="about-story__image-accent"></div>
           </div>
           <div class="about-story__stats">

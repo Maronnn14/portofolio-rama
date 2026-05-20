@@ -5,7 +5,7 @@
 /* ====== HERO ====== */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -99,6 +99,7 @@
   font-weight: var(--fw-bold);
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight);
+  overflow-wrap: anywhere;
 }
 
 .hero__role {
@@ -107,6 +108,7 @@
   color: var(--accent);
   margin-bottom: var(--space-sm);
   min-height: 1.5em;
+  overflow-wrap: anywhere;
 }
 
 .hero__role .cursor {
@@ -425,6 +427,7 @@
 
 .mb-form__row {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-xl);
   align-items: flex-end;
 }
@@ -486,6 +489,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
 }
 
 .mb-card__actions {
@@ -593,8 +598,13 @@
 }
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+  }
+
   .hero__content {
     padding-top: 100px;
+    padding-bottom: var(--space-3xl);
   }
 
   .hero__name {
@@ -627,6 +637,7 @@
 
   .projects-preview__grid {
     grid-template-columns: 1fr;
+    gap: var(--space-lg);
   }
 
   .mb-form__row {
@@ -648,6 +659,72 @@
 }
 
 @media (max-width: 480px) {
+  .hero__content {
+    padding-top: 92px;
+    padding-bottom: var(--space-2xl);
+  }
+
+  .hero__orb--1 {
+    width: 220px;
+    height: 220px;
+  }
+
+  .hero__orb--2 {
+    width: 180px;
+    height: 180px;
+  }
+
+  .hero__greeting {
+    font-size: var(--fs-md);
+  }
+
+  .hero__name {
+    font-size: clamp(2.25rem, 16vw, 3.25rem);
+  }
+
+  .hero__tagline {
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero__cta {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .about-preview__grid {
+    text-align: left;
+  }
+
+  .about-preview__image-wrapper {
+    width: min(180px, 80vw);
+  }
+
+  .about-preview__bio {
+    margin-inline: 0;
+  }
+
+  .exp-preview-item {
+    padding: var(--space-md);
+  }
+
+  .project-preview-card__body,
+  .mb-form-wrapper,
+  .mb-card {
+    padding: var(--space-md);
+  }
+
+  .contact-cta__heading {
+    font-size: clamp(2rem, 12vw, 2.8rem);
+  }
+
+  .star-rating {
+    flex-wrap: wrap;
+  }
+
+  .mb-card__actions {
+    flex-wrap: wrap;
+  }
+
   .gallery-grid {
     columns: 1;
   }

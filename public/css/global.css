@@ -9,7 +9,7 @@ body {
   font-weight: var(--fw-normal);
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ---- Headings ---- */
@@ -163,6 +163,52 @@ a {
 
 .section-header--center .section-subheading {
   margin-inline: auto;
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: clamp(2rem, 12vw, 2.8rem); }
+  h2 { font-size: clamp(1.75rem, 9vw, 2.25rem); }
+  h3 { font-size: clamp(1.25rem, 7vw, 1.75rem); }
+
+  .container {
+    padding-inline: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  .section {
+    padding-block: clamp(3rem, 12vw, 4rem);
+  }
+
+  .section--compact {
+    padding-block: clamp(2rem, 10vw, 3rem);
+  }
+
+  .section-label {
+    max-width: 100%;
+    gap: var(--space-xs);
+    letter-spacing: var(--ls-wider);
+    overflow-wrap: anywhere;
+  }
+
+  .section-label::before {
+    width: 16px;
+    flex-shrink: 0;
+  }
+
+  .section-heading {
+    font-size: clamp(1.75rem, 9vw, 2.4rem);
+    overflow-wrap: anywhere;
+  }
+
+  .section-subheading {
+    max-width: 100%;
+  }
+
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    transform: translateY(16px);
+  }
 }
 
 /* ============================================

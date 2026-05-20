@@ -342,14 +342,21 @@ a.contact-info__value:hover {
 }
 
 @media (max-width: 480px) {
+  .contact-grid {
+    gap: var(--space-xl);
+  }
+
   .contact-info__card,
   .github-profile__card {
     align-items: flex-start;
     flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
   }
 
   .contact-form__row {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .contact-form-wrapper {
@@ -358,5 +365,18 @@ a.contact-info__value:hover {
 
   .contact-socials__grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
+  }
+
+  .contact-socials {
+    padding: var(--space-lg);
+  }
+
+  .github-repo {
+    padding: var(--space-lg);
+  }
+
+  .github-repo__meta {
+    flex-wrap: wrap;
+    gap: var(--space-md);
   }
 }

@@ -381,6 +381,46 @@
 }
 
 @media (max-width: 480px) {
+  .project-card__overlay {
+    opacity: 1;
+    padding: var(--space-md);
+  }
+
+  .project-card__body {
+    padding: var(--space-md);
+  }
+
+  .project-card__name {
+    font-size: var(--fs-lg);
+  }
+
+  .project-detail {
+    padding-top: calc(var(--navbar-height) + var(--space-xl));
+    padding-bottom: var(--space-xl);
+  }
+
+  .project-detail__header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .project-detail__title {
+    font-size: clamp(2rem, 12vw, 2.8rem);
+  }
+
+  .project-detail__desc {
+    font-size: var(--fs-md);
+    line-height: var(--lh-relaxed);
+  }
+
+  .project-detail__hero-img,
+  .project-detail__meta {
+    margin-bottom: var(--space-xl);
+  }
+
+  .project-detail__meta {
+    padding: var(--space-lg);
+  }
+
   .project-detail__meta {
     grid-template-columns: 1fr;
   }

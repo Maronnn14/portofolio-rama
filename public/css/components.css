@@ -31,6 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-md);
   max-width: var(--container-wide);
   margin-inline: auto;
   padding-inline: var(--container-padding);
@@ -148,6 +149,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2xl);
+  padding: var(--space-2xl) var(--container-padding);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duration-normal) var(--ease-out);
@@ -165,6 +167,9 @@
   font-weight: var(--fw-bold);
   color: var(--text-secondary);
   transition: color var(--duration-normal) var(--ease-out);
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .navbar__mobile-link:hover,
@@ -243,6 +248,7 @@
 
 .footer__socials {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-md);
 }
 
@@ -323,7 +329,10 @@
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-sm);
   transition: all var(--duration-normal) var(--ease-out);
-  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
   cursor: pointer;
   border: none;
 }
@@ -481,7 +490,9 @@
   border: 1px solid var(--border-subtle);
   padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-full);
-  white-space: nowrap;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .tag--accent {
@@ -640,11 +651,13 @@
 .filter-tabs {
   display: flex;
   flex-wrap: wrap;
+  min-width: 0;
   gap: var(--space-sm);
   margin-bottom: var(--space-2xl);
 }
 
 .filter-tab {
+  min-width: 0;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
@@ -655,6 +668,7 @@
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
   background: transparent;
+  overflow-wrap: anywhere;
 }
 
 .filter-tab:hover {
@@ -678,6 +692,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  padding-inline: var(--container-padding);
 }
 
 .page-header::before {
@@ -686,8 +701,8 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
+  width: min(600px, 120vw);
+  height: min(600px, 120vw);
   background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
   pointer-events: none;
   opacity: 0.5;
@@ -697,6 +712,7 @@
   font-size: var(--fs-4xl);
   margin-bottom: var(--space-md);
   position: relative;
+  overflow-wrap: anywhere;
 }
 
 .page-header__subtitle {
@@ -753,6 +769,8 @@
   transform: translateY(100px);
   opacity: 0;
   transition: all var(--duration-normal) var(--ease-spring);
+  max-width: calc(100vw - (var(--space-xl) * 2));
+  overflow-wrap: anywhere;
 }
 
 .toast.show {
@@ -781,4 +799,87 @@
 
 .divider--center {
   margin-inline: auto;
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    padding: var(--space-sm) 0;
+  }
+
+  .navbar__inner {
+    padding-inline: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  .navbar__mobile-menu {
+    align-items: stretch;
+    gap: var(--space-lg);
+  }
+
+  .navbar__mobile-link {
+    font-size: clamp(1.35rem, 8vw, 2rem);
+  }
+
+  .footer {
+    padding: var(--space-2xl) 0;
+  }
+
+  .footer__inner {
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .footer__brand-tagline {
+    max-width: 100%;
+  }
+
+  .footer__bottom-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .btn--ghost {
+    width: auto;
+    max-width: 100%;
+  }
+
+  .filter-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-tab {
+    padding-inline: var(--space-md);
+  }
+
+  .page-header {
+    padding-top: calc(72px + var(--space-2xl));
+    padding-bottom: var(--space-2xl);
+  }
+
+  .page-header__title {
+    font-size: clamp(2rem, 12vw, 2.8rem);
+  }
+
+  .empty-state {
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .toast {
+    left: var(--space-md);
+    right: var(--space-md);
+    bottom: var(--space-md);
+    max-width: none;
+    padding: var(--space-md);
+  }
+}
+
+@media (max-width: 360px) {
+  .filter-tabs {
+    grid-template-columns: 1fr;
+  }
 }

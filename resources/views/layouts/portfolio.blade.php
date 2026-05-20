@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@yield('title', 'Rama Adin - Full Stack Developer')</title>
+  <meta name="description" content="@yield('description', 'Full Stack Developer crafting digital experiences with code and creativity.')" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <link rel="stylesheet" href="{{ asset('css/variables.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/reset.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/components.css') }}" />
+  @stack('styles')
+  <link rel="stylesheet" href="{{ asset('css/admin-login.css') }}" />
+</head>
+<body>
+
+  <div id="navbar-placeholder"></div>
+
+  @yield('content')
+
+  <div id="footer-placeholder"></div>
+
+  @stack('after_footer')
+
+  <script src="{{ asset('js/api-client.js') }}"></script>
+  <script src="{{ asset('js/data.js') }}"></script>
+  <script src="{{ asset('js/admin-config.js') }}"></script>
+  <script src="{{ asset('js/admin-auth.js') }}"></script>
+  <script src="{{ asset('js/main.js') }}"></script>
+  @stack('scripts')
+</body>
+</html>

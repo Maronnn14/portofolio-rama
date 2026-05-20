@@ -1,0 +1,220 @@
+@extends('layouts.portfolio')
+
+@section('title', "Rama Adin — Full Stack Developer")
+@section('description', "Full Stack Developer crafting digital experiences with code and creativity. View my portfolio, projects, and skills.")
+
+@push('styles')
+  <link rel="stylesheet" href="{{ asset('css/lightbox.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/home.css') }}" />
+@endpush
+
+@section('content')
+<!-- Navbar -->
+<!-- ====== HERO SECTION ====== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <div class="hero__gradient"></div>
+      <div class="hero__grid-pattern"></div>
+      <div class="hero__orb hero__orb--1"></div>
+      <div class="hero__orb hero__orb--2"></div>
+    </div>
+    <div class="container hero__content">
+      <div class="hero__label section-label" style="margin-bottom: var(--space-xl);">
+        Welcome to my world
+      </div>
+      <h1 class="hero__title">
+        <span class="hero__greeting" id="hero-greeting"></span>
+        <span class="hero__name" id="hero-name"><span id="hero-name-first">Rama</span> <span class="text-accent" id="hero-name-accent">Adin</span></span>
+      </h1>
+      <p class="hero__role" id="hero-role"></p>
+      <p class="hero__tagline" id="hero-tagline">Crafting digital experiences with code & creativity</p>
+      <div class="hero__cta">
+        <a href="projects.html" class="btn btn--primary btn--lg">
+          See My Work
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="contact.html" class="btn btn--secondary btn--lg">
+          Contact Me
+        </a>
+      </div>
+      <div class="hero__scroll-indicator">
+        <span>Scroll</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ABOUT PREVIEW ====== -->
+  <section class="section about-preview" id="about-preview">
+    <div class="container">
+      <div class="about-preview__grid reveal">
+        <div class="about-preview__image-wrapper">
+          <img src="https://picsum.photos/seed/ramaprofile/400/400" alt="Rama Adin - Profile Photo" class="about-preview__image" id="home-profile-image" loading="lazy" />
+          <div class="about-preview__image-border"></div>
+        </div>
+          <div class="about-preview__content">
+          <span class="section-label">About Me</span>
+          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">Rama</span></h2>
+          <p class="about-preview__bio" id="home-about-bio">
+            A passionate developer who transforms ideas into elegant, functional digital solutions.
+            With a keen eye for detail and a love for clean code, I build applications that make a difference.
+          </p>
+          <a href="about.html" class="btn btn--ghost">
+            Read More <span class="btn-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== EXPERIENCE PREVIEW ====== -->
+  <section class="section section--compact experience-preview" id="experience-preview">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Experience</span>
+        <h2 class="section-heading">Where I've Worked</h2>
+      </div>
+      <div class="experience-preview__list" id="experience-preview-list">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="reveal" style="margin-top: var(--space-2xl);">
+        <a href="about.html#experience" class="btn btn--ghost">
+          See Full Experience <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SKILLS PREVIEW ====== -->
+  <section class="section section--compact skills-preview" id="skills-preview">
+    <div class="container">
+      <div class="section-header section-header--center reveal">
+        <span class="section-label" style="justify-content: center;">Skills</span>
+        <h2 class="section-heading">Tech Stack</h2>
+        <p class="section-subheading">Technologies and tools I work with every day</p>
+      </div>
+      <div class="skills-preview__grid" id="skills-preview-grid">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="reveal text-center" style="margin-top: var(--space-2xl);">
+        <a href="skills.html" class="btn btn--ghost">
+          View All Skills <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PROJECTS PREVIEW ====== -->
+  <section class="section projects-preview" id="projects-preview">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Projects</span>
+        <h2 class="section-heading">Featured Work</h2>
+        <p class="section-subheading">A selection of projects I'm most proud of</p>
+      </div>
+      <div class="projects-preview__grid" id="projects-preview-grid">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="reveal" style="margin-top: var(--space-2xl);">
+        <a href="projects.html" class="btn btn--ghost">
+          See All Projects <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONTACT CTA ====== -->
+  <section class="section contact-cta" id="contact-cta">
+    <div class="contact-cta__bg"></div>
+    <div class="container text-center" style="position: relative; z-index: 1;">
+      <div class="reveal">
+        <span class="section-label" style="justify-content: center;">Let's Connect</span>
+        <h2 class="contact-cta__heading">Let's Work <span class="text-accent">Together</span></h2>
+        <p class="contact-cta__text">
+          Have a project in mind or want to collaborate? I'd love to hear from you.
+          Let's build something amazing together.
+        </p>
+        <a href="contact.html" class="btn btn--primary btn--lg">
+          Get In Touch <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MESSAGE BOARD ====== -->
+  <section class="section message-board" id="message-board">
+    <div class="container">
+      <div class="section-header section-header--center reveal">
+        <span class="section-label" style="justify-content: center;">Guestbook</span>
+        <h2 class="section-heading">Leave a <span class="text-accent">Message</span></h2>
+        <p class="section-subheading">Share your thoughts — messages are public and visible to all visitors</p>
+      </div>
+
+      <!-- Message Form -->
+      <div class="mb-form-wrapper reveal" id="mb-form-wrapper">
+        <form class="mb-form" id="mb-form">
+          <div class="mb-form__row">
+            <div class="form-group" style="flex: 1;">
+              <label for="mb-name" class="form-label">Your Name *</label>
+              <input type="text" id="mb-name" class="form-input" placeholder="Enter your name" required maxlength="50" />
+            </div>
+            <div class="form-group" style="flex: 0 0 auto;">
+              <label class="form-label">Rating (optional)</label>
+              <div class="star-rating" id="mb-star-input">
+                <span class="star-rating__star" data-rating="1">★</span>
+                <span class="star-rating__star" data-rating="2">★</span>
+                <span class="star-rating__star" data-rating="3">★</span>
+                <span class="star-rating__star" data-rating="4">★</span>
+                <span class="star-rating__star" data-rating="5">★</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="mb-message" class="form-label">Your Message *</label>
+            <textarea id="mb-message" class="form-textarea" placeholder="Write something nice..." required maxlength="300" rows="3"></textarea>
+            <p class="form-hint"><span id="mb-char-count">0</span> / 300</p>
+          </div>
+          <button type="submit" class="btn btn--primary" id="mb-submit">
+            Post Message
+          </button>
+        </form>
+      </div>
+
+      <!-- Messages List -->
+      <div class="mb-messages" id="mb-messages">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Load More -->
+      <div class="mb-load-more text-center" id="mb-load-more" style="display: none;">
+        <button class="btn btn--secondary" id="mb-load-more-btn">Load More Messages</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== RANDOM GALLERY ====== -->
+  <section class="section gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-header section-header--center reveal">
+        <span class="section-label" style="justify-content: center;">Gallery</span>
+        <h2 class="section-heading">Moments & <span class="text-accent">Memories</span></h2>
+      </div>
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+<!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts -->
+@endsection
+
+@push('scripts')
+  <script src="{{ asset('js/lightbox.js') }}"></script>
+  <script src="{{ asset('js/home.js') }}"></script>
+  <script src="{{ asset('js/message-board.js') }}"></script>
+  <script src="{{ asset('js/gallery.js') }}"></script>
+@endpush

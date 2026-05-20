@@ -13,33 +13,35 @@ function renderExperience(container) {
         <button class="btn btn--primary btn--sm" onclick="openExpModal()">+ Add Entry</button>
       </div>
       ${entries.length ? `
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Company</th>
-              <th>Period</th>
-              <th>Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${entries.map((e, i) => `
+        <div class="admin-table-responsive">
+          <table class="admin-table">
+            <thead>
               <tr>
-                <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(e.role)}</td>
-                <td>${AdminUI.escapeHtml(e.company)}</td>
-                <td style="white-space:nowrap;">${AdminUI.escapeHtml(e.startDate)} — ${AdminUI.escapeHtml(e.endDate)}</td>
-                <td>${AdminUI.badge(e.type, e.type === 'Work' ? 'accent' : e.type === 'Education' ? 'success' : 'default')}</td>
-                <td>
-                  <div class="admin-table__actions">
-                    <button class="admin-table__btn" onclick="openExpModal(${i})">✏️</button>
-                    <button class="admin-table__btn admin-table__btn--danger" onclick="deleteExp(${i})">🗑️</button>
-                  </div>
-                </td>
+                <th>Role</th>
+                <th>Company</th>
+                <th>Period</th>
+                <th>Type</th>
+                <th>Actions</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${entries.map((e, i) => `
+                <tr>
+                  <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(e.role)}</td>
+                  <td>${AdminUI.escapeHtml(e.company)}</td>
+                  <td style="white-space:nowrap;">${AdminUI.escapeHtml(e.startDate)} — ${AdminUI.escapeHtml(e.endDate)}</td>
+                  <td>${AdminUI.badge(e.type, e.type === 'Work' ? 'accent' : e.type === 'Education' ? 'success' : 'default')}</td>
+                  <td>
+                    <div class="admin-table__actions">
+                      <button class="admin-table__btn" onclick="openExpModal(${i})">✏️</button>
+                      <button class="admin-table__btn admin-table__btn--danger" onclick="deleteExp(${i})">🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
       ` : `
         <div class="admin-empty">
           <div class="admin-empty__icon">🕐</div>

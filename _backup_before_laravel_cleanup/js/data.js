@@ -479,6 +479,12 @@ const DataStore = {
     } catch {
       this._cache = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
+    // Normalize: admin saves uploaded photo to `personal.photo`, unify into `profileImage`
+    if (this._cache.personal) {
+      if (this._cache.personal.photo) {
+        this._cache.personal.profileImage = this._cache.personal.photo;
+      }
+    }
     return this._cache;
   },
 

@@ -28,31 +28,33 @@ function renderSkills(container) {
 function renderSkillsTable(skills) {
   if (!skills.length) return '<div class="admin-empty"><div class="admin-empty__icon">🛠</div><h3 class="admin-empty__title">No skills yet</h3><p class="admin-empty__text">Add your technical skills.</p></div>';
 
-  return `<table class="admin-table">
-    <thead><tr><th>Skill</th><th>Category</th><th>Proficiency</th><th>Actions</th></tr></thead>
-    <tbody>
-      ${skills.map((s, i) => `
-        <tr data-category="${s.category}">
-          <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(s.name)}</td>
-          <td>${AdminUI.badge(s.category, 'accent')}</td>
-          <td>
-            <div style="display:flex;align-items:center;gap:var(--space-sm);">
-              <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;max-width:100px;">
-                <div style="width:${s.proficiency || 0}%;height:100%;background:var(--accent);border-radius:3px;"></div>
+  return `<div class="admin-table-responsive">
+    <table class="admin-table">
+      <thead><tr><th>Skill</th><th>Category</th><th>Proficiency</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${skills.map((s, i) => `
+          <tr data-category="${s.category}">
+            <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(s.name)}</td>
+            <td>${AdminUI.badge(s.category, 'accent')}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:var(--space-sm);">
+                <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;max-width:100px;">
+                  <div style="width:${s.proficiency || 0}%;height:100%;background:var(--accent);border-radius:3px;"></div>
+                </div>
+                <span style="font-size:var(--fs-xs);color:var(--text-muted);">${s.proficiency || 0}%</span>
               </div>
-              <span style="font-size:var(--fs-xs);color:var(--text-muted);">${s.proficiency || 0}%</span>
-            </div>
-          </td>
-          <td>
-            <div class="admin-table__actions">
-              <button class="admin-table__btn" onclick="openSkillModal(${i})">✏️</button>
-              <button class="admin-table__btn admin-table__btn--danger" onclick="deleteSkill(${i})">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      `).join('')}
-    </tbody>
-  </table>`;
+            </td>
+            <td>
+              <div class="admin-table__actions">
+                <button class="admin-table__btn" onclick="openSkillModal(${i})">✏️</button>
+                <button class="admin-table__btn admin-table__btn--danger" onclick="deleteSkill(${i})">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>`;
 }
 
 function filterAdminSkills(cat, btn) {

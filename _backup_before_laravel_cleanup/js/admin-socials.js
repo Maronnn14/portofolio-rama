@@ -13,26 +13,28 @@ function renderSocials(container) {
         <button class="btn btn--primary btn--sm" onclick="openSocialModal()">+ Add Link</button>
       </div>
       ${socials.length ? `
-        <table class="admin-table">
-          <thead><tr><th>Platform</th><th>URL</th><th>Label</th><th>Visible</th><th>Actions</th></tr></thead>
-          <tbody>
-            ${socials.map((s, i) => `
-              <tr>
-                <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${getSocialIcon(s.platform)} ${AdminUI.escapeHtml(s.platform)}</td>
-                <td><a href="${s.url}" target="_blank" style="color:var(--accent);font-size:var(--fs-xs);">${AdminUI.escapeHtml(s.url).substring(0, 35)}...</a></td>
-                <td>${AdminUI.escapeHtml(s.label || '—')}</td>
-                <td>${s.visible !== false ? AdminUI.badge('Visible', 'success') : AdminUI.badge('Hidden', 'default')}</td>
-                <td>
-                  <div class="admin-table__actions">
-                    <button class="admin-table__btn" onclick="toggleSocialVisibility(${i})">${s.visible !== false ? '👁' : '👁‍🗨'}</button>
-                    <button class="admin-table__btn" onclick="openSocialModal(${i})">✏️</button>
-                    <button class="admin-table__btn admin-table__btn--danger" onclick="deleteSocial(${i})">🗑️</button>
-                  </div>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+        <div class="admin-table-responsive">
+          <table class="admin-table">
+            <thead><tr><th>Platform</th><th>URL</th><th>Label</th><th>Visible</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${socials.map((s, i) => `
+                <tr>
+                  <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${getSocialIcon(s.platform)} ${AdminUI.escapeHtml(s.platform)}</td>
+                  <td><a href="${s.url}" target="_blank" style="color:var(--accent);font-size:var(--fs-xs);">${AdminUI.escapeHtml(s.url).substring(0, 35)}...</a></td>
+                  <td>${AdminUI.escapeHtml(s.label || '—')}</td>
+                  <td>${s.visible !== false ? AdminUI.badge('Visible', 'success') : AdminUI.badge('Hidden', 'default')}</td>
+                  <td>
+                    <div class="admin-table__actions">
+                      <button class="admin-table__btn" onclick="toggleSocialVisibility(${i})">${s.visible !== false ? '👁' : '👁‍🗨'}</button>
+                      <button class="admin-table__btn" onclick="openSocialModal(${i})">✏️</button>
+                      <button class="admin-table__btn admin-table__btn--danger" onclick="deleteSocial(${i})">🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
       ` : `
         <div class="admin-empty">
           <div class="admin-empty__icon">🔗</div>

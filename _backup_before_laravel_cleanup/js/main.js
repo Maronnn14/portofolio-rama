@@ -4,7 +4,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   applyAppearanceSettings();
-  initNavbar();
   initScrollReveal();
   initSmoothScroll();
 });
@@ -192,7 +191,7 @@ function renderNavbar() {
         <button class="navbar__admin-lock" id="navbar-admin-lock" onclick="openLoginModal()" aria-label="Admin login">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </button>
-        <div class="navbar__admin-badge" id="navbar-admin-badge" onclick="toggleAdminDropdown()">
+        <div class="navbar__admin-badge" id="navbar-admin-badge" onclick="toggleAdminDropdown(event)">
           A
           <div class="admin-dropdown" id="admin-dropdown">
             <a href="admin.html" class="admin-dropdown__item">🧩 Dashboard</a>
@@ -215,6 +214,8 @@ function renderNavbar() {
       <a href="projects.html" class="navbar__mobile-link">Projects</a>
       <a href="contact.html" class="navbar__mobile-link">Contact</a>
       <button class="navbar__mobile-link" style="opacity:0.4;border:none;background:none;cursor:pointer;" onclick="openLoginModal()" id="navbar-mobile-admin">🔒 Admin</button>
+      <a href="admin.html" class="navbar__mobile-link" id="navbar-mobile-dashboard" style="display:none;">🧩 Dashboard</a>
+      <button class="navbar__mobile-link" style="display:none;border:none;background:none;cursor:pointer;color:var(--error);" onclick="adminLogout()" id="navbar-mobile-logout">🚪 Logout</button>
     </div>
   </nav>`;
 }
@@ -277,6 +278,7 @@ function initLayout() {
   const navPlaceholder = document.getElementById('navbar-placeholder');
   if (navPlaceholder) {
     navPlaceholder.innerHTML = renderNavbar();
+    initNavbar();
   }
 
   // Insert footer at bottom

@@ -80,34 +80,36 @@ function renderMessages(container) {
 function renderMessagesTable(messages) {
   if (!messages.length) return '<div class="admin-empty"><div class="admin-empty__icon">💬</div><h3 class="admin-empty__title">No messages</h3></div>';
 
-  return `<table class="admin-table">
-    <thead><tr><th><input type="checkbox" id="msg-select-all" onchange="toggleAllMessages(this.checked)" /></th><th>Name</th><th>Message</th><th>Rating</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>
-      ${messages.map(m => {
-        const statusClass = m.flagged ? 'error' : m.hidden ? 'default' : m.pinned ? 'accent' : 'success';
-        const statusLabel = m.flagged ? 'Flagged' : m.hidden ? 'Hidden' : m.pinned ? 'Pinned' : 'Visible';
-        return `
-          <tr data-msg-id="${m.id}" data-name="${AdminUI.escapeHtml(m.name)}" data-msg="${AdminUI.escapeHtml(m.message)}"
-              data-status="${m.flagged ? 'flagged' : m.hidden ? 'hidden' : m.pinned ? 'pinned' : 'visible'}"
-              style="${m.flagged ? 'background:rgba(239,68,68,0.05);' : ''}">
-            <td><input type="checkbox" class="msg-checkbox" value="${m.id}" onchange="updateBulkBtn()" /></td>
-            <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(m.name)}</td>
-            <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${AdminUI.escapeHtml(m.message)}</td>
-            <td>${m.rating ? '⭐'.repeat(m.rating) : '—'}</td>
-            <td style="white-space:nowrap;">${AdminUI.timeAgo(m.timestamp)}</td>
-            <td>${AdminUI.badge(statusLabel, statusClass)}</td>
-            <td>
-              <div class="admin-table__actions">
-                <button class="admin-table__btn" onclick="toggleMsgVisibility('${m.id}')" title="Show/Hide">${m.hidden ? '👁' : '👁‍🗨'}</button>
-                <button class="admin-table__btn" onclick="toggleMsgFlag('${m.id}')" title="Flag">🚩</button>
-                <button class="admin-table__btn" onclick="toggleMsgPin('${m.id}')" title="Pin">📌</button>
-                <button class="admin-table__btn admin-table__btn--danger" onclick="adminDeleteMsg('${m.id}')" title="Delete">🗑️</button>
-              </div>
-            </td>
-          </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
+  return `<div class="admin-table-responsive">
+    <table class="admin-table">
+      <thead><tr><th><input type="checkbox" id="msg-select-all" onchange="toggleAllMessages(this.checked)" /></th><th>Name</th><th>Message</th><th>Rating</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${messages.map(m => {
+          const statusClass = m.flagged ? 'error' : m.hidden ? 'default' : m.pinned ? 'accent' : 'success';
+          const statusLabel = m.flagged ? 'Flagged' : m.hidden ? 'Hidden' : m.pinned ? 'Pinned' : 'Visible';
+          return `
+            <tr data-msg-id="${m.id}" data-name="${AdminUI.escapeHtml(m.name)}" data-msg="${AdminUI.escapeHtml(m.message)}"
+                data-status="${m.flagged ? 'flagged' : m.hidden ? 'hidden' : m.pinned ? 'pinned' : 'visible'}"
+                style="${m.flagged ? 'background:rgba(239,68,68,0.05);' : ''}">
+              <td><input type="checkbox" class="msg-checkbox" value="${m.id}" onchange="updateBulkBtn()" /></td>
+              <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(m.name)}</td>
+              <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${AdminUI.escapeHtml(m.message)}</td>
+              <td>${m.rating ? '⭐'.repeat(m.rating) : '—'}</td>
+              <td style="white-space:nowrap;">${AdminUI.timeAgo(m.timestamp)}</td>
+              <td>${AdminUI.badge(statusLabel, statusClass)}</td>
+              <td>
+                <div class="admin-table__actions">
+                  <button class="admin-table__btn" onclick="toggleMsgVisibility('${m.id}')" title="Show/Hide">${m.hidden ? '👁' : '👁‍🗨'}</button>
+                  <button class="admin-table__btn" onclick="toggleMsgFlag('${m.id}')" title="Flag">🚩</button>
+                  <button class="admin-table__btn" onclick="toggleMsgPin('${m.id}')" title="Pin">📌</button>
+                  <button class="admin-table__btn admin-table__btn--danger" onclick="adminDeleteMsg('${m.id}')" title="Delete">🗑️</button>
+                </div>
+              </td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
 }
 
 function filterMessages(filter, btn) {

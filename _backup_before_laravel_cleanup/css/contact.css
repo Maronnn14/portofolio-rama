@@ -330,7 +330,25 @@ a.contact-info__value:hover {
     padding: var(--space-lg);
   }
 
+  .contact-info__card {
+    padding: var(--space-lg);
+  }
+
+  .contact-socials {
+    padding: var(--space-lg);
+  }
+
   .contact-socials__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  }
+
+  .github-profile__card {
+    padding: var(--space-lg);
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .github-repo {
+    padding: var(--space-md);
   }
 }

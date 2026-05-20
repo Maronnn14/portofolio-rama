@@ -782,3 +782,10 @@
 .divider--center {
   margin-inline: auto;
 }
+
+@media (max-width: 480px) {
+  .card__body {
+    padding: var(--space-md);
+  }
+}
+

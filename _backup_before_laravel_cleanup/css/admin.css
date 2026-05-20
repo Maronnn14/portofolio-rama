@@ -319,6 +319,13 @@
 
 .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
 
+.admin-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-md);
+}
+
 .admin-table__actions {
   display: flex;
   gap: var(--space-xs);
@@ -662,8 +669,23 @@
   .admin-sidebar.mobile-open .admin-nav__item { justify-content: flex-start; padding-inline: var(--space-lg); }
 
   .admin-main { margin-left: 0; }
+  .admin-sidebar__collapse { display: none; }
   .admin-topbar__menu-btn { display: flex; }
   .admin-content { padding: var(--space-lg); }
   .admin-form__row { grid-template-columns: 1fr; }
   .admin-topbar__username { display: none; }
+
+  .admin-modal__card {
+    max-width: calc(100% - var(--space-xl));
+    padding: var(--space-xl) var(--space-lg);
+    margin: var(--space-md);
+    max-height: 90vh;
+  }
+
+  .admin-confirm__actions {
+    flex-direction: column;
+  }
+  .admin-confirm__actions .btn {
+    width: 100%;
+  }
 }

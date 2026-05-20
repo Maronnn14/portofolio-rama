@@ -11,6 +11,62 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/admin-login.css" />
   <link rel="stylesheet" href="css/admin.css" />
+  <script>
+    // Synchronously bootstrap personal data from localStorage to prevent flash-of-wrong-content
+    (function() {
+      var FALLBACK_PROFILE = 'https://picsum.photos/seed/ramaprofile/400/500';
+      window.__personalData = {
+        name: 'Rama',
+        fullName: 'Rama Adin',
+        role: 'Full Stack Developer',
+        tagline: 'Crafting digital experiences with code & creativity',
+        shortBio: 'A passionate developer who transforms ideas into elegant, functional digital solutions. With a keen eye for detail and a love for clean code, I build applications that make a difference.',
+        email: 'rama@example.com',
+        location: 'Indonesia',
+        profileImage: FALLBACK_PROFILE
+      };
+
+      try {
+        var stored = localStorage.getItem('portfolio_data_store');
+        if (stored) {
+          var parsed = JSON.parse(stored);
+          if (parsed.personal) {
+            for (var key in parsed.personal) {
+              if (parsed.personal[key]) {
+                window.__personalData[key] = parsed.personal[key];
+              }
+            }
+          }
+        }
+      } catch(e) {
+        console.error('DataStore: Failed to bootstrap head data', e);
+      }
+
+      window.__profileImageSrc = window.__personalData.photo || window.__personalData.profileImage || FALLBACK_PROFILE;
+
+      // Dynamically update document title based on page context
+      var path = window.location.pathname;
+      var pageName = path.substring(path.lastIndexOf('/') + 1);
+      var name = window.__personalData.fullName || 'Rama Adin';
+      var role = window.__personalData.role || 'Full Stack Developer';
+
+      if (pageName === 'about.html') {
+        document.title = 'About Me — ' + name;
+      } else if (pageName === 'contact.html') {
+        document.title = 'Contact — ' + name;
+      } else if (pageName === 'skills.html') {
+        document.title = 'Skills & Expertise — ' + name;
+      } else if (pageName === 'projects.html') {
+        document.title = 'Projects — ' + name;
+      } else if (pageName === 'project-detail.html') {
+        document.title = 'Project Detail — ' + name;
+      } else if (pageName === 'admin.html') {
+        document.title = 'Admin Dashboard — ' + name;
+      } else {
+        document.title = name + ' — ' + role;
+      }
+    })();
+  </script>
 </head>
 <body class="admin-body">
 
@@ -149,6 +205,25 @@
 
       mobileToggle.addEventListener('click', () => {
         sidebar.classList.toggle('mobile-open');
+      });
+
+      // Auto-dismiss sidebar on nav link click (mobile)
+      sidebar.addEventListener('click', (e) => {
+        const item = e.target.closest('.admin-nav__item');
+        if (item && window.innerWidth <= 768) {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+
+      // Click outside mobile sidebar to dismiss
+      document.addEventListener('click', (e) => {
+        if (sidebar.classList.contains('mobile-open')) {
+          const clickedInsideSidebar = sidebar.contains(e.target);
+          const clickedToggle = mobileToggle.contains(e.target);
+          if (!clickedInsideSidebar && !clickedToggle) {
+            sidebar.classList.remove('mobile-open');
+          }
+        }
       });
     });
   </script>

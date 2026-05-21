@@ -8,7 +8,7 @@
       <a href="{{ url('/projects.html') }}" class="navbar__link{{ request()->is('projects.html') || request()->is('project-detail.html') ? ' active' : '' }}">Projects</a>
       <a href="{{ url('/contact.html') }}" class="navbar__link{{ request()->is('contact.html') ? ' active' : '' }}">Contact</a>
     </div>
-    <div style="display:flex;align-items:center;">
+    <div class="flex items-center">
       <button class="navbar__admin-lock" id="navbar-admin-lock" onclick="openLoginModal()" aria-label="Admin login"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
       <div class="navbar__admin-badge" id="navbar-admin-badge" onclick="toggleAdminDropdown(event)">A<div class="admin-dropdown" id="admin-dropdown"><a href="{{ url('/admin.html') }}" class="admin-dropdown__item">🧩 Dashboard</a><a href="{{ url('/') }}" class="admin-dropdown__item">👁 View Site</a><div class="admin-dropdown__divider"></div><button class="admin-dropdown__item admin-dropdown__item--danger" onclick="adminLogout()">🚪 Logout</button></div></div>
       <button class="navbar__hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -18,7 +18,6 @@
   <div class="navbar__mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
     <div class="navbar__mobile-header">
       <span class="navbar__mobile-logo">R<span>.</span></span>
-      <button class="navbar__mobile-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
     </div>
     <nav class="navbar__mobile-nav">
       <a href="{{ url('/') }}" class="navbar__mobile-link{{ request()->is('/') || request()->is('index.html') ? ' active' : '' }}">Home</a>

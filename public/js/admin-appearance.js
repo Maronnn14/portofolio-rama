@@ -58,15 +58,21 @@ function darkenHex(hex, percent) {
 function setAllAccentVars(hex) {
   const root = document.documentElement.style;
   const { r, g, b } = hexToRgb(hex);
+  const light = lightenHex(hex, 15);
+  const dark  = darkenHex(hex, 15);
 
   root.setProperty('--accent',             hex);
-  root.setProperty('--accent-light',       lightenHex(hex, 15));
-  root.setProperty('--accent-dark',        darkenHex(hex, 15));
+  root.setProperty('--accent-light',       light);
+  root.setProperty('--accent-dark',        dark);
   root.setProperty('--accent-glow',        `rgba(${r}, ${g}, ${b}, 0.15)`);
   root.setProperty('--accent-glow-strong', `rgba(${r}, ${g}, ${b}, 0.3)`);
   root.setProperty('--border-accent',      `rgba(${r}, ${g}, ${b}, 0.3)`);
   root.setProperty('--shadow-glow',        `0 0 30px rgba(${r}, ${g}, ${b}, 0.15)`);
   root.setProperty('--shadow-glow-strong', `0 0 50px rgba(${r}, ${g}, ${b}, 0.25)`);
+  // Tailwind v4 @theme variables — so text-accent, bg-accent, etc. update
+  root.setProperty('--color-accent',       hex);
+  root.setProperty('--color-accent-light', light);
+  root.setProperty('--color-accent-dark',  dark);
 }
 
 /**
@@ -84,6 +90,9 @@ function removeAllAccentVars() {
     '--border-accent',
     '--shadow-glow',
     '--shadow-glow-strong',
+    '--color-accent',
+    '--color-accent-light',
+    '--color-accent-dark',
   ].forEach(v => root.removeProperty(v));
 }
 

@@ -35,15 +35,20 @@ function applyAppearanceSettings() {
         const _lighten = (h, p) => { const {r,g,b} = _hexToRgb(h); const t=p/100; return '#'+[r+(255-r)*t,g+(255-g)*t,b+(255-b)*t].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); };
         const _darken  = (h, p) => { const {r,g,b} = _hexToRgb(h); const t=1-p/100; return '#'+[r*t,g*t,b*t].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); };
         const { r, g, b } = _hexToRgb(hex);
+        const light = _lighten(hex, 15);
+        const dark  = _darken(hex, 15);
         const root = document.documentElement.style;
         root.setProperty('--accent',             hex);
-        root.setProperty('--accent-light',       _lighten(hex, 15));
-        root.setProperty('--accent-dark',        _darken(hex, 15));
+        root.setProperty('--accent-light',       light);
+        root.setProperty('--accent-dark',        dark);
         root.setProperty('--accent-glow',        `rgba(${r}, ${g}, ${b}, 0.15)`);
         root.setProperty('--accent-glow-strong', `rgba(${r}, ${g}, ${b}, 0.3)`);
         root.setProperty('--border-accent',      `rgba(${r}, ${g}, ${b}, 0.3)`);
         root.setProperty('--shadow-glow',        `0 0 30px rgba(${r}, ${g}, ${b}, 0.15)`);
         root.setProperty('--shadow-glow-strong', `0 0 50px rgba(${r}, ${g}, ${b}, 0.25)`);
+        root.setProperty('--color-accent',       hex);
+        root.setProperty('--color-accent-light', light);
+        root.setProperty('--color-accent-dark',  dark);
       }
     }
     if (appearance.borderRadius !== undefined) {

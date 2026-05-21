@@ -30,7 +30,8 @@
 
 .login-modal__card {
   position: relative;
-  width: min(100% - (var(--space-md) * 2), 420px);
+  width: 100%;
+  max-width: 420px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
@@ -193,44 +194,27 @@
   transform: scale(1.1);
 }
 
-/* Admin Dropdown - Premium Glassmorphic Redesign */
+/* Admin Dropdown */
 .admin-dropdown {
   position: absolute;
-  top: calc(100% + var(--space-md));
+  top: calc(100% + var(--space-sm));
   right: 0;
-  min-width: min(220px, calc(100vw - (var(--space-md) * 2)));
-  background: rgba(17, 17, 17, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 168, 83, 0.2); /* Sleek gold-accent border */
+  min-width: 200px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+  box-shadow: var(--shadow-xl);
   padding: var(--space-sm);
   opacity: 0;
-  transform: translateY(-12px) scale(0.97);
+  transform: translateY(-8px);
   pointer-events: none;
-  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
-  z-index: var(--z-dropdown);
-}
-
-/* Top Indicator Arrow/Caret */
-.admin-dropdown::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  right: 12px;
-  width: 10px;
-  height: 10px;
-  background: rgba(17, 17, 17, 0.85);
-  border-left: 1px solid rgba(212, 168, 83, 0.2);
-  border-top: 1px solid rgba(212, 168, 83, 0.2);
-  transform: rotate(45deg);
-  z-index: -1;
+  transition: all 0.2s var(--ease-out);
+  z-index: 600;
 }
 
 .admin-dropdown.open {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   pointer-events: all;
 }
 
@@ -240,14 +224,11 @@
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
   color: var(--text-secondary);
-  font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-out),
-              background-color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-fast) var(--ease-out);
   text-decoration: none;
   border: none;
   background: none;
@@ -256,9 +237,8 @@
 }
 
 .admin-dropdown__item:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  transform: translateX(4px); /* Interactive micro-shift */
 }
 
 .admin-dropdown__item--danger:hover {
@@ -268,103 +248,8 @@
 
 .admin-dropdown__divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-subtle);
   margin: var(--space-xs) 0;
-}
-
-/* ====== Mobile Sidebar Drawer Admin Panel ====== */
-.navbar__mobile-admin-controls {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  margin-top: var(--space-md);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.navbar__mobile-admin-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.navbar__mobile-admin-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
-  color: var(--bg-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-md);
-  box-shadow: 0 0 15px rgba(212, 168, 83, 0.2);
-}
-
-.navbar__mobile-admin-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.navbar__mobile-admin-name {
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-base);
-}
-
-.navbar__mobile-admin-role {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-}
-
-.navbar__mobile-admin-links {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.navbar__mobile-admin-link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-family: var(--font-display);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  text-decoration: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  transition: all var(--duration-fast) var(--ease-out);
-}
-
-.navbar__mobile-admin-link span {
-  font-size: var(--fs-md);
-}
-
-.navbar__mobile-admin-link:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
-  transform: translateX(4px);
-}
-
-.navbar__mobile-admin-link--danger:hover {
-  background: var(--error-bg);
-  color: var(--error);
 }
 
 /* ====== Admin Mode Banner ====== */
@@ -417,31 +302,7 @@
 
 @media (max-width: 768px) {
   .login-modal__card {
+    margin: var(--space-lg);
     padding: var(--space-xl);
-  }
-}
-
-@media (max-width: 480px) {
-  .login-modal {
-    align-items: flex-start;
-    padding-top: var(--space-4xl);
-  }
-
-  .login-modal__card {
-    padding: var(--space-lg);
-  }
-
-  .login-modal__lockout {
-    padding: var(--space-lg);
-  }
-
-  .navbar__admin-lock,
-  .navbar__admin-badge {
-    margin-left: var(--space-sm);
-  }
-
-  .admin-banner {
-    padding-right: var(--space-3xl);
-    text-align: center;
   }
 }

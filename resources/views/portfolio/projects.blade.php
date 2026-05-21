@@ -9,7 +9,7 @@
 
 @section('content')
   <header class="page-header">
-    <span class="section-label" style="justify-content: center;">Portfolio</span>
+    <span class="section-label justify-center">Portfolio</span>
     <h1 class="page-header__title reveal">My <span class="text-accent">Projects</span></h1>
     <p class="page-header__subtitle reveal stagger-1">A collection of work I've built and contributed to</p>
   </header>
@@ -47,7 +47,7 @@
             </div>
           </article>
         @empty
-          <div class="empty-state" style="grid-column: 1/-1;">
+          <div class="empty-state col-span-full">
             <p class="empty-state__text">No projects yet.</p>
           </div>
         @endforelse

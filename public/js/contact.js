@@ -24,17 +24,28 @@ function initContactForm() {
   const messageField = document.getElementById('contact-message');
   const charCount = document.getElementById('contact-char-count');
   if (messageField&&charCount) messageField.addEventListener('input', () => { charCount.textContent = messageField.value.length; });
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault(); if (!validateContactForm()) return;
     const submitBtn = document.getElementById('contact-submit');
     const submitText = submitBtn.querySelector('.contact-form__submit-text');
+    const name=document.getElementById('contact-name').value;
+    const email=document.getElementById('contact-email-input').value;
+    const subject=document.getElementById('contact-subject').value;
+    const message=document.getElementById('contact-message').value;
     submitBtn.disabled = true; submitText.textContent = 'Sending...';
-    setTimeout(() => {
-      const name=document.getElementById('contact-name').value, email=document.getElementById('contact-email-input').value, subject=document.getElementById('contact-subject').value, message=document.getElementById('contact-message').value;
-      window.location.href = `mailto:${PortfolioData.personal.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
+    try {
+      const resp = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+      if (!resp.ok) throw new Error('Failed to send');
       form.style.display='none'; document.getElementById('contact-success').style.display='block';
-      submitBtn.disabled=false; submitText.textContent='Send Message';
-    }, 800);
+    } catch {
+      submitText.textContent = 'Failed — try again';
+      submitBtn.disabled = false;
+      setTimeout(() => { submitText.textContent = 'Send Message'; }, 3000);
+    }
   });
 }
 

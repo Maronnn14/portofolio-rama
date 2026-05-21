@@ -10,7 +10,7 @@
 
 @section('content')
   <header class="page-header">
-    <span class="section-label" style="justify-content: center;">What I Know</span>
+    <span class="section-label justify-center">What I Know</span>
     <h1 class="page-header__title reveal">Skills & <span class="text-accent">Expertise</span></h1>
     <p class="page-header__subtitle reveal stagger-1">Technologies and tools I use to bring ideas to life</p>
   </header>
@@ -41,7 +41,7 @@
             <span class="skill-card__arrow">→</span>
           </div>
         @empty
-          <div class="empty-state" style="grid-column: 1/-1;">
+          <div class="empty-state col-span-full">
             <p class="empty-state__text">No skills listed yet.</p>
           </div>
         @endforelse

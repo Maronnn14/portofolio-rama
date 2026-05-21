@@ -24,7 +24,7 @@
       <div class="hero__orb hero__orb--2"></div>
     </div>
     <div class="container hero__content">
-      <div class="hero__label section-label" style="margin-bottom: var(--space-xl);">
+      <div class="hero__label section-label mb-8">
         Welcome to my world
       </div>
       <h1 class="hero__title">
@@ -92,7 +92,7 @@
           </div>
         @endforelse
       </div>
-      <div class="reveal" style="margin-top: var(--space-2xl);">
+      <div class="reveal mt-12">
         <a href="{{ url('/about.html') }}#experience" class="btn btn--ghost">
           See Full Experience <span class="btn-arrow">→</span>
         </a>
@@ -104,7 +104,7 @@
   <section class="section section--compact skills-preview" id="skills-preview">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Skills</span>
+        <span class="section-label justify-center">Skills</span>
         <h2 class="section-heading">Tech Stack</h2>
         <p class="section-subheading">Technologies and tools I work with every day</p>
       </div>
@@ -117,12 +117,12 @@
             <span class="skill-preview-item__name">{{ $skill->name }}</span>
           </div>
         @empty
-          <div class="empty-state" style="grid-column: 1/-1;">
+          <div class="empty-state col-span-full">
             <p class="empty-state__text">No skills listed yet.</p>
           </div>
         @endforelse
       </div>
-      <div class="reveal text-center" style="margin-top: var(--space-2xl);">
+      <div class="reveal text-center mt-12">
         <a href="{{ url('/skills.html') }}" class="btn btn--ghost">
           View All Skills <span class="btn-arrow">→</span>
         </a>
@@ -157,14 +157,14 @@
             </div>
           </a>
         @empty
-          <div class="empty-state" style="grid-column: 1/-1;">
+          <div class="empty-state col-span-full">
             <p class="empty-state__text">No featured projects yet.</p>
           </div>
         @endforelse
       </div>
-      <div class="reveal" style="margin-top: var(--space-2xl);">
-        <a href="{{ url('/projects.html') }}" class="btn btn--ghost">
-          See All Projects <span class="btn-arrow">→</span>
+      <div class="reveal mt-12">
+        <a href="{{ url('/skills.html') }}" class="btn btn--ghost">
+          View All Skills <span class="btn-arrow">→</span>
         </a>
       </div>
     </div>
@@ -173,9 +173,9 @@
   <!-- ====== CONTACT CTA ====== -->
   <section class="section contact-cta" id="contact-cta">
     <div class="contact-cta__bg"></div>
-    <div class="container text-center" style="position: relative; z-index: 1;">
+    <div class="container text-center relative z-10">
       <div class="reveal">
-        <span class="section-label" style="justify-content: center;">Let's Connect</span>
+        <span class="section-label justify-center">Let's Connect</span>
         <h2 class="contact-cta__heading">Let's Work <span class="text-accent">Together</span></h2>
         <p class="contact-cta__text">
           Have a project in mind or want to collaborate? I'd love to hear from you.
@@ -192,7 +192,7 @@
   <section class="section message-board" id="message-board">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Guestbook</span>
+        <span class="section-label justify-center">Guestbook</span>
         <h2 class="section-heading">Leave a <span class="text-accent">Message</span></h2>
         <p class="section-subheading">Share your thoughts — messages are public and visible to all visitors</p>
       </div>
@@ -200,11 +200,11 @@
       <div class="mb-form-wrapper reveal" id="mb-form-wrapper">
         <form class="mb-form" id="mb-form">
           <div class="mb-form__row">
-            <div class="form-group" style="flex: 1;">
+            <div class="form-group flex-1">
               <label for="mb-name" class="form-label">Your Name *</label>
               <input type="text" id="mb-name" class="form-input" placeholder="Enter your name" required maxlength="50" />
             </div>
-            <div class="form-group" style="flex: 0 0 auto;">
+            <div class="form-group flex-none">
               <label class="form-label">Rating (optional)</label>
               <div class="star-rating" id="mb-star-input">
                 <span class="star-rating__star" data-rating="1">★</span>
@@ -225,14 +225,14 @@
       </div>
 
       <div class="mb-messages" id="mb-messages">
-        <div class="empty-state" style="grid-column: 1 / -1;">
+        <div class="empty-state col-span-full">
           <div class="empty-state__icon">💬</div>
           <h3 class="empty-state__title">No messages yet</h3>
           <p class="empty-state__text">Be the first to leave a message!</p>
         </div>
       </div>
 
-      <div class="mb-load-more text-center" id="mb-load-more" style="display: none;">
+      <div class="mb-load-more text-center hidden" id="mb-load-more">
         <button class="btn btn--secondary" id="mb-load-more-btn">Load More Messages</button>
       </div>
     </div>
@@ -242,12 +242,12 @@
   <section class="section gallery-section" id="gallery">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Gallery</span>
+        <span class="section-label justify-center">Gallery</span>
         <h2 class="section-heading">Moments & <span class="text-accent">Memories</span></h2>
       </div>
       <div class="gallery-grid" id="gallery-grid">
         @forelse($gallery as $img)
-          <div class="gallery-item reveal stagger-{{ min(($loop->index % 8) + 1, 8) }}" data-lightbox="{{ $img->url }}" style="opacity: 0;">
+          <div class="gallery-item reveal stagger-{{ min(($loop->index % 8) + 1, 8) }}" data-lightbox="{{ $img->url }}">
             <img src="{{ $img->url }}" alt="{{ $img->alt }}" loading="lazy" />
           </div>
         @empty

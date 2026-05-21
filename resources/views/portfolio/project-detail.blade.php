@@ -45,7 +45,7 @@
                 <a href="{{ $project->source_url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">Source Code</a>
               @endif
               @if((!$project->live_url || $project->live_url === '#') && (!$project->source_url || $project->source_url === '#'))
-                <span class="tag" style="opacity:0.6">Links coming soon</span>
+                <span class="tag opacity-60">Links coming soon</span>
               @endif
             </div>
           </div>

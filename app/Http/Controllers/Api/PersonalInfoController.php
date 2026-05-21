@@ -16,7 +16,8 @@ class PersonalInfoController extends Controller
 
     private const ALLOWED_KEYS = [
         'name', 'nickname', 'fullName', 'role', 'tagline', 'shortBio', 'fullBio',
-        'email', 'location', 'profileImage', 'github',
+        'email', 'location', 'profileImage', 'homeProfileImage', 'aboutProfileImage',
+        'github',
     ];
 
     public function update(Request $request): JsonResponse
@@ -32,6 +33,8 @@ class PersonalInfoController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'profileImage' => ['nullable', 'string', 'max:500'],
+            'homeProfileImage' => ['nullable', 'string', 'max:500'],
+            'aboutProfileImage' => ['nullable', 'string', 'max:500'],
             'github' => ['nullable', 'string', 'max:255'],
         ]);
 

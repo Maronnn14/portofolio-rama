@@ -13,7 +13,7 @@
 
 @section('content')
   <header class="page-header">
-    <span class="section-label" style="justify-content: center;">Get to Know Me</span>
+    <span class="section-label justify-center">Get to Know Me</span>
     <h1 class="page-header__title reveal">About <span class="text-accent">Me</span></h1>
     <p class="page-header__subtitle reveal stagger-1">The story behind the code</p>
   </header>
@@ -62,7 +62,7 @@
   <section class="section experience-section" id="experience">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Career Path</span>
+        <span class="section-label justify-center">Career Path</span>
         <h2 class="section-heading">Experience & <span class="text-accent">Education</span></h2>
         <p class="section-subheading">My professional journey and growth over the years</p>
       </div>
@@ -77,7 +77,7 @@
               <h4 class="timeline__company">{{ $exp->company }}</h4>
               <p class="timeline__desc">{{ $exp->description }}</p>
               @if(!empty($exp->tech))
-                <div class="tags-list" style="margin-top: var(--space-md);">
+                <div class="tags-list mt-4">
                   @foreach($exp->tech as $tech)
                     <span class="tag">{{ $tech }}</span>
                   @endforeach
@@ -100,7 +100,7 @@
   <section class="section interests-section">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Beyond Code</span>
+        <span class="section-label justify-center">Beyond Code</span>
         <h2 class="section-heading">Interests & <span class="text-accent">Hobbies</span></h2>
       </div>
       <div class="interests-grid" id="interests-grid">
@@ -111,7 +111,7 @@
             <p class="interest-card__desc">{{ $int->description }}</p>
           </div>
         @empty
-          <div class="empty-state" style="grid-column: 1/-1;">
+          <div class="empty-state col-span-full">
             <p class="empty-state__text">No interests listed yet.</p>
           </div>
         @endforelse

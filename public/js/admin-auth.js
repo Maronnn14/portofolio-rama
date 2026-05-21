@@ -254,13 +254,21 @@ function onLoginSuccess() {
 function updateNavbarAuthState() {
   const lockIcon = document.getElementById('navbar-admin-lock');
   const adminBadge = document.getElementById('navbar-admin-badge');
+  const mobileLoginBtn = document.getElementById('mobile-admin-login-btn');
+  const mobileAdminControls = document.getElementById('mobile-admin-controls');
+  const mobileAdminName = document.getElementById('mobile-admin-name');
 
   if (AdminAuth.isAuthenticated()) {
     if (lockIcon) lockIcon.style.display = 'none';
     if (adminBadge) adminBadge.style.display = 'flex';
+    if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+    if (mobileAdminControls) mobileAdminControls.style.display = 'block';
+    if (mobileAdminName) mobileAdminName.textContent = AdminAuth.getUsername();
   } else {
     if (lockIcon) lockIcon.style.display = 'flex';
     if (adminBadge) adminBadge.style.display = 'none';
+    if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
+    if (mobileAdminControls) mobileAdminControls.style.display = 'none';
   }
 }
 
@@ -290,9 +298,30 @@ function openLoginModal() {
 }
 
 /* ---- Admin Dropdown Toggle ---- */
-function toggleAdminDropdown() {
+function toggleAdminDropdown(event) {
+  if (event) {
+    event.stopPropagation();
+  }
   const dropdown = document.getElementById('admin-dropdown');
-  if (dropdown) dropdown.classList.toggle('open');
+  const badge = document.getElementById('navbar-admin-badge');
+  if (!dropdown) return;
+
+  const isOpen = dropdown.classList.contains('open');
+
+  if (isOpen) {
+    dropdown.classList.remove('open');
+  } else {
+    dropdown.classList.add('open');
+
+    // Smooth click outside listener
+    const closeOnOutsideClick = (e) => {
+      if (badge && dropdown && !badge.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+        document.removeEventListener('click', closeOnOutsideClick);
+      }
+    };
+    document.addEventListener('click', closeOnOutsideClick);
+  }
 }
 
 function adminLogout() {

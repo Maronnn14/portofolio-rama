@@ -11,7 +11,7 @@ class ExperienceController extends Controller
 {
     public function index(): JsonResponse
     {
-        $experiences = Experience::orderBy('sort_order')->orderByDesc('created_at')->paginate(50);
+        $experiences = Experience::orderBy('sort_order')->orderByDesc('created_at')->get();
 
         return response()->json($experiences);
     }

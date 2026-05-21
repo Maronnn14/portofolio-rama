@@ -11,7 +11,7 @@ class SocialController extends Controller
 {
     public function index(): JsonResponse
     {
-        $socials = Social::orderBy('sort_order')->paginate(50);
+        $socials = Social::orderBy('sort_order')->get();
 
         return response()->json($socials);
     }

@@ -35,8 +35,12 @@ Route::get('gallery/{gallery}', [GalleryController::class, 'show']);
 Route::get('personal-info', [PersonalInfoController::class, 'index']);
 Route::get('settings', [SiteSettingController::class, 'index']);
 
-// Messages — public store for visitors
+// Messages — public read/write (session_token for ownership)
+Route::get('messages', [MessageController::class, 'index']);
 Route::post('messages', [MessageController::class, 'store']);
+Route::put('messages/{id}', [MessageController::class, 'update']);
+Route::delete('messages/bulk', [MessageController::class, 'bulkDestroy'])->middleware(['auth:sanctum', 'ability:admin:write']);
+Route::delete('messages/{id}', [MessageController::class, 'destroy']);
 
 // Auth (rate-limited)
 Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
@@ -71,12 +75,6 @@ Route::middleware(['auth:sanctum', 'ability:admin:write', 'throttle:120,1'])->gr
     Route::put('interests/{interest}', [InterestController::class, 'update']);
     Route::delete('interests/{interest}', [InterestController::class, 'destroy']);
     Route::put('interests-bulk', [InterestController::class, 'bulkUpdate']);
-
-    // Messages
-    Route::get('messages', [MessageController::class, 'index']);
-    Route::put('messages/{id}', [MessageController::class, 'update']);
-    Route::delete('messages/bulk', [MessageController::class, 'bulkDestroy']);
-    Route::delete('messages/{id}', [MessageController::class, 'destroy']);
 
     // Gallery
     Route::post('gallery', [GalleryController::class, 'store']);

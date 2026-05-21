@@ -11,10 +11,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof renderLoginModal === 'function') {
     document.body.insertAdjacentHTML('beforeend', renderLoginModal());
     initLoginModal();
+    // Restore auth state from stored token
+    if (typeof AdminAuth !== 'undefined') {
+      await AdminAuth.init();
+    }
     updateNavbarAuthState();
     if (typeof AdminAuth !== 'undefined' && AdminAuth.isAuthenticated()) {
       showAdminBanner();
-      AdminAuth.startInactivityTimer();
     }
   }
 });
@@ -157,19 +160,49 @@ function renderStars(rating, readonly = true) {
 (function bindHamburger() {
   document.addEventListener('DOMContentLoaded', () => {
     const hamburger = document.querySelector('.navbar__hamburger');
-    const mobileMenu = document.querySelector('.navbar__mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const closeBtn = document.getElementById('mobile-close-btn');
+
+    function openMobile() {
+      hamburger?.classList.add('open');
+      mobileMenu?.classList.add('open');
+      mobileOverlay?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobile() {
+      hamburger?.classList.remove('open');
+      mobileMenu?.classList.remove('open');
+      mobileOverlay?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     if (hamburger && mobileMenu) {
       hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('open');
-        mobileMenu.classList.toggle('open');
-        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        if (mobileMenu.classList.contains('open')) {
+          closeMobile();
+        } else {
+          openMobile();
+        }
       });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeMobile);
+      }
+
+      if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', closeMobile);
+      }
+
       document.querySelectorAll('.navbar__mobile-link').forEach(link => {
-        link.addEventListener('click', () => {
-          hamburger.classList.remove('open');
-          mobileMenu.classList.remove('open');
-          document.body.style.overflow = '';
-        });
+        link.addEventListener('click', closeMobile);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu?.classList.contains('open')) {
+          closeMobile();
+        }
       });
     }
     setActiveNavLink();

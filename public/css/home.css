@@ -102,6 +102,19 @@
   overflow-wrap: anywhere;
 }
 
+.hero__name-full {
+  display: block;
+  font-size: calc(var(--fs-hero) * 0.45);
+  font-weight: var(--fw-normal);
+  color: var(--text);
+  letter-spacing: var(--ls-normal);
+  margin-top: var(--space-xs);
+}
+
+#hero-name-first {
+  color: var(--accent);
+}
+
 .hero__role {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
@@ -611,6 +624,10 @@
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
 
+  .hero__name-full {
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+  }
+
   .about-preview__grid {
     grid-template-columns: 1fr;
     text-align: center;
@@ -680,6 +697,10 @@
 
   .hero__name {
     font-size: clamp(2.25rem, 16vw, 3.25rem);
+  }
+
+  .hero__name-full {
+    font-size: clamp(0.95rem, 5vw, 1.3rem);
   }
 
   .hero__tagline {

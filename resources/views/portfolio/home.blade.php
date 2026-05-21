@@ -1,8 +1,6 @@
 @php
   $homeFullName = $personal['fullName'] ?? $personal['name'] ?? 'Rama Adin';
-  $homeNameParts = explode(' ', $homeFullName, 2);
-  $homeFirstName = $personal['name'] ?? $homeNameParts[0] ?? 'Rama';
-  $homeAccentName = $homeNameParts[1] ?? '';
+  $homeNickname = $personal['nickname'] ?? $personal['name'] ?? 'Rama';
   $homeRole = $personal['role'] ?? 'Full Stack Developer';
   $homeTagline = $personal['tagline'] ?? 'Crafting digital experiences with code & creativity';
   $homeShortBio = $personal['shortBio'] ?? $personal['bio'] ?? 'A passionate developer who transforms ideas into elegant, functional digital solutions. With a keen eye for detail and a love for clean code, I build applications that make a difference.';
@@ -31,7 +29,7 @@
       </div>
       <h1 class="hero__title">
         <span class="hero__greeting" id="hero-greeting"></span>
-        <span class="hero__name" id="hero-name"><span id="hero-name-first">{{ $homeFirstName }}</span> <span class="text-accent" id="hero-name-accent">{{ $homeAccentName }}</span></span>
+        <span class="hero__name" id="hero-name"><span id="hero-name-first">{{ $homeNickname }}</span> <span id="hero-name-full" class="hero__name-full">{{ $homeFullName }}</span></span>
       </h1>
       <p class="hero__role" id="hero-role"></p>
       <p class="hero__tagline" id="hero-tagline">{{ $homeTagline }}</p>
@@ -61,7 +59,7 @@
         </div>
           <div class="about-preview__content">
           <span class="section-label">About Me</span>
-          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">{{ $homeFirstName }}</span></h2>
+          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">{{ $homeNickname }}</span></h2>
           <p class="about-preview__bio" id="home-about-bio">{{ $homeShortBio }}</p>
           <a href="{{ url('/about.html') }}" class="btn btn--ghost">
             Read More <span class="btn-arrow">→</span>

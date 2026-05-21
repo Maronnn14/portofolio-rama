@@ -107,7 +107,7 @@ async function saveEditMessage(id) {
   if (!textarea) return;
   const newText = textarea.value.trim();
   if (!newText) return;
-  try { await API.messages.update(id, { message: newText }); await loadAndRenderMessages(); showToast('Message updated! ✏️', 'success'); }
+  try { await API.messages.update(id, { message: newText, session_token: getSessionToken() }); await loadAndRenderMessages(); showToast('Message updated! ✏️', 'success'); }
   catch (err) { showToast(err.message || 'Failed to update', 'error'); }
 }
 
@@ -123,7 +123,7 @@ async function deleteMessage(id) {
   const card = document.getElementById(`mb-card-${id}`);
   if (card) { card.classList.add('deleting'); }
   setTimeout(async () => {
-    try { await API.messages.delete(id); await loadAndRenderMessages(); showToast('Message deleted', 'success'); }
+    try { await API.messages.delete(id, { session_token: getSessionToken() }); await loadAndRenderMessages(); showToast('Message deleted', 'success'); }
     catch (err) { showToast(err.message || 'Failed to delete', 'error'); }
   }, 300);
 }

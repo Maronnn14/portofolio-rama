@@ -27,7 +27,7 @@ async function renderProfile(container) {
         </div>
       </div>
       <div class="admin-section-card"><h3 class="admin-section-card__title" style="margin-bottom:var(--space-xl);">Personal Info</h3>
-        <div class="admin-form__row"><div class="form-group"><label class="form-label">Display Name</label><input type="text" class="form-input" id="profile-name" value="${AdminUI.escapeHtml(p.fullName || '')}" /></div><div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="profile-firstname" value="${AdminUI.escapeHtml(p.name || '')}" /></div></div>
+        <div class="admin-form__row"><div class="form-group"><label class="form-label">Display Name</label><input type="text" class="form-input" id="profile-name" value="${AdminUI.escapeHtml(p.fullName || '')}" /></div><div class="form-group"><label class="form-label">Nickname / Panggilan</label><input type="text" class="form-input" id="profile-firstname" value="${AdminUI.escapeHtml(p.nickname || p.name || '')}" /></div></div>
         <div class="form-group"><label class="form-label">Role / Title</label><input type="text" class="form-input" id="profile-role" value="${AdminUI.escapeHtml(p.role || '')}" /></div>
         <div class="form-group"><label class="form-label">Tagline</label><input type="text" class="form-input" id="profile-tagline" value="${AdminUI.escapeHtml(p.tagline || '')}" /></div>
         <div class="form-group"><label class="form-label">Short Bio</label><textarea class="form-textarea" id="profile-bio" maxlength="300" rows="3">${AdminUI.escapeHtml(p.shortBio || p.bio || '')}</textarea><p class="form-hint"><span id="profile-bio-count">${(p.shortBio || p.bio || '').length}</span> / 300</p></div>
@@ -77,6 +77,7 @@ function removeInterest(idx) {
 
 async function saveProfile() {
   const personalData = {
+    nickname: document.getElementById('profile-firstname').value.trim(),
     name: document.getElementById('profile-firstname').value.trim(),
     fullName: document.getElementById('profile-name').value.trim(),
     role: document.getElementById('profile-role').value.trim(),

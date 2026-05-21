@@ -31,6 +31,7 @@ class PortfolioSeeder extends Seeder
     {
         $info = [
             'name' => 'Rama',
+            'nickname' => 'Rama',
             'fullName' => 'Rama Adin',
             'role' => 'Full Stack Developer',
             'tagline' => 'Crafting digital experiences with code & creativity',

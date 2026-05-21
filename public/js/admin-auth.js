@@ -56,6 +56,7 @@ const AdminAuth = {
 
       this._token = data.token;
       sessionStorage.setItem('portfolio_sanctum_token', data.token);
+      localStorage.setItem('portfolio_last_login', Date.now().toString());
       this._storeSession(data.user);
       return { success: true };
     } catch (err) {
@@ -78,8 +79,10 @@ const AdminAuth = {
     sessionStorage.removeItem('portfolio_admin_user');
   },
 
-  /* ---- Check if authenticated (fast, no server call) ---- */
+  /* ---- Check if authenticated ---- */
   isAuthenticated() {
+    if (this._token) return true;
+    this._token = sessionStorage.getItem('portfolio_sanctum_token');
     return !!this._token;
   },
 
@@ -101,6 +104,28 @@ const AdminAuth = {
   /* ---- Private helpers ---- */
   _storeSession(user) {
     sessionStorage.setItem('portfolio_admin_user', JSON.stringify(user));
+  },
+
+  /* ---- Last Login (from localStorage for display) ---- */
+  getLastLogin() {
+    const ts = localStorage.getItem('portfolio_last_login');
+    return ts ? parseInt(ts) : null;
+  },
+
+  /* ---- Activity Log (local for display only) ---- */
+  logAction(type, itemName) {
+    try {
+      const log = JSON.parse(localStorage.getItem('portfolio_activity_log') || '[]');
+      log.unshift({ type, item: itemName, timestamp: Date.now(), user: this.getUsername() });
+      const trimmed = log.slice(0, 50);
+      localStorage.setItem('portfolio_activity_log', JSON.stringify(trimmed));
+    } catch { /* ignore */ }
+  },
+
+  getActivityLog() {
+    try {
+      return JSON.parse(localStorage.getItem('portfolio_activity_log') || '[]');
+    } catch { return []; }
   },
 
   /* ---- Auth header helper for fetch calls ---- */

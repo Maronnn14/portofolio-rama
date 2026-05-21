@@ -11,7 +11,7 @@ class ProjectController extends Controller
 {
     public function index(): JsonResponse
     {
-        $projects = Project::orderBy('sort_order')->orderByDesc('created_at')->paginate(50);
+        $projects = Project::orderBy('sort_order')->orderByDesc('created_at')->get();
 
         return response()->json($projects);
     }

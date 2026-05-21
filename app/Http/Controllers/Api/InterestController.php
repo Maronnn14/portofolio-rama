@@ -11,7 +11,7 @@ class InterestController extends Controller
 {
     public function index(): JsonResponse
     {
-        $interests = Interest::orderBy('sort_order')->paginate(50);
+        $interests = Interest::orderBy('sort_order')->get();
 
         return response()->json($interests);
     }

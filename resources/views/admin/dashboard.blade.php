@@ -56,7 +56,7 @@
       </a>
     </nav>
     <div class="admin-sidebar__footer">
-      <button class="admin-nav__item admin-nav__item--danger" onclick="AdminAuth.logout(); window.location.href='index.html';">
+      <button class="admin-nav__item admin-nav__item--danger" onclick="AdminAuth.logout().then(() => window.location.href='index.html');">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         <span>Logout</span>
       </button>
@@ -100,20 +100,20 @@
 @push('scripts')
 <script>
     // Route guard: redirect if not authenticated
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!AdminAuth.isAuthenticated()) {
+    document.addEventListener('DOMContentLoaded', async () => {
+      const authed = await AdminAuth.init();
+      if (!authed) {
         window.location.href = 'index.html';
         return;
       }
-      AdminAuth.startInactivityTimer();
       AdminRouter.init();
 
       // Set username
       const usernameEl = document.getElementById('admin-username');
       const avatarEl = document.getElementById('admin-avatar');
-      const username = AdminAuth.getUsername();
-      if (usernameEl) usernameEl.textContent = username;
-      if (avatarEl) avatarEl.textContent = username.charAt(0).toUpperCase();
+      const user = AdminAuth.getUser();
+      if (usernameEl) usernameEl.textContent = user.name || 'Admin';
+      if (avatarEl) avatarEl.textContent = (user.name || 'A').charAt(0).toUpperCase();
 
       // Sidebar collapse
       const sidebar = document.getElementById('admin-sidebar');

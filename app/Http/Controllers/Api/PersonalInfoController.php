@@ -15,7 +15,7 @@ class PersonalInfoController extends Controller
     }
 
     private const ALLOWED_KEYS = [
-        'name', 'fullName', 'role', 'tagline', 'shortBio', 'fullBio',
+        'name', 'nickname', 'fullName', 'role', 'tagline', 'shortBio', 'fullBio',
         'email', 'location', 'profileImage', 'github',
     ];
 
@@ -23,6 +23,7 @@ class PersonalInfoController extends Controller
     {
         $data = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
+            'nickname' => ['nullable', 'string', 'max:255'],
             'fullName' => ['nullable', 'string', 'max:255'],
             'role' => ['nullable', 'string', 'max:255'],
             'tagline' => ['nullable', 'string', 'max:500'],

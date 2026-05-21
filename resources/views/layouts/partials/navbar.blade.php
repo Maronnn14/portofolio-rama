@@ -14,12 +14,24 @@
       <button class="navbar__hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </div>
-  <div class="navbar__mobile-menu" role="dialog" aria-label="Mobile navigation">
-    <a href="{{ url('/') }}" class="navbar__mobile-link">Home</a>
-    <a href="{{ url('/about.html') }}" class="navbar__mobile-link">About</a>
-    <a href="{{ url('/skills.html') }}" class="navbar__mobile-link">Skills</a>
-    <a href="{{ url('/projects.html') }}" class="navbar__mobile-link">Projects</a>
-    <a href="{{ url('/contact.html') }}" class="navbar__mobile-link">Contact</a>
-    <button class="navbar__mobile-link" style="opacity:0.4;border:none;background:none;cursor:pointer;" onclick="openLoginModal()" id="navbar-mobile-admin">🔒 Admin</button>
+  <div class="navbar__mobile-overlay" id="mobile-overlay"></div>
+  <div class="navbar__mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <div class="navbar__mobile-header">
+      <span class="navbar__mobile-logo">R<span>.</span></span>
+      <button class="navbar__mobile-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav class="navbar__mobile-nav">
+      <a href="{{ url('/') }}" class="navbar__mobile-link{{ request()->is('/') || request()->is('index.html') ? ' active' : '' }}">Home</a>
+      <a href="{{ url('/about.html') }}" class="navbar__mobile-link{{ request()->is('about.html') ? ' active' : '' }}">About</a>
+      <a href="{{ url('/skills.html') }}" class="navbar__mobile-link{{ request()->is('skills.html') ? ' active' : '' }}">Skills</a>
+      <a href="{{ url('/projects.html') }}" class="navbar__mobile-link{{ request()->is('projects.html') || request()->is('project-detail.html') ? ' active' : '' }}">Projects</a>
+      <a href="{{ url('/contact.html') }}" class="navbar__mobile-link{{ request()->is('contact.html') ? ' active' : '' }}">Contact</a>
+    </nav>
+    <div class="navbar__mobile-footer">
+      <button class="navbar__mobile-admin-btn" onclick="openLoginModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Admin Login
+      </button>
+    </div>
   </div>
 </nav>

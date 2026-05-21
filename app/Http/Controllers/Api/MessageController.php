@@ -6,15 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\PortfolioMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class MessageController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $messages = PortfolioMessage::orderByDesc('pinned')
-            ->orderByDesc('posted_at_ms')
-            ->paginate(50)
-            ->through(fn (PortfolioMessage $m) => $m->toFrontendArray());
+        $query = PortfolioMessage::orderByDesc('pinned')
+            ->orderByDesc('posted_at_ms');
+
+        // Public visitors see only visible messages; admins see all
+        if (!$this->resolveAdminUser($request)) {
+            $query->where('hidden', false);
+        }
+
+        $messages = $query->get()
+            ->map(fn (PortfolioMessage $m) => $m->toFrontendArray());
 
         return response()->json($messages);
     }
@@ -47,24 +54,38 @@ class MessageController extends Controller
     {
         $msg = PortfolioMessage::where('message_id', $id)->firstOrFail();
 
-        $validated = $request->validate([
+        $isAdmin = (bool) $this->resolveAdminUser($request);
+
+        if (!$isAdmin) {
+            $sessionToken = $request->input('session_token');
+            if (!$sessionToken || $sessionToken !== $msg->session_token) {
+                return response()->json(['message' => 'You can only edit your own messages.'], 403);
+            }
+        }
+
+        $rules = [
             'message' => ['sometimes', 'string', 'max:1000'],
-            'hidden' => ['sometimes', 'boolean'],
-            'flagged' => ['sometimes', 'boolean'],
-            'pinned' => ['sometimes', 'boolean'],
-        ]);
+        ];
+
+        if ($isAdmin) {
+            $rules['hidden'] = ['sometimes', 'boolean'];
+            $rules['flagged'] = ['sometimes', 'boolean'];
+            $rules['pinned'] = ['sometimes', 'boolean'];
+        }
+
+        $validated = $request->validate($rules);
 
         if (isset($validated['message'])) {
             $msg->message = $validated['message'];
         }
         if (isset($validated['hidden'])) {
-            $msg->hidden = $validated['hidden'];
+            $msg->setAttribute('hidden', $validated['hidden']);
         }
         if (isset($validated['flagged'])) {
-            $msg->flagged = $validated['flagged'];
+            $msg->setAttribute('flagged', $validated['flagged']);
         }
         if (isset($validated['pinned'])) {
-            $msg->pinned = $validated['pinned'];
+            $msg->setAttribute('pinned', $validated['pinned']);
         }
 
         $msg->save();
@@ -72,17 +93,24 @@ class MessageController extends Controller
         return response()->json($msg->toFrontendArray());
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Request $request, string $id): JsonResponse
     {
         $msg = PortfolioMessage::where('message_id', $id)->firstOrFail();
+
+        $isAdmin = (bool) $this->resolveAdminUser($request);
+
+        if (!$isAdmin) {
+            $sessionToken = $request->input('session_token');
+            if (!$sessionToken || $sessionToken !== $msg->session_token) {
+                return response()->json(['message' => 'You can only delete your own messages.'], 403);
+            }
+        }
+
         $msg->delete();
 
         return response()->json(['message' => 'Message deleted']);
     }
 
-    /**
-     * Bulk delete messages by IDs.
-     */
     public function bulkDestroy(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -93,5 +121,24 @@ class MessageController extends Controller
         PortfolioMessage::whereIn('message_id', $validated['ids'])->delete();
 
         return response()->json(['message' => count($validated['ids']) . ' messages deleted']);
+    }
+
+    private function resolveAdminUser(Request $request)
+    {
+        if ($request->user()) {
+            return $request->user();
+        }
+
+        $token = $request->bearerToken();
+        if (!$token) {
+            return null;
+        }
+
+        $accessToken = PersonalAccessToken::findToken($token);
+        if ($accessToken && $accessToken->tokenable) {
+            return $accessToken->tokenable;
+        }
+
+        return null;
     }
 }

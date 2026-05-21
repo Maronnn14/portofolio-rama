@@ -43,7 +43,8 @@ const PortfolioData = {
       ]);
 
       this.personal = {
-        name: personal.name || 'Rama',
+        name: personal.nickname || personal.name || 'Rama',
+        nickname: personal.nickname || personal.name || 'Rama',
         fullName: personal.fullName || 'Rama Adin',
         role: personal.role || 'Full Stack Developer',
         tagline: personal.tagline || '',

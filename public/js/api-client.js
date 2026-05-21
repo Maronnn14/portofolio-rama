@@ -125,7 +125,7 @@ const API = {
     list()            { return API.get('/messages'); },
     create(data)      { return API.post('/messages', data); },
     update(id, data)  { return API.put(`/messages/${id}`, data); },
-    delete(id)        { return API.del(`/messages/${id}`); },
+    delete(id, data)  { return API.del(`/messages/${id}`, data); },
     bulkDelete(ids)   { return API.del('/messages/bulk', { ids }); },
   },
 

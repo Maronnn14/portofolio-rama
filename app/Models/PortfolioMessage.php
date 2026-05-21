@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PortfolioMessage extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'message_id',
         'name',
@@ -38,9 +40,9 @@ class PortfolioMessage extends Model
             'rating' => $this->rating,
             'timestamp' => $this->posted_at_ms,
             'sessionToken' => $this->session_token,
-            'hidden' => $this->hidden,
-            'flagged' => $this->flagged,
-            'pinned' => $this->pinned,
+            'hidden' => $this->getAttribute('hidden'),
+            'flagged' => $this->getAttribute('flagged'),
+            'pinned' => $this->getAttribute('pinned'),
         ];
     }
 }

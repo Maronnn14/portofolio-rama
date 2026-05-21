@@ -91,7 +91,7 @@ const PortfolioData = {
       this.interests = interests.map(i => ({
         id: i.id,
         name: i.name,
-        icon: i.icon || '🎯',
+        icon: i.icon || '',
         desc: i.description || '',
       }));
 

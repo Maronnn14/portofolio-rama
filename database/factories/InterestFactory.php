@@ -13,7 +13,14 @@ class InterestFactory extends Factory
     {
         return [
             'name' => 'interest_' . fake()->uuid(),
-            'icon' => fake()->randomElement(['🎮', '📚', '🎵', '🏃', '🎨', '🌐']),
+            'icon' => fake()->randomElement([
+                'https://cdn-icons-png.flaticon.com/128/5968/5968891.png',
+                'https://cdn-icons-png.flaticon.com/128/1042/1042344.png',
+                'https://cdn-icons-png.flaticon.com/128/686/686589.png',
+                'https://cdn-icons-png.flaticon.com/128/2995/2995085.png',
+                'https://cdn-icons-png.flaticon.com/128/2232/2232688.png',
+                'https://cdn-icons-png.flaticon.com/128/2920/2920061.png',
+            ]),
             'description' => fake()->sentence(),
             'sort_order' => fake()->numberBetween(0, 100),
         ];

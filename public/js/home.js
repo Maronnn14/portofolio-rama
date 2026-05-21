@@ -2,9 +2,9 @@
    HOME.JS — Hero animations (SSR data preserved)
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await PortfolioData.load();
+document.addEventListener('DOMContentLoaded', () => {
   initHeroAnimations();
+  PortfolioData.load();
 });
 
 /* ---- Typewriter Effect ---- */
@@ -23,7 +23,5 @@ function initHeroAnimations() {
   const greetingEl = document.getElementById('hero-greeting');
   const roleEl = document.getElementById('hero-role');
   const role = PortfolioData.personal.role || 'Full Stack Developer';
-  if (greetingEl) { setTimeout(() => { typeWriter(greetingEl, "Hi there, I'm", 60, () => { if (roleEl) { typeWriter(roleEl, `> ${role}`, 40); } }); }, 500); }
-  const heroElements = document.querySelectorAll('.hero__label, .hero__title, .hero__tagline, .hero__cta, .hero__scroll-indicator');
-  heroElements.forEach((el, i) => { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; setTimeout(() => { el.style.transition = `opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out)`; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 300 + i * 150); });
+  if (greetingEl) { setTimeout(() => { typeWriter(greetingEl, "Hi there, I'm", 60, () => { if (roleEl) { typeWriter(roleEl, `> ${role}`, 40); } }); }, 400); }
 }

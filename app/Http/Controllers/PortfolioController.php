@@ -19,7 +19,7 @@ class PortfolioController extends Controller
             'skills' => Skill::orderBy('sort_order')->get(),
             'experience' => Experience::orderBy('sort_order')->get(),
             'socials' => Social::where('visible', true)->orderBy('sort_order')->get(),
-            'gallery' => GalleryImage::where('visible', true)->get(),
+            'gallery' => GalleryImage::where('visible', true)->orderBy('sort_order')->orderByDesc('created_at')->get(),
         ]);
     }
 

@@ -14,7 +14,7 @@
 
 @section('content')
   <header class="page-header">
-    <span class="section-label" style="justify-content: center;">Get in Touch</span>
+    <span class="section-label justify-center">Get in Touch</span>
     <h1 class="page-header__title reveal">Let's <span class="text-accent">Connect</span></h1>
     <p class="page-header__subtitle reveal stagger-1">Have a project in mind? I'd love to hear from you.</p>
   </header>
@@ -63,7 +63,7 @@
                   <span class="social-btn__name">{{ $s->platform }}</span>
                 </a>
               @empty
-                <span class="tag" style="opacity:0.6">No social links yet</span>
+                <span class="tag opacity-60">No social links yet</span>
               @endforelse
             </div>
           </div>
@@ -112,7 +112,7 @@
   <section class="section github-section">
     <div class="container">
       <div class="section-header section-header--center reveal">
-        <span class="section-label" style="justify-content: center;">Open Source</span>
+        <span class="section-label justify-center">Open Source</span>
         <h2 class="section-heading">GitHub <span class="text-accent">Activity</span></h2>
       </div>
       <div class="github-profile reveal stagger-1" id="github-profile">
@@ -127,7 +127,7 @@
             </div>
           </a>
         @else
-          <span class="tag" style="opacity:0.6">GitHub not configured</span>
+          <span class="tag opacity-60">GitHub not configured</span>
         @endif
       </div>
     </div>

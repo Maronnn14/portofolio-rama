@@ -254,13 +254,21 @@ function onLoginSuccess() {
 function updateNavbarAuthState() {
   const lockIcon = document.getElementById('navbar-admin-lock');
   const adminBadge = document.getElementById('navbar-admin-badge');
+  const mobileLoginBtn = document.getElementById('mobile-admin-login-btn');
+  const mobileAdminControls = document.getElementById('mobile-admin-controls');
+  const mobileAdminName = document.getElementById('mobile-admin-name');
 
   if (AdminAuth.isAuthenticated()) {
     if (lockIcon) lockIcon.style.display = 'none';
     if (adminBadge) adminBadge.style.display = 'flex';
+    if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+    if (mobileAdminControls) mobileAdminControls.style.display = 'block';
+    if (mobileAdminName) mobileAdminName.textContent = AdminAuth.getUsername();
   } else {
     if (lockIcon) lockIcon.style.display = 'flex';
     if (adminBadge) adminBadge.style.display = 'none';
+    if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
+    if (mobileAdminControls) mobileAdminControls.style.display = 'none';
   }
 }
 
@@ -290,9 +298,106 @@ function openLoginModal() {
 }
 
 /* ---- Admin Dropdown Toggle ---- */
-function toggleAdminDropdown() {
+function toggleAdminDropdown(event) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
+  }
   const dropdown = document.getElementById('admin-dropdown');
-  if (dropdown) dropdown.classList.toggle('open');
+  const badge = document.getElementById('navbar-admin-badge');
+  if (!dropdown || !badge) return;
+
+  const isOpen = dropdown.classList.contains('open');
+
+  if (isOpen) {
+    closeAdminDropdown(dropdown, badge);
+  } else {
+    openAdminDropdown(dropdown, badge);
+  }
+}
+
+function openAdminDropdown(dropdown, badge) {
+  // Portal: move dropdown to body so no ancestor (navbar, html, body)
+  // can clip it with overflow, backdrop-filter, or other stacking contexts
+  if (dropdown.parentNode !== document.body) {
+    document.body.appendChild(dropdown);
+  }
+
+  // Recalculate position from trigger on every open — never cached
+  var badgeRect = badge.getBoundingClientRect();
+  var gap = 8;
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var spaceBelow = vh - badgeRect.bottom - gap;
+  var spaceAbove = badgeRect.top - gap;
+
+  // Estimated dropdown height (~3 items + divider + padding)
+  var estimatedHeight = 180;
+
+  // Disable transition during positioning, then force reflow
+  dropdown.style.transition = 'none';
+  void dropdown.offsetHeight;
+
+  // Decide direction: prefer downward, flip upward if not enough space
+  var top, bottom;
+
+  if (spaceBelow >= estimatedHeight || spaceBelow >= spaceAbove) {
+    top = badgeRect.bottom + gap;
+    bottom = 'auto';
+    dropdown.classList.remove('admin-dropdown--upward');
+  } else {
+    top = 'auto';
+    bottom = vh - badgeRect.top + gap;
+    dropdown.classList.add('admin-dropdown--upward');
+  }
+
+  dropdown.style.position = 'fixed';
+  dropdown.style.top = top !== 'auto' ? top + 'px' : '';
+  dropdown.style.bottom = bottom !== 'auto' ? bottom + 'px' : '';
+  dropdown.style.left = 'auto';
+  dropdown.style.right = (vw - badgeRect.right) + 'px';
+
+  // Re-enable transition and force reflow before adding the open class
+  dropdown.style.transition = '';
+  void dropdown.offsetHeight;
+
+  dropdown.classList.add('open');
+
+  // Close on outside click
+  var closeOnOutsideClick = function(e) {
+    if (badge && dropdown && !badge.contains(e.target) && !dropdown.contains(e.target)) {
+      closeAdminDropdown(dropdown, badge);
+    }
+  };
+  dropdown._closeHandler = closeOnOutsideClick;
+
+  // Defer adding the listener to avoid the current click event triggering close
+  setTimeout(function() {
+    document.addEventListener('click', closeOnOutsideClick);
+  }, 10);
+}
+
+function closeAdminDropdown(dropdown, badge) {
+  dropdown.classList.remove('open');
+  dropdown.classList.remove('admin-dropdown--upward');
+
+  // Clear inline positioning
+  dropdown.style.position = '';
+  dropdown.style.top = '';
+  dropdown.style.bottom = '';
+  dropdown.style.left = '';
+  dropdown.style.right = '';
+
+  // Restore to badge in DOM
+  if (badge && dropdown.parentNode === document.body) {
+    badge.appendChild(dropdown);
+  }
+
+  // Remove outside-click listener
+  var handler = dropdown._closeHandler;
+  if (handler) {
+    document.removeEventListener('click', handler);
+    dropdown._closeHandler = null;
+  }
 }
 
 function adminLogout() {
@@ -301,7 +406,14 @@ function adminLogout() {
     const banner = document.getElementById('admin-banner');
     if (banner) banner.remove();
     const dropdown = document.getElementById('admin-dropdown');
-    if (dropdown) dropdown.classList.remove('open');
+    const badge = document.getElementById('navbar-admin-badge');
+    if (dropdown) {
+      if (dropdown.classList.contains('open')) {
+        closeAdminDropdown(dropdown, badge);
+      } else {
+        dropdown.classList.remove('open');
+      }
+    }
   });
 }
 

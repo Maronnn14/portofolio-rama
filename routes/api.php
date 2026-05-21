@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ExperienceController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\InterestController;
@@ -34,6 +35,9 @@ Route::get('gallery', [GalleryController::class, 'index']);
 Route::get('gallery/{gallery}', [GalleryController::class, 'show']);
 Route::get('personal-info', [PersonalInfoController::class, 'index']);
 Route::get('settings', [SiteSettingController::class, 'index']);
+
+// Contact form (public)
+Route::post('contact', [ContactController::class, 'store']);
 
 // Messages — public read/write (session_token for ownership)
 Route::get('messages', [MessageController::class, 'index']);

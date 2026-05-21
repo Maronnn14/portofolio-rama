@@ -11,7 +11,7 @@
       <div class="footer__brand">
         <div class="footer__brand-name">R<span>.</span></div>
         <p class="footer__brand-tagline">{{ $tagline }}</p>
-        <div class="footer__socials" style="margin-top: var(--space-lg);">
+        <div class="footer__socials mt-6">
           @foreach($socials as $s)
             <a href="{{ $s->url }}" class="footer__social-icon" target="_blank" rel="noopener noreferrer" aria-label="{{ $s->platform }}">{!! $iconMap[$s->icon] ?? $s->platform[0] !!}</a>
           @endforeach

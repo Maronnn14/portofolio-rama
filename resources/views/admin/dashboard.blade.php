@@ -124,8 +124,18 @@
         sidebar.classList.toggle('collapsed');
       });
 
-      mobileToggle.addEventListener('click', () => {
+      mobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         sidebar.classList.toggle('mobile-open');
+      });
+
+      // Close mobile sidebar on click outside
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
+          if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+            sidebar.classList.remove('mobile-open');
+          }
+        }
       });
     });
   </script>

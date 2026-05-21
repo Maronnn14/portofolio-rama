@@ -19,7 +19,7 @@ class SkillFactory extends Factory
             'description' => fake()->paragraph(),
             'proficiency' => fake()->numberBetween(0, 100),
             'level' => fake()->randomElement(['Beginner', 'Intermediate', 'Advanced', 'Expert']),
-            'related_projects' => fake()->randomElements([fake()->word(), fake()->word()], fake()->numberBetween(0, 3)),
+            'related_projects' => fake()->randomElements([fake()->word(), fake()->word(), fake()->word()], fake()->numberBetween(0, 3)),
             'gallery' => fake()->randomElements([fake()->imageUrl(), fake()->imageUrl()], fake()->numberBetween(0, 2)),
             'sort_order' => fake()->numberBetween(0, 100),
         ];

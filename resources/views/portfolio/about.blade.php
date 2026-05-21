@@ -106,7 +106,13 @@
       <div class="interests-grid" id="interests-grid">
         @forelse($interests as $int)
           <div class="interest-card reveal stagger-{{ min($loop->iteration, 6) }}">
-            <span class="interest-card__icon">{{ $int->icon ?? '🎯' }}</span>
+            <div class="interest-card__icon-wrapper">
+              @if($int->icon)
+                <img class="interest-card__icon" src="{{ $int->icon }}" alt="{{ $int->name }}" loading="lazy" />
+              @else
+                <span class="interest-card__icon">🎯</span>
+              @endif
+            </div>
             <h3 class="interest-card__name">{{ $int->name }}</h3>
             <p class="interest-card__desc">{{ $int->description }}</p>
           </div>

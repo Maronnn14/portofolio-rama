@@ -52,20 +52,54 @@ async function renderProfile(container) {
   const bioEl = document.getElementById('profile-bio');
   const bioCount = document.getElementById('profile-bio-count');
   if (bioEl && bioCount) { bioEl.addEventListener('input', () => { bioCount.textContent = bioEl.value.length; }); }
+  bindInterestUploads();
   window._homeProfileImage = homeProfileImage;
   window._aboutProfileImage = aboutProfileImage;
   window._profileInterests = interests;
 }
 
+function createInterestThumb(iconUrl) {
+  const id = 'iu_' + Math.random().toString(36).substring(2, 7);
+  const hasImage = !!iconUrl;
+  return `<div class="interest-thumb" id="${id}" title="Click to upload icon">
+    <div class="interest-thumb__preview">
+      ${hasImage
+        ? `<img src="${AdminUI.escapeHtml(iconUrl)}" alt="" />`
+        : `<span class="interest-thumb__placeholder">+</span>`
+      }
+    </div>
+    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+  </div>`;
+}
+
 function renderInterestRow(interest, index) {
-  return `<div style="display:flex;align-items:center;gap:var(--space-md);padding:var(--space-md) 0;border-bottom:1px solid var(--border-subtle);" data-interest-idx="${index}" data-interest-id="${interest.id || ''}"><input type="text" class="form-input" style="width:60px;text-align:center;" value="${interest.icon || '🎯'}" data-field="icon" /><input type="text" class="form-input" style="flex:1;" placeholder="Interest name" value="${AdminUI.escapeHtml(interest.name || '')}" data-field="name" /><input type="text" class="form-input" style="flex:2;" placeholder="Short description" value="${AdminUI.escapeHtml(interest.description || interest.desc || '')}" data-field="desc" /><button class="admin-table__btn admin-table__btn--danger" onclick="removeInterest(${index})">✕</button></div>`;
+  const iconUrl = interest.icon || '';
+  return `<div class="interest-row" data-interest-idx="${index}" data-interest-id="${interest.id || ''}">
+    <button class="interest-row__remove" onclick="removeInterest(${index})" title="Remove interest">✕</button>
+    <div class="interest-row__icon-container">
+      <div data-field="icon" data-url="${AdminUI.escapeHtml(iconUrl)}" id="interest-upload-${index}">
+        ${createInterestThumb(iconUrl)}
+      </div>
+    </div>
+    <div class="interest-row__body">
+      <div style="width:100%;">
+        <label class="form-hint" style="margin-bottom:0.35rem; display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:600; text-align:center;">Hobby Name</label>
+        <input type="text" class="form-input" placeholder="e.g. Photography" value="${AdminUI.escapeHtml(interest.name || '')}" data-field="name" />
+      </div>
+      <div style="width:100%;">
+        <label class="form-hint" style="margin-bottom:0.35rem; display:block; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); font-weight:600; text-align:center;">Short Description</label>
+        <input type="text" class="form-input" placeholder="e.g. Capturing light and shadow" value="${AdminUI.escapeHtml(interest.description || interest.desc || '')}" data-field="desc" />
+      </div>
+    </div>
+  </div>`;
 }
 
 function addInterest() {
   if (!window._profileInterests) window._profileInterests = [];
-  window._profileInterests.push({ icon: '🎯', name: '', description: '' });
+  window._profileInterests.push({ icon: '', name: '', description: '' });
   const list = document.getElementById('interests-list');
   list.innerHTML = window._profileInterests.map((int, i) => renderInterestRow(int, i)).join('');
+  bindInterestUploads();
 }
 
 function removeInterest(idx) {
@@ -73,6 +107,40 @@ function removeInterest(idx) {
   const list = document.getElementById('interests-list');
   list.innerHTML = window._profileInterests.map((int, i) => renderInterestRow(int, i)).join('');
   if (window._profileInterests.length === 0) list.innerHTML = '<p class="admin-empty__text">No interests added yet.</p>';
+  bindInterestUploads();
+}
+
+function bindInterestUploads() {
+  document.querySelectorAll('[id^="interest-upload-"]').forEach(el => {
+    if (el._bound) return;
+    el._bound = true;
+    const thumb = el.querySelector('.interest-thumb');
+    const input = thumb?.querySelector('input[type="file"]');
+    if (!thumb || !input) return;
+
+    thumb.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        AdminUI.toast('Image too large. Max 5MB', 'error');
+        return;
+      }
+      thumb.classList.add('interest-thumb--loading');
+      try {
+        const result = await API.media.uploadImage(file, 'interests');
+        const url = result.url;
+        const preview = thumb.querySelector('.interest-thumb__preview');
+        preview.innerHTML = `<img src="${url}" alt="" />`;
+        thumb.classList.remove('interest-thumb--loading');
+        el.dataset.url = url;
+      } catch (err) {
+        thumb.classList.remove('interest-thumb--loading');
+        AdminUI.toast(err.message || 'Upload failed', 'error');
+      }
+    });
+  });
 }
 
 async function saveProfile() {
@@ -94,7 +162,7 @@ async function saveProfile() {
   const interestRows = document.querySelectorAll('[data-interest-idx]');
   const interestsData = Array.from(interestRows).map(row => ({
     id: row.dataset.interestId ? parseInt(row.dataset.interestId) : null,
-    icon: row.querySelector('[data-field="icon"]').value,
+    icon: row.querySelector('[data-field="icon"]').dataset.url || '',
     name: row.querySelector('[data-field="name"]').value.trim(),
     description: row.querySelector('[data-field="desc"]').value.trim(),
   })).filter(i => i.name);

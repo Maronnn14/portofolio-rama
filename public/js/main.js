@@ -2,7 +2,7 @@
    MAIN.JS — Scroll Reveal, Utilities, Admin
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   applyAppearanceSettings();
   initNavbar();
   initScrollReveal();
@@ -11,14 +11,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof renderLoginModal === 'function') {
     document.body.insertAdjacentHTML('beforeend', renderLoginModal());
     initLoginModal();
-    // Restore auth state from stored token
-    if (typeof AdminAuth !== 'undefined') {
-      await AdminAuth.init();
-    }
-    updateNavbarAuthState();
-    if (typeof AdminAuth !== 'undefined' && AdminAuth.isAuthenticated()) {
-      showAdminBanner();
-    }
+    (async () => {
+      if (typeof AdminAuth !== 'undefined') {
+        await AdminAuth.init();
+      }
+      updateNavbarAuthState();
+      if (typeof AdminAuth !== 'undefined' && AdminAuth.isAuthenticated()) {
+        showAdminBanner();
+      }
+    })();
   }
 });
 
@@ -95,6 +96,28 @@ function setActiveNavLink() {
 function initScrollReveal() {
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
   if (revealElements.length === 0) return;
+
+  // Immediately reveal elements in the viewport (no observer delay)
+  const viewportH = window.innerHeight;
+  revealElements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < viewportH && rect.bottom > 0) {
+      el.style.transition = 'none';
+      el.classList.add('revealed');
+    }
+  });
+
+  // Force reflow so the no-transition reveal takes effect
+  void document.body.offsetHeight;
+
+  // Restore transitions for elements not yet revealed
+  revealElements.forEach(el => {
+    if (!el.classList.contains('revealed')) {
+      el.style.transition = '';
+    }
+  });
+
+  // Observe remaining elements for scroll-based reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -103,7 +126,11 @@ function initScrollReveal() {
       }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-  revealElements.forEach(el => observer.observe(el));
+  revealElements.forEach(el => {
+    if (!el.classList.contains('revealed')) {
+      observer.observe(el);
+    }
+  });
 }
 
 /* ---- Smooth Scroll ---- */

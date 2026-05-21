@@ -1724,30 +1724,71 @@
 
   .interest-card {
     min-width: 0;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
     padding: var(--space-xl);
     text-align: center;
-    transition: all var(--duration-normal) var(--ease-out);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .interest-card:hover {
-    border-color: var(--border-accent);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-glow);
+    border-color: rgba(212, 168, 83, 0.3);
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px var(--accent-glow);
+  }
+
+  .interest-card__icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--space-md);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .interest-card:hover .interest-card__icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
   }
 
   .interest-card__icon {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: var(--space-md);
+    font-size: 2.5rem; /* Standard emoji size when no custom image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .interest-card__icon img,
+  img.interest-card__icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0;
+    border: none;
+    background: transparent;
   }
 
   .interest-card__name {
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
     margin-bottom: var(--space-sm);
+    color: var(--text);
   }
 
   .interest-card__desc {
@@ -3247,6 +3288,202 @@
 
 .admin-table__btn--danger:hover {
   @apply border-red-500/40 text-red-400 bg-red-500/5;
+}
+
+/* ---- Interest Rows (Admin) ---- */
+#interests-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.interest-row {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  gap: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.interest-row:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-glow-strong);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px var(--accent-glow);
+}
+
+.interest-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.interest-row__icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.interest-row__icon-container::before {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.interest-row:hover .interest-row__icon-container::before {
+  opacity: 1;
+}
+
+.interest-row__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.interest-row .form-input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-size: var(--fs-sm);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: var(--text);
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.interest-row .form-input:focus {
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  outline: none;
+}
+
+.interest-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.interest-thumb:hover {
+  border-color: var(--accent);
+  transform: scale(1.08);
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 15px var(--accent-glow-strong);
+}
+
+.interest-thumb::after {
+  content: 'EDIT';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  color: var(--accent-light);
+  border-radius: 50%;
+}
+
+.interest-thumb:hover::after {
+  opacity: 1;
+}
+
+.interest-thumb--loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.interest-thumb__preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.interest-thumb__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.interest-thumb__placeholder {
+  font-size: 1.6rem;
+  color: var(--text-muted);
+  line-height: 1;
+  font-weight: 300;
+  transition: color 0.2s;
+}
+
+.interest-thumb:hover .interest-thumb__placeholder {
+  color: var(--accent);
+}
+
+.interest-thumb input[type="file"] {
+  display: none;
+}
+
+.interest-row__remove {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.interest-row__remove:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  transform: rotate(90deg);
 }
 
 /* ---- Admin Forms ---- */

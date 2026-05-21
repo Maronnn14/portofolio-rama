@@ -16,13 +16,13 @@ class InterestTest extends TestCase
     {
         $interest = Interest::create([
             'name' => 'Photography',
-            'icon' => '📷',
+            'icon' => 'https://cdn-icons-png.flaticon.com/128/1042/1042344.png',
             'description' => 'Capturing moments',
             'sort_order' => 0,
         ]);
 
         $this->assertDatabaseHas('interests', ['name' => 'Photography']);
-        $this->assertEquals('📷', $interest->icon);
+        $this->assertEquals('https://cdn-icons-png.flaticon.com/128/1042/1042344.png', $interest->icon);
     }
 
     #[Test]

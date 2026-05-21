@@ -20,7 +20,7 @@ class InterestController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'icon' => ['nullable', 'string', 'max:50'],
+            'icon' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string', 'max:500'],
             'sort_order' => ['nullable', 'integer'],
         ]);
@@ -39,7 +39,7 @@ class InterestController extends Controller
     {
         $validated = $request->validate([
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'icon' => ['nullable', 'string', 'max:50'],
+            'icon' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string', 'max:500'],
             'sort_order' => ['nullable', 'integer'],
         ]);
@@ -65,7 +65,7 @@ class InterestController extends Controller
             'interests' => ['required', 'array'],
             'interests.*.id' => ['nullable', 'integer'],
             'interests.*.name' => ['required', 'string', 'max:255'],
-            'interests.*.icon' => ['nullable', 'string', 'max:50'],
+            'interests.*.icon' => ['nullable', 'string', 'max:500'],
             'interests.*.description' => ['nullable', 'string', 'max:500'],
         ]);
 
@@ -77,7 +77,7 @@ class InterestController extends Controller
                 if ($interest) {
                     $interest->update([
                         'name' => $data['name'],
-                        'icon' => $data['icon'] ?? '🎯',
+                        'icon' => $data['icon'] ?? null,
                         'description' => $data['description'] ?? '',
                         'sort_order' => $index,
                     ]);
@@ -88,7 +88,7 @@ class InterestController extends Controller
 
             $interest = Interest::create([
                 'name' => $data['name'],
-                'icon' => $data['icon'] ?? '🎯',
+                'icon' => $data['icon'] ?? null,
                 'description' => $data['description'] ?? '',
                 'sort_order' => $index,
             ]);

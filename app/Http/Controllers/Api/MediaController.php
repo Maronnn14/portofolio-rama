@@ -14,7 +14,7 @@ class MediaController extends Controller
     {
         $validated = $request->validate([
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:10240'],
-            'folder' => ['nullable', 'string', Rule::in(['profile', 'gallery', 'projects'])],
+            'folder' => ['nullable', 'string', Rule::in(['profile', 'gallery', 'projects', 'interests'])],
         ]);
 
         $folder = $validated['folder'] ?? 'profile';

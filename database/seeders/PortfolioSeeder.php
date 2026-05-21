@@ -80,12 +80,12 @@ class PortfolioSeeder extends Seeder
     private function seedInterests(): void
     {
         $interests = [
-            ['name' => 'Open Source', 'icon' => '🌐', 'description' => 'Contributing to community-driven software projects'],
-            ['name' => 'Photography', 'icon' => '📷', 'description' => 'Capturing moments through street and landscape photography'],
-            ['name' => 'Gaming', 'icon' => '🎮', 'description' => 'Story-driven RPGs and competitive strategy games'],
-            ['name' => 'Music', 'icon' => '🎵', 'description' => 'Exploring genres from lo-fi beats to progressive rock'],
-            ['name' => 'Reading', 'icon' => '📚', 'description' => 'Tech blogs, sci-fi novels, and design thinking books'],
-            ['name' => 'Fitness', 'icon' => '💪', 'description' => 'Morning runs and calisthenics to stay sharp and focused'],
+            ['name' => 'Open Source', 'icon' => 'https://cdn-icons-png.flaticon.com/128/5968/5968891.png', 'description' => 'Contributing to community-driven software projects'],
+            ['name' => 'Photography', 'icon' => 'https://cdn-icons-png.flaticon.com/128/1042/1042344.png', 'description' => 'Capturing moments through street and landscape photography'],
+            ['name' => 'Gaming', 'icon' => 'https://cdn-icons-png.flaticon.com/128/686/686589.png', 'description' => 'Story-driven RPGs and competitive strategy games'],
+            ['name' => 'Music', 'icon' => 'https://cdn-icons-png.flaticon.com/128/2995/2995085.png', 'description' => 'Exploring genres from lo-fi beats to progressive rock'],
+            ['name' => 'Reading', 'icon' => 'https://cdn-icons-png.flaticon.com/128/2232/2232688.png', 'description' => 'Tech blogs, sci-fi novels, and design thinking books'],
+            ['name' => 'Fitness', 'icon' => 'https://cdn-icons-png.flaticon.com/128/2920/2920061.png', 'description' => 'Morning runs and calisthenics to stay sharp and focused'],
         ];
 
         foreach ($interests as $i => $int) {

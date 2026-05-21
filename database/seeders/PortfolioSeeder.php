@@ -16,6 +16,7 @@ class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->seedAdminUser();
         $this->seedPersonalInfo();
         $this->seedSocials();
         $this->seedExperiences();
@@ -152,6 +153,20 @@ class PortfolioSeeder extends Seeder
         foreach ($images as $i => $img) {
             GalleryImage::create(array_merge($img, ['visible' => true, 'sort_order' => $i]));
         }
+    }
+
+    private function seedAdminUser(): void
+    {
+        \App\Models\User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => bcrypt('admin123'),
+                'password_change_at' => now(),
+                'email_verified_at' => now(),
+            ],
+        );
     }
 
     private function seedMessages(): void

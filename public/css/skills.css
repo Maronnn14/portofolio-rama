@@ -343,4 +343,41 @@
   .skills-grid {
     grid-template-columns: 1fr;
   }
+
+  .skill-card {
+    padding: var(--space-lg);
+  }
+
+  .skill-card__header {
+    align-items: flex-start;
+  }
+
+  .skill-modal {
+    align-items: flex-start;
+    padding-block: var(--space-md);
+  }
+
+  .skill-modal__content {
+    width: calc(100% - (var(--space-md) * 2));
+    max-height: calc(100svh - (var(--space-md) * 2));
+    padding: var(--space-lg);
+  }
+
+  .skill-modal__header {
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding-right: var(--space-2xl);
+  }
+
+  .skill-modal__title {
+    font-size: var(--fs-xl);
+  }
+
+  .skill-modal__gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-modal__project-link {
+    align-items: flex-start;
+  }
 }

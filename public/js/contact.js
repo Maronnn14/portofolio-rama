@@ -1,22 +1,11 @@
 /* ============================================
-   CONTACT.JS — Form, Socials, GitHub Section
+   CONTACT.JS — Form submission only (SSR data)
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
   await PortfolioData.load();
-  renderContactInfo();
-  renderSocials();
-  renderGitHub();
   initContactForm();
 });
-
-function renderContactInfo() {
-  const d = PortfolioData.personal;
-  const emailEl = document.getElementById('contact-email');
-  const locEl = document.getElementById('contact-location');
-  if (emailEl) { emailEl.textContent = d.email; emailEl.href = `mailto:${d.email}`; }
-  if (locEl) locEl.textContent = d.location;
-}
 
 function renderSocials() {
   const grid = document.getElementById('contact-socials-grid'); if (!grid) return;

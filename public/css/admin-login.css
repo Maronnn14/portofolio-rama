@@ -30,8 +30,7 @@
 
 .login-modal__card {
   position: relative;
-  width: 100%;
-  max-width: 420px;
+  width: min(100% - (var(--space-md) * 2), 420px);
   background: var(--bg-secondary);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
@@ -199,7 +198,7 @@
   position: absolute;
   top: calc(100% + var(--space-sm));
   right: 0;
-  min-width: 200px;
+  min-width: min(200px, calc(100vw - (var(--space-md) * 2)));
   background: var(--bg-secondary);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
@@ -302,7 +301,31 @@
 
 @media (max-width: 768px) {
   .login-modal__card {
-    margin: var(--space-lg);
     padding: var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-modal {
+    align-items: flex-start;
+    padding-top: var(--space-4xl);
+  }
+
+  .login-modal__card {
+    padding: var(--space-lg);
+  }
+
+  .login-modal__lockout {
+    padding: var(--space-lg);
+  }
+
+  .navbar__admin-lock,
+  .navbar__admin-badge {
+    margin-left: var(--space-sm);
+  }
+
+  .admin-banner {
+    padding-right: var(--space-3xl);
+    text-align: center;
   }
 }

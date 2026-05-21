@@ -11,7 +11,7 @@ class GalleryController extends Controller
 {
     public function index(): JsonResponse
     {
-        $images = GalleryImage::orderBy('sort_order')->orderByDesc('created_at')->get();
+        $images = GalleryImage::orderBy('sort_order')->orderByDesc('created_at')->paginate(50);
 
         return response()->json($images);
     }

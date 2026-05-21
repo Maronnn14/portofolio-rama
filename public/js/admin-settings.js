@@ -6,19 +6,18 @@ async function renderSettings(container) {
   container.innerHTML = '<div class="admin-loading"><span class="spinner"></span> Loading settings...</div>';
   let settings = {};
   try { settings = await API.settings.get(); } catch { settings = {}; }
-  const account = AdminAuth.getStoredAccount();
 
   container.innerHTML = `
     <div class="admin-section-card"><h3 class="admin-section-card__title" style="margin-bottom:var(--space-xl);">Site Settings</h3><div class="admin-form">
-        <div class="form-group"><label class="form-label">Site Title</label><input type="text" class="form-input" id="settings-title" value="${AdminUI.escapeHtml(settings.siteTitle || 'Rama Adin — Portfolio')}" /></div>
-        <div class="form-group"><label class="form-label">Meta Description (SEO)</label><textarea class="form-textarea" id="settings-meta" rows="2">${AdminUI.escapeHtml(settings.metaDesc || '')}</textarea></div>
+        <div class="form-group"><label class="form-label">Site Title</label><input type="text" class="form-input" id="settings-title" value="${AdminUI.escapeHtml(settings.site_title || 'Rama Adin — Portfolio')}" /></div>
+        <div class="form-group"><label class="form-label">Meta Description (SEO)</label><textarea class="form-textarea" id="settings-meta" rows="2">${AdminUI.escapeHtml(settings.site_description || '')}</textarea></div>
         <button class="btn btn--primary" onclick="saveSiteSettings()">Save Site Settings</button>
       </div></div>
     <div class="admin-section-card"><h3 class="admin-section-card__title" style="margin-bottom:var(--space-xl);">Admin Account</h3><div class="admin-form">
-        <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input" id="settings-username" value="${AdminUI.escapeHtml(account.username || 'admin')}" /></div>
+        <p style="font-size:var(--fs-sm);color:var(--text-secondary);margin-bottom:var(--space-md);">Logged in as <strong>${AdminUI.escapeHtml(AdminAuth.getEmail())}</strong></p>
         <div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="settings-current-pw" placeholder="Enter current password" /></div>
-        <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="settings-new-pw" placeholder="Enter new password" /></div>
-        <button class="btn btn--primary" onclick="saveAdminAccount()">Save Account</button>
+        <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="settings-new-pw" placeholder="Enter new password (min 8 chars)" /></div>
+        <button class="btn btn--primary" onclick="saveAdminAccount()">Change Password</button>
       </div></div>
     <div class="admin-section-card"><h3 class="admin-section-card__title" style="margin-bottom:var(--space-xl);">Data Management</h3>
       <div style="display:flex;flex-wrap:wrap;gap:var(--space-md);">
@@ -26,8 +25,8 @@ async function renderSettings(container) {
         <button class="btn btn--secondary" style="border-color:var(--error);color:var(--error);" onclick="resetAllData()">🔄 Reset to Defaults</button>
       </div></div>
     <div class="admin-section-card"><h3 class="admin-section-card__title" style="margin-bottom:var(--space-xl);">About Dashboard</h3>
-      <p style="font-size:var(--fs-sm);color:var(--text-secondary);margin-bottom:var(--space-sm);"><strong>Version:</strong> 2.0.0 (API-backed)</p>
-      <p style="font-size:var(--fs-sm);color:var(--text-secondary);"><strong>Stack:</strong> Laravel REST API + Vanilla JS Frontend</p>
+      <p style="font-size:var(--fs-sm);color:var(--text-secondary);margin-bottom:var(--space-sm);"><strong>Version:</strong> 2.1.0 (Sanctum Auth)</p>
+      <p style="font-size:var(--fs-sm);color:var(--text-secondary);"><strong>Stack:</strong> Laravel Sanctum REST API + Vanilla JS Frontend</p>
     </div>`;
 }
 
@@ -42,17 +41,27 @@ async function saveSiteSettings() {
 
 async function saveAdminAccount() {
   const currentPw = document.getElementById('settings-current-pw').value;
-  const newUsername = document.getElementById('settings-username').value.trim();
   const newPw = document.getElementById('settings-new-pw').value;
   if (!currentPw) { AdminUI.toast('Enter current password to confirm changes', 'error'); return; }
-  const stored = AdminAuth.getStoredAccount();
-  const targetHash = stored.passwordHash || ADMIN_CONFIG.defaultPasswordHash;
-  const inputHash = await sha256(currentPw);
-  if (inputHash !== targetHash) { AdminUI.toast('Current password is incorrect', 'error'); return; }
-  if (newUsername) await AdminAuth.updateAccount(newUsername, null);
-  if (newPw) await AdminAuth.updateAccount(null, newPw);
-  AdminAuth.logAction('Updated', 'Admin account');
-  AdminUI.toast('Account updated!');
+  if (!newPw) { AdminUI.toast('Enter a new password', 'error'); return; }
+  if (newPw.length < 8) { AdminUI.toast('Password must be at least 8 characters', 'error'); return; }
+  try {
+    const res = await apiFetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ current_password: currentPw, new_password: newPw }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || data.errors?.current_password?.[0] || 'Failed to change password');
+    }
+    const data = await res.json();
+    // Update stored token
+    sessionStorage.setItem('portfolio_sanctum_token', data.token);
+    AdminUI.toast('Password changed! Other sessions logged out.');
+  } catch (err) {
+    AdminUI.toast(err.message || 'Failed to change password', 'error');
+  }
   document.getElementById('settings-current-pw').value = '';
   document.getElementById('settings-new-pw').value = '';
 }

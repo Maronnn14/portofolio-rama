@@ -32,6 +32,14 @@ const API = {
       options.headers['X-CSRF-TOKEN'] = csrfMeta.content;
     }
 
+    // Add Sanctum Bearer token if authenticated
+    if (typeof AdminAuth !== 'undefined' && AdminAuth.isAuthenticated()) {
+      const token = sessionStorage.getItem('portfolio_sanctum_token');
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
     if (data && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
       options.body = JSON.stringify(data);
     }
@@ -63,6 +71,13 @@ const API = {
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
     if (csrfMeta) {
       options.headers['X-CSRF-TOKEN'] = csrfMeta.content;
+    }
+
+    if (typeof AdminAuth !== 'undefined' && AdminAuth.isAuthenticated()) {
+      const token = sessionStorage.getItem('portfolio_sanctum_token');
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
     }
 
     const response = await fetch(url, options);

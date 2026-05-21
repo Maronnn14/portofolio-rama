@@ -11,7 +11,7 @@ class SocialController extends Controller
 {
     public function index(): JsonResponse
     {
-        $socials = Social::orderBy('sort_order')->get();
+        $socials = Social::orderBy('sort_order')->paginate(50);
 
         return response()->json($socials);
     }
@@ -20,7 +20,7 @@ class SocialController extends Controller
     {
         $validated = $request->validate([
             'platform' => ['required', 'string', 'max:100'],
-            'url' => ['required', 'string', 'max:500'],
+            'url' => ['required', 'url', 'max:500'],
             'label' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'string', 'max:100'],
             'visible' => ['nullable', 'boolean'],
@@ -41,7 +41,7 @@ class SocialController extends Controller
     {
         $validated = $request->validate([
             'platform' => ['sometimes', 'required', 'string', 'max:100'],
-            'url' => ['sometimes', 'required', 'string', 'max:500'],
+            'url' => ['sometimes', 'required', 'url', 'max:500'],
             'label' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'string', 'max:100'],
             'visible' => ['nullable', 'boolean'],

@@ -350,6 +350,10 @@
 }
 
 @media (max-width: 480px) {
+  .about-story__grid {
+    gap: var(--space-xl);
+  }
+
   .about-story__image-wrapper {
     max-width: min(280px, calc(100vw - (var(--container-padding) * 2) - 18px));
   }
@@ -361,6 +365,16 @@
 
   .about-story__stats {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+    gap: var(--space-sm);
+  }
+
+  .about-story__stat-number {
+    font-size: var(--fs-xl);
+  }
+
+  .about-story__content p {
+    font-size: var(--fs-base);
+    line-height: var(--lh-normal);
   }
 
   .about-story__quote {
@@ -390,6 +404,10 @@
 
   .timeline__content {
     padding: var(--space-md);
+  }
+
+  .timeline__role {
+    font-size: var(--fs-md);
   }
 
   .interests-grid {

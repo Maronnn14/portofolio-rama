@@ -1,20 +1,19 @@
 /* ============================================
-   PROJECTS.JS — Card Grid & Filtering
+   PROJECTS.JS — Filtering only (SSR grid)
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
   await PortfolioData.load();
-  renderProjectsGrid();
   bindProjectFilters();
 });
 
 let currentFilter = 'all';
+let projectsData = [];
 
 function renderProjectsGrid(filter = 'all') {
   const grid = document.getElementById('projects-grid');
   if (!grid) return;
-  const projects = PortfolioData.projects;
-  const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+  const filtered = filter === 'all' ? projectsData : projectsData.filter(p => p.category === filter);
   grid.innerHTML = filtered.map((project, i) => `
     <article class="project-card reveal stagger-${Math.min(i + 1, 6)}" data-project-id="${project.id}" data-category="${project.category}" onclick="navigateToProject('${project.id}')">
       <div class="project-card__thumbnail">${project.featured ? '<span class="project-card__badge">Featured</span>' : ''}<img src="${project.thumbnail}" alt="${project.name}" loading="lazy" /><div class="project-card__overlay"><span class="project-card__overlay-btn">View Details <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div></div>
@@ -26,6 +25,7 @@ function renderProjectsGrid(filter = 'all') {
 function bindProjectFilters() {
   const tabContainer = document.getElementById('project-filter-tabs');
   if (!tabContainer) return;
+  projectsData = PortfolioData.projects.map(p => ({ ...p }));
   tabContainer.addEventListener('click', (e) => {
     const tab = e.target.closest('.filter-tab');
     if (!tab || tab.classList.contains('active')) return;

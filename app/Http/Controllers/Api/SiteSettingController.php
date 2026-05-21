@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class SiteSettingController extends Controller
 {
+    private const ALLOWED_KEYS = [
+        'site_name', 'site_description', 'meta_keywords', 'meta_author',
+        'google_analytics_id', 'footer_text', 'copyright_text',
+    ];
+
     public function index(): JsonResponse
     {
         $settings = SiteSetting::pluck('value', 'key')->all();
@@ -18,11 +23,18 @@ class SiteSettingController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        foreach ($request->all() as $key => $value) {
-            if (is_string($key)) {
+        $rules = [];
+        foreach (self::ALLOWED_KEYS as $key) {
+            $rules[$key] = ['nullable', 'string', 'max:500'];
+        }
+
+        $validated = $request->validate($rules);
+
+        foreach ($validated as $key => $value) {
+            if (in_array($key, self::ALLOWED_KEYS, true)) {
                 SiteSetting::updateOrCreate(
                     ['key' => $key],
-                    ['value' => $value],
+                    ['value' => $value ?? ''],
                 );
             }
         }

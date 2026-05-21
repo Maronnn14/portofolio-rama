@@ -11,7 +11,7 @@ class ExperienceController extends Controller
 {
     public function index(): JsonResponse
     {
-        $experiences = Experience::orderBy('sort_order')->orderByDesc('created_at')->get();
+        $experiences = Experience::orderBy('sort_order')->orderByDesc('created_at')->paginate(50);
 
         return response()->json($experiences);
     }
@@ -22,8 +22,8 @@ class ExperienceController extends Controller
             'role' => ['required', 'string', 'max:255'],
             'company' => ['required', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['required', 'string', 'max:50'],
-            'end_date' => ['nullable', 'string', 'max:50'],
+            'start_date' => ['required', 'string', 'max:50', 'regex:/^(?:[0-9]{4}(?:-[0-9]{2}(?:-[0-9]{2})?)?|Present|)$/'],
+            'end_date' => ['nullable', 'string', 'max:50', 'regex:/^(?:[0-9]{4}(?:-[0-9]{2}(?:-[0-9]{2})?)?|Present|)$/'],
             'type' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string'],
             'tech' => ['nullable', 'array'],
@@ -46,8 +46,8 @@ class ExperienceController extends Controller
             'role' => ['sometimes', 'required', 'string', 'max:255'],
             'company' => ['sometimes', 'required', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['sometimes', 'required', 'string', 'max:50'],
-            'end_date' => ['nullable', 'string', 'max:50'],
+            'start_date' => ['sometimes', 'required', 'string', 'max:50', 'regex:/^(?:[0-9]{4}(?:-[0-9]{2}(?:-[0-9]{2})?)?|Present)$/'],
+            'end_date' => ['nullable', 'string', 'max:50', 'regex:/^(?:[0-9]{4}(?:-[0-9]{2}(?:-[0-9]{2})?)?|Present|)$/'],
             'type' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string'],
             'tech' => ['nullable', 'array'],

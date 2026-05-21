@@ -12,11 +12,11 @@
 </head>
 <body>
 
-  <div id="navbar-placeholder"></div>
+  @include('layouts.partials.navbar')
 
   @yield('content')
 
-  <div id="footer-placeholder"></div>
+  @include('layouts.partials.footer')
 
   @stack('after_footer')
 

@@ -1,10 +1,9 @@
 /* ============================================
-   SKILLS.JS — Filtering & Detail Modal
+   SKILLS.JS — Filtering & Detail Modal (SSR grid)
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
   await PortfolioData.load();
-  renderSkillsGrid();
   bindFilterTabs();
 });
 

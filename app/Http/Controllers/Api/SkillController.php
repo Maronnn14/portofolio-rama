@@ -11,7 +11,7 @@ class SkillController extends Controller
 {
     public function index(): JsonResponse
     {
-        $skills = Skill::orderBy('sort_order')->orderByDesc('created_at')->get();
+        $skills = Skill::orderBy('sort_order')->orderByDesc('created_at')->paginate(100);
 
         return response()->json($skills);
     }

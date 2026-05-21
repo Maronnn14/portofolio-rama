@@ -1,10 +1,22 @@
+@php
+  $homeFullName = $personal['fullName'] ?? $personal['name'] ?? 'Rama Adin';
+  $homeNameParts = explode(' ', $homeFullName, 2);
+  $homeFirstName = $personal['name'] ?? $homeNameParts[0] ?? 'Rama';
+  $homeAccentName = $homeNameParts[1] ?? '';
+  $homeRole = $personal['role'] ?? 'Full Stack Developer';
+  $homeTagline = $personal['tagline'] ?? 'Crafting digital experiences with code & creativity';
+  $homeShortBio = $personal['shortBio'] ?? $personal['bio'] ?? 'A passionate developer who transforms ideas into elegant, functional digital solutions. With a keen eye for detail and a love for clean code, I build applications that make a difference.';
+  $homeImage = $personal['homeProfileImage'] ?? $personal['photo'] ?? $personal['profileImage'] ?? null;
+  $defaultHomeImage = 'https://picsum.photos/seed/ramaprofile/400/400';
+@endphp
+
 @extends('layouts.portfolio')
 
-@section('title', "Rama Adin — Full Stack Developer")
-@section('description', "Full Stack Developer crafting digital experiences with code and creativity. View my portfolio, projects, and skills.")
+@section('title', "$homeFullName — $homeRole")
+@section('description', "$homeRole $homeTagline")
 
 @section('content')
-<!-- Navbar -->
+
 <!-- ====== HERO SECTION ====== -->
   <section class="hero" id="hero">
     <div class="hero__bg">
@@ -19,16 +31,16 @@
       </div>
       <h1 class="hero__title">
         <span class="hero__greeting" id="hero-greeting"></span>
-        <span class="hero__name" id="hero-name"><span id="hero-name-first">Rama</span> <span class="text-accent" id="hero-name-accent">Adin</span></span>
+        <span class="hero__name" id="hero-name"><span id="hero-name-first">{{ $homeFirstName }}</span> <span class="text-accent" id="hero-name-accent">{{ $homeAccentName }}</span></span>
       </h1>
       <p class="hero__role" id="hero-role"></p>
-      <p class="hero__tagline" id="hero-tagline">Crafting digital experiences with code & creativity</p>
+      <p class="hero__tagline" id="hero-tagline">{{ $homeTagline }}</p>
       <div class="hero__cta">
-        <a href="projects.html" class="btn btn--primary btn--lg">
+        <a href="{{ url('/projects.html') }}" class="btn btn--primary btn--lg">
           See My Work
           <span class="btn-arrow">→</span>
         </a>
-        <a href="contact.html" class="btn btn--secondary btn--lg">
+        <a href="{{ url('/contact.html') }}" class="btn btn--secondary btn--lg">
           Contact Me
         </a>
       </div>
@@ -44,17 +56,14 @@
     <div class="container">
       <div class="about-preview__grid reveal">
         <div class="about-preview__image-wrapper">
-          <img src="https://picsum.photos/seed/ramaprofile/400/400" alt="Rama Adin - Profile Photo" class="about-preview__image" id="home-profile-image" loading="lazy" />
+          <img src="{{ $homeImage ?? $defaultHomeImage }}" alt="{{ $homeFullName }} - Profile Photo" class="about-preview__image" id="home-profile-image" loading="eager" />
           <div class="about-preview__image-border"></div>
         </div>
           <div class="about-preview__content">
           <span class="section-label">About Me</span>
-          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">Rama</span></h2>
-          <p class="about-preview__bio" id="home-about-bio">
-            A passionate developer who transforms ideas into elegant, functional digital solutions.
-            With a keen eye for detail and a love for clean code, I build applications that make a difference.
-          </p>
-          <a href="about.html" class="btn btn--ghost">
+          <h2 class="section-heading" id="home-about-heading">Hello, I'm <span class="text-accent">{{ $homeFirstName }}</span></h2>
+          <p class="about-preview__bio" id="home-about-bio">{{ $homeShortBio }}</p>
+          <a href="{{ url('/about.html') }}" class="btn btn--ghost">
             Read More <span class="btn-arrow">→</span>
           </a>
         </div>
@@ -70,10 +79,23 @@
         <h2 class="section-heading">Where I've Worked</h2>
       </div>
       <div class="experience-preview__list" id="experience-preview-list">
-        <!-- Rendered by JS -->
+        @forelse($experience->take(3) as $exp)
+          <div class="exp-preview-item reveal stagger-{{ $loop->iteration }}">
+            <span class="exp-preview-item__date">{{ $exp->start_date }} — {{ $exp->end_date ?? 'Present' }}</span>
+            <div>
+              <div class="exp-preview-item__role">{{ $exp->role }}</div>
+              <div class="exp-preview-item__company">{{ $exp->company }}</div>
+            </div>
+            <span class="exp-preview-item__type">{{ $exp->type }}</span>
+          </div>
+        @empty
+          <div class="empty-state">
+            <p class="empty-state__text">No experience listed yet.</p>
+          </div>
+        @endforelse
       </div>
       <div class="reveal" style="margin-top: var(--space-2xl);">
-        <a href="about.html#experience" class="btn btn--ghost">
+        <a href="{{ url('/about.html') }}#experience" class="btn btn--ghost">
           See Full Experience <span class="btn-arrow">→</span>
         </a>
       </div>
@@ -89,10 +111,21 @@
         <p class="section-subheading">Technologies and tools I work with every day</p>
       </div>
       <div class="skills-preview__grid" id="skills-preview-grid">
-        <!-- Rendered by JS -->
+        @forelse($skills->take(10) as $skill)
+          <div class="skill-preview-item reveal stagger-{{ min($loop->iteration, 8) }}">
+            <div class="skill-preview-item__icon">
+              <img src="{{ $skill->icon ? 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/' . $skill->icon . '/' . $skill->icon . '-original.svg' : '' }}" alt="{{ $skill->name }}" loading="lazy" />
+            </div>
+            <span class="skill-preview-item__name">{{ $skill->name }}</span>
+          </div>
+        @empty
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <p class="empty-state__text">No skills listed yet.</p>
+          </div>
+        @endforelse
       </div>
       <div class="reveal text-center" style="margin-top: var(--space-2xl);">
-        <a href="skills.html" class="btn btn--ghost">
+        <a href="{{ url('/skills.html') }}" class="btn btn--ghost">
           View All Skills <span class="btn-arrow">→</span>
         </a>
       </div>
@@ -108,10 +141,31 @@
         <p class="section-subheading">A selection of projects I'm most proud of</p>
       </div>
       <div class="projects-preview__grid" id="projects-preview-grid">
-        <!-- Rendered by JS -->
+        @forelse($projects as $proj)
+          <a href="{{ url('/project-detail.html?id=' . $proj->id) }}" class="project-preview-card reveal stagger-{{ min($loop->iteration, 3) }}">
+            <div class="project-preview-card__image-wrapper">
+              <img src="{{ $proj->thumbnail }}" alt="{{ $proj->name }}" class="project-preview-card__image" loading="lazy" />
+              <div class="project-preview-card__overlay"></div>
+            </div>
+            <div class="project-preview-card__body">
+              <div class="project-preview-card__category">{{ $proj->category }}</div>
+              <h3 class="project-preview-card__title">{{ $proj->name }}</h3>
+              <p class="project-preview-card__desc">{{ $proj->short_desc }}</p>
+              <div class="project-preview-card__tags tags-list">
+                @foreach($proj->tech ?? [] as $tech)
+                  <span class="tag">{{ $tech }}</span>
+                @endforeach
+              </div>
+            </div>
+          </a>
+        @empty
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <p class="empty-state__text">No featured projects yet.</p>
+          </div>
+        @endforelse
       </div>
       <div class="reveal" style="margin-top: var(--space-2xl);">
-        <a href="projects.html" class="btn btn--ghost">
+        <a href="{{ url('/projects.html') }}" class="btn btn--ghost">
           See All Projects <span class="btn-arrow">→</span>
         </a>
       </div>
@@ -129,7 +183,7 @@
           Have a project in mind or want to collaborate? I'd love to hear from you.
           Let's build something amazing together.
         </p>
-        <a href="contact.html" class="btn btn--primary btn--lg">
+        <a href="{{ url('/contact.html') }}" class="btn btn--primary btn--lg">
           Get In Touch <span class="btn-arrow">→</span>
         </a>
       </div>
@@ -145,7 +199,6 @@
         <p class="section-subheading">Share your thoughts — messages are public and visible to all visitors</p>
       </div>
 
-      <!-- Message Form -->
       <div class="mb-form-wrapper reveal" id="mb-form-wrapper">
         <form class="mb-form" id="mb-form">
           <div class="mb-form__row">
@@ -169,25 +222,25 @@
             <textarea id="mb-message" class="form-textarea" placeholder="Write something nice..." required maxlength="300" rows="3"></textarea>
             <p class="form-hint"><span id="mb-char-count">0</span> / 300</p>
           </div>
-          <button type="submit" class="btn btn--primary" id="mb-submit">
-            Post Message
-          </button>
+          <button type="submit" class="btn btn--primary" id="mb-submit">Post Message</button>
         </form>
       </div>
 
-      <!-- Messages List -->
       <div class="mb-messages" id="mb-messages">
-        <!-- Rendered by JS -->
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-state__icon">💬</div>
+          <h3 class="empty-state__title">No messages yet</h3>
+          <p class="empty-state__text">Be the first to leave a message!</p>
+        </div>
       </div>
 
-      <!-- Load More -->
       <div class="mb-load-more text-center" id="mb-load-more" style="display: none;">
         <button class="btn btn--secondary" id="mb-load-more-btn">Load More Messages</button>
       </div>
     </div>
   </section>
 
-  <!-- ====== RANDOM GALLERY ====== -->
+  <!-- ====== GALLERY ====== -->
   <section class="section gallery-section" id="gallery">
     <div class="container">
       <div class="section-header section-header--center reveal">
@@ -195,16 +248,21 @@
         <h2 class="section-heading">Moments & <span class="text-accent">Memories</span></h2>
       </div>
       <div class="gallery-grid" id="gallery-grid">
-        <!-- Rendered by JS -->
+        @forelse($gallery as $img)
+          <div class="gallery-item reveal stagger-{{ min(($loop->index % 8) + 1, 8) }}" data-lightbox="{{ $img->url }}" style="opacity: 0;">
+            <img src="{{ $img->url }}" alt="{{ $img->alt }}" loading="lazy" />
+          </div>
+        @empty
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <p class="empty-state__text">No gallery images yet.</p>
+          </div>
+        @endforelse
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-<!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- Scripts -->
 @endsection
 
 @push('scripts')

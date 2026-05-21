@@ -13,8 +13,8 @@ class MessageController extends Controller
     {
         $messages = PortfolioMessage::orderByDesc('pinned')
             ->orderByDesc('posted_at_ms')
-            ->get()
-            ->map(fn (PortfolioMessage $m) => $m->toFrontendArray());
+            ->paginate(50)
+            ->through(fn (PortfolioMessage $m) => $m->toFrontendArray());
 
         return response()->json($messages);
     }

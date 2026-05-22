@@ -59,4 +59,16 @@ class SocialController extends Controller
 
         return response()->json(['message' => 'Social link deleted']);
     }
+
+    public function bulkDestroy(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer'],
+        ]);
+
+        Social::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => count($validated['ids']) . ' social links deleted']);
+    }
 }

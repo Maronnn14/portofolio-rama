@@ -105,6 +105,7 @@ const API = {
     create(data)    { return API.post('/projects', data); },
     update(id, data){ return API.put(`/projects/${id}`, data); },
     delete(id)      { return API.del(`/projects/${id}`); },
+    bulkDelete(ids) { return API.del('/projects-bulk', { ids }); },
   },
 
   skills: {
@@ -112,6 +113,15 @@ const API = {
     create(data)    { return API.post('/skills', data); },
     update(id, data){ return API.put(`/skills/${id}`, data); },
     delete(id)      { return API.del(`/skills/${id}`); },
+    bulkDelete(ids) { return API.del('/skills-bulk', { ids }); },
+    syncLinks(id, links) { return API.put(`/skills/${id}/links`, { links }); },
+    uploadGalleryImage(id, file) {
+      const formData = new FormData();
+      formData.append('image', file);
+      return API.upload(`/skills/${id}/gallery`, formData);
+    },
+    updateGallery(id, items) { return API.put(`/skills/${id}/gallery`, { items }); },
+    deleteGalleryItem(skillId, itemId) { return API.del(`/skills/${skillId}/gallery/${itemId}`); },
   },
 
   experiences: {
@@ -119,6 +129,7 @@ const API = {
     create(data)    { return API.post('/experiences', data); },
     update(id, data){ return API.put(`/experiences/${id}`, data); },
     delete(id)      { return API.del(`/experiences/${id}`); },
+    bulkDelete(ids) { return API.del('/experiences-bulk', { ids }); },
   },
 
   messages: {
@@ -134,6 +145,7 @@ const API = {
     create(data)    { return API.post('/socials', data); },
     update(id, data){ return API.put(`/socials/${id}`, data); },
     delete(id)      { return API.del(`/socials/${id}`); },
+    bulkDelete(ids) { return API.del('/socials-bulk', { ids }); },
   },
 
   gallery: {
@@ -150,6 +162,11 @@ const API = {
     update(id, data)    { return API.put(`/interests/${id}`, data); },
     delete(id)          { return API.del(`/interests/${id}`); },
     bulkUpdate(items)   { return API.put('/interests-bulk', { interests: items }); },
+  },
+
+  about: {
+    get()       { return API.get('/about'); },
+    update(data){ return API.put('/about', data); },
   },
 
   personalInfo: {

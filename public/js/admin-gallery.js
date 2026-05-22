@@ -9,8 +9,8 @@ async function renderGallery(container) {
   try { _adminGallery = await API.gallery.list(); } catch (err) {
     container.innerHTML = '<div class="admin-empty"><div class="admin-empty__icon">⚠️</div><h3 class="admin-empty__title">Failed to load</h3></div>'; return;
   }
-  container.innerHTML = `<div class="admin-section-card"><div class="admin-section-card__header"><h3 class="admin-section-card__title">Gallery (${_adminGallery.length} images)</h3><div style="display:flex;gap:var(--space-md);"><button class="btn btn--secondary btn--sm" onclick="bulkDeleteGallery()" id="gallery-bulk-delete" style="display:none;">Delete Selected</button><button class="btn btn--primary btn--sm" onclick="openGalleryUpload()">+ Upload Photos</button></div></div>
-    ${_adminGallery.length ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);" id="admin-gallery-grid">${_adminGallery.map((img, i) => `<div style="position:relative;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-subtle);" class="gallery-admin-item" data-idx="${i}"><img src="${img.url}" alt="${img.alt||''}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;" onerror="this.src='https://picsum.photos/200'" /><div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;gap:var(--space-sm);opacity:0;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0"><input type="checkbox" class="gallery-checkbox" value="${img.id}" style="position:absolute;top:8px;left:8px;" onchange="updateGalleryBulk()" /><button class="admin-table__btn" style="background:var(--bg-secondary);" onclick="editGalleryItem(${i})">✏️</button><button class="admin-table__btn admin-table__btn--danger" style="background:var(--bg-secondary);" onclick="deleteGalleryItem(${i})">🗑️</button></div>${img.visible===false?'<div style="position:absolute;top:8px;right:8px;background:var(--bg-primary);padding:2px 6px;border-radius:4px;font-size:0.65rem;color:var(--text-muted);">Hidden</div>':''}</div>`).join('')}</div>` : `<div class="admin-empty"><div class="admin-empty__icon">🖼</div><h3 class="admin-empty__title">No gallery images</h3><p class="admin-empty__text">Upload photos to your gallery.</p><button class="btn btn--primary" onclick="openGalleryUpload()">Upload Photos</button></div>`}</div>`;
+  container.innerHTML = `<div class="admin-section-card"><div class="admin-section-card__header"><h3 class="admin-section-card__title">Gallery (${_adminGallery.length} images)</h3><div style="display:flex;gap:var(--space-md);align-items:center;"><button class="btn btn--sm" id="gallery-select-all" onclick="toggleAllGallery()" ${_adminGallery.length ? '' : 'style="display:none;"'}>Select All</button><button class="btn btn--secondary btn--sm" onclick="bulkDeleteGallery()" id="gallery-bulk-delete" style="display:none;">Delete Selected</button><button class="btn btn--primary btn--sm" onclick="openGalleryUpload()">+ Upload Photos</button></div></div>
+    ${_adminGallery.length ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);" id="admin-gallery-grid">${_adminGallery.map((img, i) => `<div style="position:relative;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-subtle);" class="gallery-admin-item" data-idx="${i}"><img src="${img.url}" alt="${img.alt||''}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;" onerror="this.src='https://picsum.photos/200'" /><div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;gap:var(--space-sm);opacity:0;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0"><input type="checkbox" class="gallery-checkbox" value="${img.id}" style="position:absolute;top:8px;left:8px;" onchange="onGalleryCheckToggle(this)" /><button class="admin-table__btn" style="background:var(--bg-secondary);" onclick="editGalleryItem(${i})">✏️</button><button class="admin-table__btn admin-table__btn--danger" style="background:var(--bg-secondary);" onclick="deleteGalleryItem(${i})">🗑️</button></div>${img.visible===false?'<div style="position:absolute;top:8px;right:8px;background:var(--bg-primary);padding:2px 6px;border-radius:4px;font-size:0.65rem;color:var(--text-muted);">Hidden</div>':''}</div>`).join('')}</div>` : `<div class="admin-empty"><div class="admin-empty__icon">🖼</div><h3 class="admin-empty__title">No gallery images</h3><p class="admin-empty__text">Upload photos to your gallery.</p><button class="btn btn--primary" onclick="openGalleryUpload()">Upload Photos</button></div>`}</div>`;
 }
 
 function openGalleryUpload() {
@@ -75,7 +75,29 @@ function deleteGalleryItem(index) {
   });
 }
 
-function updateGalleryBulk() { const c = document.querySelectorAll('.gallery-checkbox:checked').length; const b = document.getElementById('gallery-bulk-delete'); if (b) b.style.display = c > 0 ? '' : 'none'; }
+function onGalleryCheckToggle(checkbox) {
+  checkbox.closest('.gallery-admin-item').classList.toggle('selected', checkbox.checked);
+  updateGalleryBulk();
+}
+
+function toggleAllGallery() {
+  const allChecked = _adminGallery.length && document.querySelectorAll('.gallery-checkbox:checked').length === _adminGallery.length;
+  const newState = !allChecked;
+  document.querySelectorAll('.gallery-checkbox').forEach(cb => {
+    cb.checked = newState;
+    cb.closest('.gallery-admin-item').classList.toggle('selected', newState);
+  });
+  updateGalleryBulk();
+}
+
+function updateGalleryBulk() {
+  const checked = document.querySelectorAll('.gallery-checkbox:checked');
+  const total = _adminGallery.length;
+  const btn = document.getElementById('gallery-bulk-delete');
+  const selectBtn = document.getElementById('gallery-select-all');
+  if (btn) btn.style.display = checked.length ? '' : 'none';
+  if (selectBtn) selectBtn.textContent = checked.length === total ? 'Deselect All' : 'Select All';
+}
 
 function bulkDeleteGallery() {
   const ids = Array.from(document.querySelectorAll('.gallery-checkbox:checked')).map(cb => parseInt(cb.value));

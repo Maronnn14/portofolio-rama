@@ -316,6 +316,18 @@
   transform: scale(1.05);
 }
 
+.skill-modal__gallery-caption {
+  display: block;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+  line-height: var(--lh-tight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ====== Responsive ====== */
 @media (max-width: 768px) {
   .skills-grid {

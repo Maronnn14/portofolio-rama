@@ -24,6 +24,10 @@ async function renderProjects(container) {
           <button class="btn btn--primary btn--sm" onclick="openProjectModal()">+ Add Project</button>
         </div>
       </div>
+      <div style="display:${_adminProjects.length ? 'flex' : 'none'};gap:var(--space-md);margin-bottom:var(--space-md);align-items:center;" id="project-bulk-bar">
+        <span style="font-size:var(--fs-xs);color:var(--text-muted);" id="project-selected-count">0 selected</span>
+        <button class="btn btn--sm btn--danger" id="project-bulk-delete" style="display:none;" onclick="bulkDeleteProjects()">Delete Selected</button>
+      </div>
       <div id="admin-projects-table">
         ${renderProjectsTable(_adminProjects)}
       </div>
@@ -44,10 +48,11 @@ function renderProjectsTable(projects) {
   if (!projects.length) return '<div class="admin-empty"><div class="admin-empty__icon">📁</div><h3 class="admin-empty__title">No projects</h3><p class="admin-empty__text">Add your first project.</p></div>';
 
   return `<table class="admin-table">
-    <thead><tr><th style="width:50px;"></th><th>Name</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+    <thead><tr><th style="width:30px;"><input type="checkbox" id="project-select-all" onchange="toggleAllProjects(this.checked)" /></th><th style="width:50px;"></th><th>Name</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
     <tbody>
       ${projects.map((p, i) => `
-        <tr data-name="${AdminUI.escapeHtml(p.name)}">
+        <tr data-name="${AdminUI.escapeHtml(p.name)}" data-id="${p.id}">
+          <td><input type="checkbox" class="project-checkbox" value="${p.id}" onchange="updateProjectBulkBtn()" /></td>
           <td><img src="${p.thumbnail}" alt="" style="width:40px;height:30px;object-fit:cover;border-radius:4px;background:var(--bg-tertiary);" onerror="this.style.display='none'" /></td>
           <td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(p.name)}</td>
           <td>${AdminUI.badge(p.category || 'Uncategorized', 'accent')}</td>
@@ -198,6 +203,37 @@ function deleteProject(index) {
       renderProjects(document.getElementById('admin-content'));
     } catch (err) {
       AdminUI.toast(err.message || 'Failed to delete project', 'error');
+    }
+  });
+}
+
+function toggleAllProjects(checked) {
+  document.querySelectorAll('.project-checkbox').forEach(cb => cb.checked = checked);
+  updateProjectBulkBtn();
+}
+
+function updateProjectBulkBtn() {
+  const checked = document.querySelectorAll('.project-checkbox:checked');
+  const btn = document.getElementById('project-bulk-delete');
+  const count = document.getElementById('project-selected-count');
+  if (btn && count) {
+    btn.style.display = checked.length ? '' : 'none';
+    count.textContent = `${checked.length} selected`;
+  }
+}
+
+function bulkDeleteProjects() {
+  const checked = document.querySelectorAll('.project-checkbox:checked');
+  const ids = Array.from(checked).map(cb => parseInt(cb.value));
+  if (!ids.length) return;
+  AdminUI.confirm('Delete Projects', `Delete ${ids.length} selected projects? This is permanent.`, async () => {
+    try {
+      await API.projects.bulkDelete(ids);
+      AdminAuth.logAction('Deleted', `${ids.length} projects`);
+      AdminUI.toast(`${ids.length} projects deleted`);
+      renderProjects(document.getElementById('admin-content'));
+    } catch (err) {
+      AdminUI.toast(err.message || 'Failed to delete', 'error');
     }
   });
 }

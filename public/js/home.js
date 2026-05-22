@@ -2,9 +2,9 @@
    HOME.JS — Hero animations (SSR data preserved)
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await PortfolioData.load();
   initHeroAnimations();
-  PortfolioData.load();
 });
 
 /* ---- Typewriter Effect ---- */

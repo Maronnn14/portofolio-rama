@@ -71,4 +71,16 @@ class ProjectController extends Controller
 
         return response()->json(['message' => 'Project deleted']);
     }
+
+    public function bulkDestroy(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer'],
+        ]);
+
+        Project::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json(['message' => count($validated['ids']) . ' projects deleted']);
+    }
 }

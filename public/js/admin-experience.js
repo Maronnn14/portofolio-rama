@@ -10,7 +10,7 @@ async function renderExperience(container) {
     container.innerHTML = '<div class="admin-empty"><div class="admin-empty__icon">⚠️</div><h3 class="admin-empty__title">Failed to load</h3></div>'; return;
   }
   container.innerHTML = `<div class="admin-section-card"><div class="admin-section-card__header"><h3 class="admin-section-card__title">Experience & Education</h3><button class="btn btn--primary btn--sm" onclick="openExpModal()">+ Add Entry</button></div>
-      ${_adminExperiences.length ? `<table class="admin-table"><thead><tr><th>Role</th><th>Company</th><th>Period</th><th>Type</th><th>Actions</th></tr></thead><tbody>${_adminExperiences.map((e, i) => `<tr><td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(e.role)}</td><td>${AdminUI.escapeHtml(e.company)}</td><td style="white-space:nowrap;">${AdminUI.escapeHtml(e.start_date)} — ${AdminUI.escapeHtml(e.end_date)}</td><td>${AdminUI.badge(e.type, e.type==='Work'?'accent':e.type==='Education'?'success':'default')}</td><td><div class="admin-table__actions"><button class="admin-table__btn" onclick="openExpModal(${i})">✏️</button><button class="admin-table__btn admin-table__btn--danger" onclick="deleteExp(${i})">🗑️</button></div></td></tr>`).join('')}</tbody></table>` : `<div class="admin-empty"><div class="admin-empty__icon">🕐</div><h3 class="admin-empty__title">No experience entries</h3><p class="admin-empty__text">Add your work and education history.</p></div>`}
+      ${_adminExperiences.length ? `<div style="display:flex;gap:var(--space-md);margin-bottom:var(--space-md);align-items:center;"><span style="font-size:var(--fs-xs);color:var(--text-muted);" id="exp-selected-count">0 selected</span><button class="btn btn--sm btn--danger" id="exp-bulk-delete" style="display:none;" onclick="bulkDeleteExperiences()">Delete Selected</button></div><table class="admin-table"><thead><tr><th style="width:30px;"><input type="checkbox" id="exp-select-all" onchange="toggleAllExp(this.checked)" /></th><th>Role</th><th>Company</th><th>Period</th><th>Type</th><th>Actions</th></tr></thead><tbody>${_adminExperiences.map((e, i) => `<tr data-id="${e.id}"><td><input type="checkbox" class="exp-checkbox" value="${e.id}" onchange="updateExpBulkBtn()" /></td><td style="color:var(--text-primary);font-weight:var(--fw-medium);">${AdminUI.escapeHtml(e.role)}</td><td>${AdminUI.escapeHtml(e.company)}</td><td style="white-space:nowrap;">${AdminUI.escapeHtml(e.start_date)} — ${AdminUI.escapeHtml(e.end_date)}</td><td>${AdminUI.badge(e.type, e.type==='Work'?'accent':e.type==='Education'?'success':'default')}</td><td><div class="admin-table__actions"><button class="admin-table__btn" onclick="openExpModal(${i})">✏️</button><button class="admin-table__btn admin-table__btn--danger" onclick="deleteExp(${i})">🗑️</button></div></td></tr>`).join('')}</tbody></table>` : `<div class="admin-empty"><div class="admin-empty__icon">🕐</div><h3 class="admin-empty__title">No experience entries</h3><p class="admin-empty__text">Add your work and education history.</p></div>`}
     </div>`;
 }
 
@@ -51,5 +51,36 @@ function deleteExp(index) {
   AdminUI.confirm('Delete Experience', `Remove "${entry.role} at ${entry.company}"?`, async () => {
     try { await API.experiences.delete(entry.id); AdminAuth.logAction('Deleted', `Experience: ${entry.role}`); AdminUI.toast('Experience deleted'); renderExperience(document.getElementById('admin-content')); }
     catch (err) { AdminUI.toast(err.message || 'Failed to delete', 'error'); }
+  });
+}
+
+function toggleAllExp(checked) {
+  document.querySelectorAll('.exp-checkbox').forEach(cb => cb.checked = checked);
+  updateExpBulkBtn();
+}
+
+function updateExpBulkBtn() {
+  const checked = document.querySelectorAll('.exp-checkbox:checked');
+  const btn = document.getElementById('exp-bulk-delete');
+  const count = document.getElementById('exp-selected-count');
+  if (btn && count) {
+    btn.style.display = checked.length ? '' : 'none';
+    count.textContent = `${checked.length} selected`;
+  }
+}
+
+function bulkDeleteExperiences() {
+  const checked = document.querySelectorAll('.exp-checkbox:checked');
+  const ids = Array.from(checked).map(cb => parseInt(cb.value));
+  if (!ids.length) return;
+  AdminUI.confirm('Delete Experiences', `Delete ${ids.length} selected entries? This is permanent.`, async () => {
+    try {
+      await API.experiences.bulkDelete(ids);
+      AdminAuth.logAction('Deleted', `${ids.length} experiences`);
+      AdminUI.toast(`${ids.length} experiences deleted`);
+      renderExperience(document.getElementById('admin-content'));
+    } catch (err) {
+      AdminUI.toast(err.message || 'Failed to delete', 'error');
+    }
   });
 }

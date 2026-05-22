@@ -26,18 +26,18 @@
             <img src="{{ $aboutImageSrc ?? $defaultAboutImage }}" alt="{{ $aboutFullName }}" class="about-story__image" id="about-profile-image" loading="eager" />
             <div class="about-story__image-accent"></div>
           </div>
-          <div class="about-story__stats">
+          <div class="about-story__stats" id="about-stats-container">
             <div class="about-story__stat">
-              <span class="about-story__stat-number">{{ $personal['yearsExperience'] ?? '3+' }}</span>
-              <span class="about-story__stat-label">Years Experience</span>
+              <span class="about-story__stat-number skeleton-text" id="stat-1-value">&nbsp;</span>
+              <span class="about-story__stat-label skeleton-text" id="stat-1-label">&nbsp;</span>
             </div>
             <div class="about-story__stat">
-              <span class="about-story__stat-number">{{ $personal['projectsDelivered'] ?? '15+' }}</span>
-              <span class="about-story__stat-label">Projects Delivered</span>
+              <span class="about-story__stat-number skeleton-text" id="stat-2-value">&nbsp;</span>
+              <span class="about-story__stat-label skeleton-text" id="stat-2-label">&nbsp;</span>
             </div>
             <div class="about-story__stat">
-              <span class="about-story__stat-number">{{ $personal['happyClients'] ?? '10+' }}</span>
-              <span class="about-story__stat-label">Happy Clients</span>
+              <span class="about-story__stat-number skeleton-text" id="stat-3-value">&nbsp;</span>
+              <span class="about-story__stat-label skeleton-text" id="stat-3-label">&nbsp;</span>
             </div>
           </div>
         </div>
@@ -51,8 +51,8 @@
               <p>No background story has been added yet.</p>
             @endforelse
           </div>
-          <blockquote class="about-story__quote">
-            <p>"Great software is built with empathy — understanding both the user and the problem."</p>
+          <blockquote class="about-story__quote" id="about-quote-container">
+            <p id="about-quote-text" class="skeleton-text">&nbsp;</p>
           </blockquote>
         </div>
       </div>
@@ -125,3 +125,35 @@
     </div>
   </section>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', async function loadAbout() {
+  var quoteEl = document.getElementById('about-quote-text');
+  var statIds = [
+    'stat-1-value', 'stat-1-label',
+    'stat-2-value', 'stat-2-label',
+    'stat-3-value', 'stat-3-label',
+  ];
+  var statEls = statIds.map(function (id) { return document.getElementById(id); });
+  try {
+    var data = await API.about.get();
+    if (quoteEl) {
+      quoteEl.textContent = '"' + (data.quote || '') + '"';
+      quoteEl.classList.remove('skeleton-text');
+    }
+    if (data.stats && data.stats.length) {
+      data.stats.forEach(function (s, i) {
+        var valueEl = statEls[i * 2];
+        var labelEl = statEls[i * 2 + 1];
+        if (valueEl) { valueEl.textContent = s.value || ''; valueEl.classList.remove('skeleton-text'); }
+        if (labelEl) { labelEl.textContent = s.label || ''; labelEl.classList.remove('skeleton-text'); }
+      });
+    }
+  } catch (_) {
+    if (quoteEl) { quoteEl.textContent = ''; quoteEl.classList.remove('skeleton-text'); }
+    statEls.forEach(function (el) { if (el) { el.textContent = ''; el.classList.remove('skeleton-text'); } });
+  }
+});
+</script>
+@endpush

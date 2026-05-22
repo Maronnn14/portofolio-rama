@@ -50,7 +50,7 @@ class PortfolioController extends Controller
     public function skills(): View
     {
         return view('portfolio.skills', [
-            'skills' => Skill::orderBy('sort_order')->get(),
+            'skills' => Skill::with(['projectLinks', 'galleryItems'])->orderBy('sort_order')->get(),
             'projects' => Project::all(),
         ]);
     }

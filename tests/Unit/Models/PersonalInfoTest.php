@@ -29,6 +29,7 @@ class PersonalInfoTest extends TestCase
     #[Test]
     public function it_can_get_all_as_key_value_map()
     {
+        PersonalInfo::query()->delete();
         PersonalInfo::create(['key' => 'name', 'value' => 'Rama']);
         PersonalInfo::create(['key' => 'role', 'value' => 'Developer']);
 
@@ -43,6 +44,7 @@ class PersonalInfoTest extends TestCase
     #[Test]
     public function it_returns_empty_array_when_no_records()
     {
+        PersonalInfo::query()->delete();
         $this->assertEquals([], PersonalInfo::getAll());
     }
 

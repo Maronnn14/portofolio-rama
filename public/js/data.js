@@ -106,6 +106,8 @@ const PortfolioData = {
         level: s.level || 'Intermediate',
         relatedProjects: s.related_projects || [],
         gallery: s.gallery || [],
+        projectLinks: s.project_links || [],
+        galleryItems: s.gallery_items || [],
         shortDesc: s.teaser || '',
       }));
 

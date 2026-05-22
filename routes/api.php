@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AboutController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ExperienceController;
@@ -34,6 +35,7 @@ Route::get('interests/{interest}', [InterestController::class, 'show']);
 Route::get('gallery', [GalleryController::class, 'index']);
 Route::get('gallery/{gallery}', [GalleryController::class, 'show']);
 Route::get('personal-info', [PersonalInfoController::class, 'index']);
+Route::get('about', [AboutController::class, 'index']);
 Route::get('settings', [SiteSettingController::class, 'index']);
 
 // Contact form (public)
@@ -58,21 +60,29 @@ Route::middleware(['auth:sanctum', 'ability:admin:write', 'throttle:120,1'])->gr
     Route::post('projects', [ProjectController::class, 'store']);
     Route::put('projects/{project}', [ProjectController::class, 'update']);
     Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
+    Route::delete('projects-bulk', [ProjectController::class, 'bulkDestroy']);
 
     // Skills
     Route::post('skills', [SkillController::class, 'store']);
     Route::put('skills/{skill}', [SkillController::class, 'update']);
     Route::delete('skills/{skill}', [SkillController::class, 'destroy']);
+    Route::put('skills/{skill}/links', [SkillController::class, 'syncLinks']);
+    Route::post('skills/{skill}/gallery', [SkillController::class, 'uploadGalleryImage']);
+    Route::put('skills/{skill}/gallery', [SkillController::class, 'updateGallery']);
+    Route::delete('skills/{skill}/gallery/{item}', [SkillController::class, 'deleteGalleryItem']);
+    Route::delete('skills-bulk', [SkillController::class, 'bulkDestroy']);
 
     // Experiences
     Route::post('experiences', [ExperienceController::class, 'store']);
     Route::put('experiences/{experience}', [ExperienceController::class, 'update']);
     Route::delete('experiences/{experience}', [ExperienceController::class, 'destroy']);
+    Route::delete('experiences-bulk', [ExperienceController::class, 'bulkDestroy']);
 
     // Socials
     Route::post('socials', [SocialController::class, 'store']);
     Route::put('socials/{social}', [SocialController::class, 'update']);
     Route::delete('socials/{social}', [SocialController::class, 'destroy']);
+    Route::delete('socials-bulk', [SocialController::class, 'bulkDestroy']);
 
     // Interests
     Route::post('interests', [InterestController::class, 'store']);
@@ -88,6 +98,9 @@ Route::middleware(['auth:sanctum', 'ability:admin:write', 'throttle:120,1'])->gr
 
     // Personal info
     Route::put('personal-info', [PersonalInfoController::class, 'update']);
+
+    // About section (quote + stats)
+    Route::put('about', [AboutController::class, 'update']);
 
     // Site settings
     Route::put('settings', [SiteSettingController::class, 'update']);

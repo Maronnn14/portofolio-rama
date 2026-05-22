@@ -1611,6 +1611,23 @@
     margin-bottom: 0;
   }
 
+  /* Skeleton loader for dynamic about content */
+  .skeleton-text {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-secondary) 50%, var(--bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 4px;
+    color: transparent !important;
+    user-select: none;
+    min-width: 60px;
+  }
+
+  @keyframes skeleton-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   .timeline {
     position: relative;
     max-width: 900px;
@@ -3728,6 +3745,189 @@
 
 .admin-confirm__actions {
   @apply flex justify-center gap-4 flex-wrap;
+}
+
+/* ---- Skill Editor Sub-sections ---- */
+.skill-subsection {
+  @apply mt-8 pt-6 border-t border-border-subtle/50;
+}
+
+.skill-subsection__header {
+  @apply flex items-center justify-between gap-4 mb-4;
+}
+
+.skill-subsection__title {
+  @apply font-display text-base font-semibold text-text-primary;
+}
+
+/* Link rows */
+.skill-link-row {
+  @apply flex items-center gap-4 mb-4 p-4 bg-bg-secondary border border-border-default rounded-xl shadow-sm transition-all duration-150 ease-out;
+}
+
+.skill-link-row:hover {
+  @apply border-border-hover shadow-md;
+}
+
+.skill-link-row:focus-within {
+  @apply border-accent ring-3 ring-accent/15;
+}
+
+.skill-link-row__move {
+  @apply flex flex-col gap-1 self-center;
+}
+
+.skill-link-row__arrow {
+  @apply bg-bg-tertiary border border-border-default rounded-sm text-text-secondary cursor-pointer w-6 h-6 flex items-center justify-center transition-all duration-150 ease-out;
+}
+
+.skill-link-row__arrow:hover {
+  @apply text-accent border-accent bg-accent/15 -translate-y-0.5;
+}
+
+.skill-link-row__arrow:active {
+  @apply translate-y-0;
+}
+
+.skill-link-row__fields {
+  @apply flex-1 grid gap-4;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.skill-link-row__input {
+  @apply bg-bg-tertiary! border border-border-default! rounded-md! py-2 px-4! text-sm! transition-all duration-150 ease-out!;
+}
+
+.skill-link-row__input:focus {
+  @apply border-accent! ring-2 ring-accent/15! bg-bg-elevated!;
+}
+
+.skill-link-row__input--desc {
+  grid-column: 1 / -1;
+}
+
+.skill-link-row__delete-btn {
+  @apply bg-red-500/5! border border-red-500/20! text-red-500! w-[34px] h-[34px] rounded-md! flex items-center justify-center transition-all duration-150 ease-out! cursor-pointer self-center;
+}
+
+.skill-link-row__delete-btn:hover {
+  @apply bg-red-500! border-red-500! text-white! shadow-[0_0_12px_rgba(239,68,68,0.3)] scale-105;
+}
+
+.skill-link-row__delete-btn:active {
+  @apply scale-95;
+}
+
+/* Gallery grid & items */
+.skill-gallery-grid {
+  @apply grid gap-6 mb-4;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.skill-gallery-item {
+  @apply bg-bg-secondary border border-border-default rounded-xl overflow-hidden relative shadow-sm transition-all duration-150 ease-out;
+}
+
+.skill-gallery-item:hover {
+  @apply border-border-hover shadow-md -translate-y-0.5;
+}
+
+.skill-gallery-item__img-wrap {
+  @apply relative aspect-4/3 overflow-hidden bg-bg-tertiary border-b border-border-subtle/50;
+}
+
+.skill-gallery-item__img-wrap img {
+  @apply w-full h-full object-cover transition-transform duration-500 ease-out;
+}
+
+.skill-gallery-item:hover .skill-gallery-item__img-wrap img {
+  @apply scale-105;
+}
+
+.skill-gallery-item__overlay {
+  @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 opacity-0 flex flex-col justify-between p-2 transition-opacity duration-150 ease-out z-2;
+}
+
+.skill-gallery-item:hover .skill-gallery-item__overlay {
+  @apply opacity-100;
+}
+
+.skill-gallery-item__delete {
+  @apply self-end w-7 h-7 flex items-center justify-center bg-red-500/90 border-0 rounded-full text-white cursor-pointer transition-all duration-150 ease-out shadow-[0_2px_6px_rgba(0,0,0,0.3)];
+}
+
+.skill-gallery-item__delete:hover {
+  @apply bg-red-500 scale-110 shadow-[0_0_10px_rgba(239,68,68,0.5)];
+}
+
+.skill-gallery-item__overlay-controls {
+  @apply flex items-center justify-between w-full;
+}
+
+.skill-gallery-item__overlay-move {
+  @apply flex gap-1;
+}
+
+.skill-gallery-item__arrow {
+  @apply w-6 h-6 flex items-center justify-center bg-white/15 border border-white/25 rounded-sm text-white cursor-pointer transition-all duration-150 ease-out;
+}
+
+.skill-gallery-item__arrow:hover {
+  @apply bg-accent border-accent text-bg-primary -translate-y-0.5;
+}
+
+.skill-gallery-item__caption-wrap {
+  @apply p-2 bg-bg-secondary;
+}
+
+.skill-gallery-item__caption {
+  @apply w-full bg-bg-tertiary! border border-border-default! rounded-sm! py-1 px-2! text-text-primary! text-xs! transition-all duration-150 ease-out!;
+}
+
+.skill-gallery-item__caption:focus {
+  @apply border-accent! ring-2 ring-accent/15! bg-bg-elevated!;
+}
+
+/* Gallery Unlocked placeholder card */
+.skill-gallery-locked-card {
+  @apply flex flex-col items-center justify-center text-center p-8 bg-gradient-to-br from-accent/5 to-transparent border border-dashed border-accent/25 rounded-2xl mt-4 transition-all duration-300 ease-out;
+}
+
+.skill-gallery-locked-card__icon {
+  @apply text-2xl mb-4 bg-accent/15 w-14 h-14 rounded-full flex items-center justify-center text-accent shadow-[0_0_30px_rgba(212,168,83,0.15)] animate-pulse-slow;
+}
+
+.skill-gallery-locked-card__title {
+  @apply font-display text-base font-semibold text-text-primary mb-1;
+}
+
+.skill-gallery-locked-card__text {
+  @apply text-xs text-text-muted max-w-[320px] leading-normal;
+}
+
+/* Gallery upload zone tweaks specifically for skills */
+.skill-gallery-upload-zone {
+  @apply mb-6 border-2 border-dashed border-border-default rounded-2xl p-6 text-center cursor-pointer bg-bg-secondary transition-all duration-300 ease-out flex flex-col items-center gap-1;
+}
+
+.skill-gallery-upload-zone:hover {
+  @apply border-accent bg-accent/15 shadow-[0_0_30px_rgba(212,168,83,0.15)];
+}
+
+.skill-gallery-upload-zone.dragover {
+  @apply border-accent bg-accent/30 scale-[1.01];
+}
+
+.skill-gallery-upload-zone__icon {
+  @apply text-2xl text-accent opacity-80 mb-0.5;
+}
+
+.skill-gallery-upload-zone__title {
+  @apply text-sm font-medium text-text-primary;
+}
+
+.skill-gallery-upload-zone__subtitle {
+  @apply text-xs text-text-muted;
 }
 
 /* ---- Admin Responsive (1024px) ---- */

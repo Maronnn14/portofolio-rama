@@ -631,6 +631,371 @@
 .admin-color-swatch:hover { transform: scale(1.15); }
 .admin-color-swatch.active { border-color: var(--text-primary); box-shadow: 0 0 0 2px var(--bg-primary); }
 
+/* ====== Skill Editor Sub-sections ====== */
+.skill-subsection {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.skill-subsection__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.skill-subsection__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+/* Link rows */
+.skill-link-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.skill-link-row:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.skill-link-row:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.skill-link-row__move {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: center;
+}
+
+.skill-link-row__arrow {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.skill-link-row__arrow:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.skill-link-row__arrow:active {
+  transform: translateY(0);
+}
+
+.skill-link-row__fields {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.skill-link-row__input {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  font-size: var(--fs-sm) !important;
+  transition: all var(--duration-fast) var(--ease-out) !important;
+}
+
+.skill-link-row__input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-glow) !important;
+  background: var(--bg-elevated) !important;
+}
+
+.skill-link-row__input--desc {
+  grid-column: 1 / -1;
+}
+
+.skill-link-row__delete-btn {
+  background: rgba(239, 68, 68, 0.05) !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  color: var(--error) !important;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out) !important;
+  cursor: pointer;
+  align-self: center;
+}
+
+.skill-link-row__delete-btn:hover {
+  background: var(--error) !important;
+  border-color: var(--error) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3) !important;
+  transform: scale(1.05);
+}
+
+.skill-link-row__delete-btn:active {
+  transform: scale(0.95);
+}
+
+/* ====== Admin Gallery Item ====== */
+.gallery-admin-item.selected {
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+}
+
+/* Gallery grid & items */
+.skill-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.skill-gallery-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.skill-gallery-item:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.skill-gallery-item__img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.skill-gallery-item__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.skill-gallery-item:hover .skill-gallery-item__img-wrap img {
+  transform: scale(1.05);
+}
+
+.skill-gallery-item__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.4) 100%);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-sm);
+  transition: opacity var(--duration-fast) var(--ease-out);
+  z-index: 2;
+}
+
+.skill-gallery-item:hover .skill-gallery-item__overlay {
+  opacity: 1;
+}
+
+.skill-gallery-item__delete {
+  align-self: flex-end;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.9);
+  border: none;
+  border-radius: var(--radius-full);
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.skill-gallery-item__delete:hover {
+  background: var(--error);
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.skill-gallery-item__overlay-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.skill-gallery-item__overlay-move {
+  display: flex;
+  gap: 4px;
+}
+
+.skill-gallery-item__arrow {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.skill-gallery-item__arrow:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+}
+
+.skill-gallery-item__caption-wrap {
+  padding: var(--space-sm);
+  background: var(--bg-secondary);
+}
+
+.skill-gallery-item__caption {
+  width: 100%;
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+  font-size: var(--fs-xs) !important;
+  padding: var(--space-xs) var(--space-sm) !important;
+  transition: all var(--duration-fast) var(--ease-out) !important;
+}
+
+.skill-gallery-item__caption:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-glow) !important;
+  background: var(--bg-elevated) !important;
+}
+
+/* Gallery Unlocked placeholder card */
+.skill-gallery-locked-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-xl);
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
+  border: 1px dashed rgba(212, 168, 83, 0.25);
+  border-radius: var(--radius-xl);
+  margin-top: var(--space-md);
+  transition: border-color var(--duration-normal) var(--ease-out);
+}
+
+.skill-gallery-locked-card__icon {
+  font-size: 2.25rem;
+  margin-bottom: var(--space-md);
+  background: var(--accent-glow);
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  box-shadow: var(--shadow-glow);
+  animation: pulse-slow 2s ease-in-out infinite;
+}
+
+.skill-gallery-locked-card__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.skill-gallery-locked-card__text {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: var(--lh-normal);
+}
+
+/* Gallery upload zone tweaks specifically for skills */
+.skill-gallery-upload-zone {
+  margin-bottom: var(--space-xl);
+  border: 2px dashed var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl) var(--space-2xl);
+  text-align: center;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  transition: all var(--duration-normal) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.skill-gallery-upload-zone:hover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  box-shadow: var(--shadow-glow);
+}
+
+.skill-gallery-upload-zone.dragover {
+  border-color: var(--accent);
+  background: var(--accent-glow-strong);
+  transform: scale(1.01);
+}
+
+.skill-gallery-upload-zone__icon {
+  font-size: 1.75rem;
+  color: var(--accent);
+  opacity: 0.8;
+  margin-bottom: 2px;
+}
+
+.skill-gallery-upload-zone__title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.skill-gallery-upload-zone__subtitle {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+
 /* ====== Confirm Dialog ====== */
 .admin-confirm {
   text-align: center;

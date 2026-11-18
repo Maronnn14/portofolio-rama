@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\PortfolioMessage;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -10,6 +11,14 @@ use Tests\TestCase;
 class MessageApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** Buat token admin (Sanctum) untuk permintaan terautentikasi. */
+    private function adminToken(): string
+    {
+        $user = User::factory()->create();
+
+        return $user->createToken('test')->plainTextToken;
+    }
 
     #[Test]
     public function guests_can_list_visible_messages()
@@ -41,8 +50,11 @@ class MessageApiTest extends TestCase
             'name' => 'Alice',
             'message' => 'Great portfolio!',
             'rating' => 5,
-            'session_token' => 'token-123',
         ]);
+        // Token kiriman klien tidak boleh disimpan (mencegah pesan "dimiliki" orang lain).
+        $this->assertNull(PortfolioMessage::first()->session_token);
+        // Token sesi tidak boleh bocor ke publik.
+        $this->assertArrayNotHasKey('sessionToken', $response->json());
     }
 
     #[Test]
@@ -104,7 +116,7 @@ class MessageApiTest extends TestCase
     }
 
     #[Test]
-    public function message_owner_can_update_with_session_token()
+    public function visitor_cannot_update_message_even_as_original_poster()
     {
         $message = PortfolioMessage::factory()->create([
             'session_token' => 'token-abc',
@@ -115,6 +127,21 @@ class MessageApiTest extends TestCase
             'message' => 'Updated message',
             'session_token' => 'token-abc',
         ]);
+
+        $response->assertForbidden();
+        $this->assertDatabaseHas('portfolio_messages', [
+            'id' => $message->id,
+            'message' => 'Initial message',
+        ]);
+    }
+
+    #[Test]
+    public function admin_can_update_message()
+    {
+        $message = PortfolioMessage::factory()->create(['message' => 'Initial message']);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->adminToken())
+            ->putJson("/api/messages/{$message->message_id}", ['message' => 'Updated message']);
 
         $response->assertOk();
         $this->assertDatabaseHas('portfolio_messages', [
@@ -167,12 +194,12 @@ class MessageApiTest extends TestCase
             'hidden' => true,
         ]);
 
-        $response->assertOk();
+        $response->assertForbidden();
         $this->assertFalse($message->fresh()->hidden);
     }
 
     #[Test]
-    public function message_owner_can_delete_with_session_token()
+    public function visitor_cannot_delete_message_even_with_matching_token()
     {
         $message = PortfolioMessage::factory()->create([
             'session_token' => 'token-to-delete',
@@ -181,6 +208,18 @@ class MessageApiTest extends TestCase
         $response = $this->deleteJson("/api/messages/{$message->message_id}", [
             'session_token' => 'token-to-delete',
         ]);
+
+        $response->assertForbidden();
+        $this->assertDatabaseHas('portfolio_messages', ['id' => $message->id]);
+    }
+
+    #[Test]
+    public function admin_can_delete_message()
+    {
+        $message = PortfolioMessage::factory()->create();
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->adminToken())
+            ->deleteJson("/api/messages/{$message->message_id}");
 
         $response->assertOk();
         $this->assertDatabaseMissing('portfolio_messages', ['id' => $message->id]);

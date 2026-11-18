@@ -73,15 +73,15 @@
 .about-story__quote {
   margin-top: var(--space-2xl);
   padding: var(--space-xl);
-  border-left: 3px solid var(--accent);
-  background-color: var(--bg-secondary);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-left: 2px solid var(--accent-soft);
+  background-color: var(--bg-elevated);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
 .about-story__quote p {
   font-family: var(--font-display);
   font-size: var(--fs-lg);
-  font-style: italic;
+  font-weight: var(--fw-medium);
   color: var(--text-primary);
   margin-bottom: 0;
 }

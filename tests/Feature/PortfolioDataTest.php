@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Experience;
 use App\Models\GalleryImage;
 use App\Models\Interest;
+use App\Models\PersonalInfo;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Social;
@@ -16,7 +17,36 @@ class PortfolioDataTest extends TestCase
 {
     use RefreshDatabase;
 
-    // ====== HOME PAGE — DATA FILTERING ======
+    #[Test]
+    public function hero_shows_download_cv_button_when_cv_is_uploaded()
+    {
+        $html = view('portfolio.partials.hero-cta', [
+            'personal' => ['cv_file' => 'http://localhost/storage/cv/rama-cv.pdf', 'cv_label' => 'Curriculum Vitae'],
+            'homeSettings' => [],
+            'homeName' => 'Rama Adin',
+        ])->render();
+
+        $this->assertStringContainsString('Download CV', $html);
+        $this->assertStringContainsString('download="rama-adin-cv.pdf"', $html);
+        $this->assertStringContainsString('storage/cv/rama-cv.pdf', $html);
+        $this->assertStringNotContainsString('/about/cv', $html);
+    }
+
+    #[Test]
+    public function hero_cv_button_points_to_cv_page_when_no_file_uploaded()
+    {
+        $html = view('portfolio.partials.hero-cta', [
+            'personal' => ['cv_file' => null],
+            'homeSettings' => [],
+            'homeName' => 'Rama Adin',
+        ])->render();
+
+        $this->assertStringContainsString('Download CV', $html);
+        $this->assertStringContainsString(route('about.cv'), $html);
+        $this->assertStringNotContainsString('download="', $html);
+    }
+
+    // ====== HOME PAGE — DATA FILTERING ======    // ====== HOME PAGE — DATA FILTERING ======
 
     #[Test]
     public function home_shows_only_featured_projects()

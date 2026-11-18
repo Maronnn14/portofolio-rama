@@ -106,10 +106,12 @@ class ExperienceForm
                 Section::make('Media')
                     ->schema([
                         FileUpload::make('cover_image')
-                            ->label('Cover Image')
+                            ->label('Thumbnail (persegi)')
                             ->disk('public')
                             ->directory('experiences')
                             ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios(['1:1', '4:3', '16:9'])
                             ->maxSize(5120)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->formatStateUsing(function ($state) {
@@ -120,7 +122,7 @@ class ExperienceForm
                                 return $state;
                             })
                             ->dehydrated(fn ($state) => filled($state))
-                            ->helperText('Upload a cover image. Leave empty to keep the current image.'),
+                            ->helperText('Tampil sebagai kotak di ujung kiri kartu pengalaman. Rasio 1:1 paling pas; biarkan kosong untuk memakai kotak inisial.'),
 
                         TextInput::make('external_cover_url')
                             ->label('Or External Cover URL')

@@ -3,7 +3,7 @@
    ============================================ */
 
 /* ---- Google Fonts Import ---- */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap');
 
 /* ---- Base ---- */
 body {
@@ -13,13 +13,39 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-primary);
   overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--duration-slow) var(--ease-out),
+              color var(--duration-slow) var(--ease-out);
+}
+
+/* Tekstur kertas: lapisan tipis di atas seluruh halaman, tidak menangkap klik. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] body::after {
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after { display: none; }
 }
 
 /* ---- Headings ---- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
   letter-spacing: var(--ls-tight);
+  line-height: 1.08;
 }
 
 h1 { font-size: var(--fs-4xl); }
@@ -47,8 +73,8 @@ a {
 
 /* ---- Selection ---- */
 ::selection {
-  background-color: var(--accent);
-  color: var(--bg-primary);
+  background-color: var(--accent-soft);
+  color: var(--text-primary);
 }
 
 /* ---- Scrollbar ---- */
@@ -125,11 +151,11 @@ a {
 .section-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
-  font-family: var(--font-mono);
+  gap: var(--space-md);
+  font-family: var(--font-display);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--accent);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: var(--ls-widest);
   margin-bottom: var(--space-lg);
@@ -138,9 +164,9 @@ a {
 .section-label::before {
   content: '';
   display: inline-block;
-  width: 24px;
+  width: 28px;
   height: 1px;
-  background-color: var(--accent);
+  background-color: var(--accent-soft);
 }
 
 /* ---- Section Heading ---- */

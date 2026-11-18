@@ -19,7 +19,8 @@ Home                            /
 About Me                        dropdown
  ├── Biodata & Personal Branding /about/biodata
  ├── Download CV                /about/cv
- └── Interests & Hobbies        /about/interests
+ ├── Interests & Hobbies        /about/interests
+ └── Daily Blog                 /about/blog      (+ /about/blog/{slug})
 Skills                          /skills
 Projects & Experience           dropdown
  ├── Coding Projects             /projects        (+ /projects/{slug})
@@ -36,8 +37,8 @@ SEO: every page emits a canonical URL, meta description, Open Graph/Twitter tags
 
 | Sidebar group | Manages |
 |---|---|
-| **Home** | Home page hero buttons, about teaser, contact call-to-action, home gallery, guestbook messages |
-| **About Me** | Profile & personal branding, profile photos, CV upload/label/version, education timeline, interests |
+| **Home** | Home page hero buttons (termasuk **Download CV** otomatis dari CV yang diunggah), about teaser, contact call-to-action, home gallery, guestbook messages |
+| **About Me** | Profile & personal branding, profile photos, CV upload/label/version, education timeline, interests, **daily blog posts** |
 | **Skills** | Skill type (Tech Stack = coding, Other = non-coding hard skills like Excel/Design), category, level, proficiency, featured flag; plus soft skills |
 | **Projects & Experience** | Coding projects (article body, gallery, tech tags, links, featured flag, draft/published), work experience, contributions |
 | **Contact** | Contact form submissions (read/unread, delete), social links |
@@ -50,6 +51,8 @@ Notes:
 - Slugs are generated automatically from the title when left empty, and remain editable.
 - Draft entries (projects, experience, contributions) and future `published_at` values are hidden from the public site.
 - Featured projects and highlighted tech stack on the home page are chosen with the **Featured on Home** / **Highlight on Home Page** toggles.
+- Contoh tulisan blog: `php artisan db:seed --class=BlogPostSeeder` (3 tulisan, aman diulang karena memakai slug sebagai kunci).
+- **Daily Blog** (`/admin/blog-posts`): judul + slug otomatis, kategori (Daily Note, Devlog, Tutorial, Reflection), ringkasan, isi Markdown, cover 16:9, tag, status draft/published. Tulisan published tampil di `/about/blog` (dengan pencarian, filter kategori, dan pagination 9 per halaman) dan **3 tulisan terbaru** muncul di beranda pada bagian “Catatan Terbaru”. Kalau ringkasan dikosongkan, kartu memakai potongan isi tulisan; kalau cover kosong, muncul kotak inisial judul.
 
 ## Local setup
 
@@ -80,6 +83,17 @@ php artisan test          # feature + unit tests
 ./vendor/bin/pint --test  # code style
 npm run build             # production assets
 ```
+
+## Tema (terang / gelap)
+
+Seluruh warna, font, radius, bayangan dan spasi berasal dari token di `public/css/variables.css`.
+
+- Mode terang (default) memakai palet krem–charcoal–emas; mode gelap didefinisikan ulang di blok `:root[data-theme="dark"]` pada file yang sama.
+- Script kecil di `<head>` (`resources/views/layouts/portfolio.blade.php`) memasang `data-theme` sebelum paint supaya tidak ada kedipan, dan tetap menghormati `accentColor` dari panel admin.
+- Tombol pengalih ada di navbar (`.navbar__theme`) dan di menu mobile; logikanya di `public/js/theme.js`, pilihannya disimpan di `localStorage` dengan kunci `portfolio_theme`, dan mengikuti preferensi sistem bila pengguna belum memilih.
+- Tipografi: **Space Grotesk** untuk heading/label (`--font-display`, `--font-mono`), **Inter** untuk teks (`--font-body`), dan **JetBrains Mono** khusus blok kode (`--font-code`). Font dimuat dari Google Fonts di `layouts/portfolio.blade.php`.
+- Menambah warna baru: tambahkan token di kedua blok (terang & gelap) lalu pakai `var(--token)` — jangan menulis hex langsung di komponen.
+- Setelah mengubah CSS, jalankan `npm run build` (halaman memuat CSS dari `public/build` via `@vite`).
 
 ## Project structure
 

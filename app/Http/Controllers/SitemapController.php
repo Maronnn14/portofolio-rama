@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\Contribution;
 use App\Models\Experience;
 use App\Models\Project;
@@ -16,6 +17,7 @@ class SitemapController extends Controller
             $this->url(route('about.biodata'), null, '0.8', 'monthly'),
             $this->url(route('about.cv'), null, '0.7', 'monthly'),
             $this->url(route('about.interests'), null, '0.6', 'monthly'),
+            $this->url(route('about.blog'), null, '0.7', 'weekly'),
             $this->url(route('skills'), null, '0.8', 'monthly'),
             $this->url(route('projects.index'), null, '0.9', 'weekly'),
             $this->url(route('experience.index'), null, '0.8', 'monthly'),
@@ -29,6 +31,10 @@ class SitemapController extends Controller
 
         Experience::published()->orderByDesc('updated_at')->get()->each(function (Experience $experience) use ($urls) {
             $urls->push($this->url(route('experience.show', $experience), $experience->updated_at, '0.6', 'monthly'));
+        });
+
+        BlogPost::published()->orderByDesc('updated_at')->get()->each(function (BlogPost $post) use ($urls) {
+            $urls->push($this->url(route('about.blog.show', $post), $post->updated_at, '0.6', 'monthly'));
         });
 
         Contribution::published()->orderByDesc('updated_at')->get()->each(function (Contribution $contribution) use ($urls) {

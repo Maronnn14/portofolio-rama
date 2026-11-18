@@ -20,9 +20,9 @@
 }
 
 .navbar.scrolled {
-  background-color: rgba(10, 10, 10, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background-color: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
   padding: var(--space-sm) 0;
   box-shadow: 0 1px 0 var(--border-subtle);
 }
@@ -51,6 +51,86 @@
 
 .navbar__logo:hover {
   color: var(--accent-light);
+}
+
+/* ---- Pengalih tema terang / gelap ---- */
+.navbar__theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-right: var(--space-sm);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              background-color var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+
+.navbar__theme:hover,
+.navbar__theme:focus-visible {
+  color: var(--accent);
+  border-color: var(--border-accent);
+  background-color: var(--accent-glow);
+}
+
+.navbar__theme:active {
+  transform: scale(0.94);
+}
+
+.navbar__theme-icon {
+  display: block;
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+
+.navbar__theme-icon--sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .navbar__theme-icon--moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .navbar__theme-icon--sun {
+  display: block;
+}
+
+/* ---- Pengalih tema (menu mobile) ---- */
+.navbar__mobile-theme {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-sm);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.navbar__mobile-theme-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.navbar__mobile-theme:hover,
+.navbar__mobile-theme:focus-visible {
+  color: var(--accent);
+  border-color: var(--border-accent);
 }
 
 .navbar__links {
@@ -315,13 +395,14 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--ls-wide);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wider);
   text-transform: uppercase;
-  padding: var(--space-md) var(--space-xl);
-  border-radius: var(--radius-sm);
+  padding: 0 var(--space-xl);
+  min-height: 46px;
+  border-radius: var(--radius-full);
   transition: all var(--duration-normal) var(--ease-out);
   white-space: nowrap;
   cursor: pointer;
@@ -329,12 +410,13 @@
 }
 
 .btn--primary {
-  background-color: var(--accent);
-  color: var(--bg-primary);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
 }
 
 .btn--primary:hover {
-  background-color: var(--accent-light);
+  background-color: var(--btn-primary-bg-hover);
+  color: var(--btn-primary-fg-hover);
   box-shadow: var(--shadow-glow);
   transform: translateY(-2px);
 }
@@ -342,7 +424,7 @@
 .btn--secondary {
   background-color: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-accent);
 }
 
 .btn--secondary:hover {
@@ -351,13 +433,38 @@
   transform: translateY(-2px);
 }
 
+/* Varian outline ringan dengan ikon (mis. Download CV di hero) */
+.btn--ghost-outline {
+  background-color: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border-default);
+}
+
+.btn--ghost-outline:hover {
+  color: var(--accent);
+  background-color: var(--accent-glow);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn--ghost-outline .btn-icon {
+  flex: none;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.btn--ghost-outline:hover .btn-icon {
+  transform: translateY(2px);
+}
+
 .btn--ghost {
   background-color: transparent;
   color: var(--accent);
-  padding: var(--space-sm) 0;
+  padding: 0;
+  min-height: auto;
   text-transform: none;
   letter-spacing: var(--ls-normal);
   font-size: var(--fs-base);
+  border-radius: 0;
 }
 
 .btn--ghost:hover {
@@ -373,12 +480,14 @@
 }
 
 .btn--lg {
-  padding: var(--space-lg) var(--space-2xl);
-  font-size: var(--fs-base);
+  padding: 0 var(--space-2xl);
+  min-height: 54px;
+  font-size: var(--fs-sm);
 }
 
 .btn--sm {
-  padding: var(--space-sm) var(--space-md);
+  padding: 0 var(--space-lg);
+  min-height: 36px;
   font-size: var(--fs-xs);
 }
 
@@ -405,7 +514,7 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  background: #f59e0b;
+  background: var(--warning);
   border-radius: 50%;
   margin-left: 6px;
   vertical-align: middle;
@@ -421,7 +530,7 @@
    ============================================ */
 
 .card {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -525,19 +634,20 @@
 
 .form-label {
   display: block;
-  font-family: var(--font-display);
-  font-size: var(--fs-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+  color: var(--text-secondary);
   margin-bottom: var(--space-sm);
-  letter-spacing: var(--ls-wide);
 }
 
 .form-input,
 .form-textarea {
   width: 100%;
   padding: var(--space-md) var(--space-lg);
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-elevated);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   color: var(--text-primary);

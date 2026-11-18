@@ -12,7 +12,7 @@
 
 /* ====== Project Card ====== */
 .project-card {
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -23,7 +23,7 @@
 
 .project-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
   border-color: var(--accent-gold);
 }
 
@@ -71,18 +71,28 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  color: var(--accent-gold);
+  /* Teks di atas overlay gelap: pakai warna khusus overlay agar kontras aman
+     di mode terang maupun gelap. */
+  color: var(--on-overlay);
+  background-color: color-mix(in srgb, var(--overlay-heavy) 42%, transparent);
+  border: 1px solid color-mix(in srgb, var(--on-overlay) 45%, transparent);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-lg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   transform: translateY(10px);
-  transition: transform 0.4s var(--ease-out);
+  transition: transform 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
 }
+
 
 .project-card:hover .project-card__overlay-btn {
   transform: translateY(0);
+  border-color: var(--on-overlay);
 }
 
 /* Featured badge */

@@ -26,7 +26,7 @@
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-xl);
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   transition: border-color var(--transition-base), transform var(--transition-base);
@@ -72,14 +72,14 @@ a.contact-info__value:hover {
 }
 
 .contact-info__value--accent {
-  color: var(--success) !important;
+  color: var(--accent) !important;
 }
 
 /* ====== Social Icons ====== */
 .contact-socials {
   margin-top: var(--space-lg);
   padding: var(--space-xl);
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
 }
@@ -135,7 +135,7 @@ a.contact-info__value:hover {
 
 /* ====== Contact Form ====== */
 .contact-form-wrapper {
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: var(--space-2xl);
@@ -334,4 +334,20 @@ a.contact-info__value:hover {
   .contact-socials__grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Input di dalam kartu putih memakai latar kertas agar tetap terlihat */
+.contact-form-wrapper .form-input,
+.contact-form-wrapper .form-textarea,
+.contact-form-wrapper .form-select {
+  background-color: var(--bg-primary);
+  border-color: var(--border-default);
+}
+
+.contact-form-wrapper .form-input:focus,
+.contact-form-wrapper .form-textarea:focus,
+.contact-form-wrapper .form-select:focus {
+  border-color: var(--accent);
+  background-color: var(--bg-elevated);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }

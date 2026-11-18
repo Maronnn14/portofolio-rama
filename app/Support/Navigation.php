@@ -38,6 +38,11 @@ class Navigation
                         'url' => route('about.interests'),
                         'active' => request()->routeIs('about.interests'),
                     ],
+                    [
+                        'label' => $labels['about_blog'] ?? 'Daily Blog',
+                        'url' => route('about.blog'),
+                        'active' => request()->routeIs('about.blog', 'about.blog.show'),
+                    ],
                 ],
             ],
             'skills' => [

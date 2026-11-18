@@ -11,7 +11,7 @@ class GalleryController extends Controller
 {
     public function index(): JsonResponse
     {
-        $images = GalleryImage::orderBy('sort_order')->orderByDesc('created_at')->get();
+        $images = GalleryImage::where('visible', true)->orderBy('sort_order')->orderByDesc('created_at')->get();
 
         return response()->json($images);
     }
@@ -80,6 +80,6 @@ class GalleryController extends Controller
 
         GalleryImage::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => count($validated['ids']) . ' images deleted']);
+        return response()->json(['message' => count($validated['ids']).' images deleted']);
     }
 }

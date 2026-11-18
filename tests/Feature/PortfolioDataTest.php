@@ -110,7 +110,7 @@ class PortfolioDataTest extends TestCase
     {
         $project = Project::factory()->create(['name' => 'My Project']);
 
-        $response = $this->get('/project-detail.html?id=' . $project->id);
+        $response = $this->get('/project-detail.html?id='.$project->id);
 
         $response->assertOk();
         $response->assertSee('My Project');
@@ -280,8 +280,7 @@ class PortfolioDataTest extends TestCase
     {
         $response = $this->get('/admin.html');
 
-        $response->assertOk()
-            ->assertSee('admin-sidebar');
+        $response->assertRedirect('/admin');
     }
 
     // ====== INDEX.HTML REDIRECT ======
@@ -308,7 +307,6 @@ class PortfolioDataTest extends TestCase
         }
     }
 }
-
 
 /*
  * ====================================================================

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PortfolioController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +18,4 @@ Route::controller(PortfolioController::class)->group(function () {
     Route::get('/contact.html', 'contact')->name('contact.html');
 });
 
-Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin.html', 'dashboard')->name('admin.dashboard.html');
-});
+Route::redirect('/admin.html', '/admin');

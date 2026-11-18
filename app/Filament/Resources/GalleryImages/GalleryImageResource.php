@@ -20,7 +20,9 @@ class GalleryImageResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?int $navigationSort = 7;
+    protected static string|\UnitEnum|null $navigationGroup = 'Home';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Gallery';
 

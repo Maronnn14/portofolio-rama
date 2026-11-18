@@ -22,7 +22,9 @@ class SkillResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCpuChip;
 
-    protected static ?int $navigationSort = 2;
+    protected static string|\UnitEnum|null $navigationGroup = 'Skills';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

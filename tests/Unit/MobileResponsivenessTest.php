@@ -41,6 +41,6 @@ class MobileResponsivenessTest extends TestCase
 
     private function readCss(string $filename): string
     {
-        return file_get_contents(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public/css/' . $filename);
+        return file_get_contents(dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'public/css/'.$filename);
     }
 }

@@ -94,7 +94,7 @@ class PersonalInfoTest extends TestCase
     #[Test]
     public function it_uses_correct_table()
     {
-        $info = new PersonalInfo();
+        $info = new PersonalInfo;
         $this->assertEquals('personal_info', $info->getTable());
     }
 }

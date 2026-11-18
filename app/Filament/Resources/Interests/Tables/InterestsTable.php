@@ -15,6 +15,7 @@ class InterestsTable
     {
         return $table
             ->defaultSort('sort_order', 'asc')
+            ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('icon')
                     ->label('Icon'),

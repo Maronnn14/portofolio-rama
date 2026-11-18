@@ -12,7 +12,7 @@ class AboutStylesheetTest extends TestCase
     {
         parent::setUp();
 
-        $path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public/css/about.css';
+        $path = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'public/css/about.css';
 
         $this->assertFileExists($path);
         $this->css = file_get_contents($path);

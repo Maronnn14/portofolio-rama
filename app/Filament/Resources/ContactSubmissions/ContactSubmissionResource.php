@@ -20,7 +20,9 @@ class ContactSubmissionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
 
-    protected static ?int $navigationSort = 8;
+    protected static string|\UnitEnum|null $navigationGroup = 'Contact';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Contact Submissions';
 

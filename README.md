@@ -1,58 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Portfolio Rama
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A personal portfolio site built with **Laravel 13**, **Filament 4**, **Tailwind CSS v4**, and Blade. The public pages follow the navigation structure in [`PORTFOLIO_NAVIGATION_SPEC (1).md`](PORTFOLIO_NAVIGATION_SPEC%20(1).md); every piece of content is managed from the existing Filament admin panel at `/admin` — no code changes or redeploys are needed to update the site.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Layer | Technology |
+|---|---|
+| Backend | Laravel 13 / PHP 8.3 |
+| Admin panel | Filament 4 (Livewire 3) |
+| Frontend | Blade + Tailwind CSS v4 + Vite |
+| Database | MySQL (SQLite in tests) |
+| Media | Laravel public disk (`storage/app/public`) |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Public navigation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Home                            /
+About Me                        dropdown
+ ├── Biodata & Personal Branding /about/biodata
+ ├── Download CV                /about/cv
+ └── Interests & Hobbies        /about/interests
+Skills                          /skills
+Projects & Experience           dropdown
+ ├── Coding Projects             /projects        (+ /projects/{slug})
+ ├── Work Experience             /experience      (+ /experience/{slug})
+ └── Contributions & Activities  /contributions   (+ /contributions/{slug})
+Contact                         /contact
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Projects and experience entries are rendered as blog-style articles with Markdown bodies, cover images, tags, publish dates, and previous/next navigation.
 
-## Contributing
+SEO: every page emits a canonical URL, meta description, Open Graph/Twitter tags and Person JSON-LD; `/sitemap.xml` lists all public pages plus published articles, and `/robots.txt` (served dynamically) points to it and blocks `/admin`. Unpublished entries return the styled 404 page.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Content management (`/admin`)
 
-## Code of Conduct
+| Sidebar group | Manages |
+|---|---|
+| **Home** | Home page hero buttons, about teaser, contact call-to-action, home gallery, guestbook messages |
+| **About Me** | Profile & personal branding, profile photos, CV upload/label/version, education timeline, interests |
+| **Skills** | Skill type (Tech Stack = coding, Other = non-coding hard skills like Excel/Design), category, level, proficiency, featured flag; plus soft skills |
+| **Projects & Experience** | Coding projects (article body, gallery, tech tags, links, featured flag, draft/published), work experience, contributions |
+| **Contact** | Contact form submissions (read/unread, delete), social links |
+| **Site Settings** | Site title, meta description, Open Graph image, contact email, footer, navigation labels/order, appearance |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Notes:
 
-## Security Vulnerabilities
+- Rich text fields use Filament's Markdown editor. Public pages render Markdown with raw HTML stripped.
+- Image uploads accept JPEG/PNG/WebP/GIF up to 5 MB; the CV upload accepts PDF up to 10 MB.
+- Slugs are generated automatically from the title when left empty, and remain editable.
+- Draft entries (projects, experience, contributions) and future `published_at` values are hidden from the public site.
+- Featured projects and highlighted tech stack on the home page are chosen with the **Featured on Home** / **Highlight on Home Page** toggles.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Local setup
 
-## License
+```bash
+composer install
+cp .env.example .env          # Windows: copy .env.example .env
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# configure DB_* in .env, then:
+php artisan migrate --seed
+php artisan storage:link
+php artisan filament:assets   # publishes the admin panel CSS/JS/fonts to public/
+
+npm install
+npm run build
+
+php artisan serve
+```
+
+The site is available at `http://127.0.0.1:8000`, the admin panel at `/admin`.
+
+The seeder creates an admin account (`admin@example.com` / `admin123` — **change it**), placeholder portfolio content, and a placeholder CV PDF that can be replaced from **About Me → Profile → CV / Resume**.
+
+## Tests and quality checks
+
+```bash
+php artisan test          # feature + unit tests
+./vendor/bin/pint --test  # code style
+npm run build             # production assets
+```
+
+## Project structure
+
+```
+app/
+  Filament/                 # Admin panel pages, resources, widgets
+  Http/Controllers/         # Public PortfolioController + legacy read API
+  Models/                   # Eloquent models (Project, Experience, Contribution, ...)
+  Support/Navigation.php    # Builds the public navigation from site settings
+database/
+  migrations/               # Schema + default content backfills
+  seeders/                  # PortfolioSeeder + PortfolioContentSeeder
+resources/
+  views/portfolio/          # Public Blade pages
+  views/layouts/            # Shared layout, navbar, footer
+  css/app.css               # Tailwind entry + component styles
+routes/web.php              # Public page routes
+```

@@ -18,6 +18,8 @@ class GalleryImageForm
                     ->disk('public')
                     ->directory('gallery')
                     ->image()
+                    ->maxSize(5120)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                     ->formatStateUsing(function ($state, $record) {
                         $raw = $record ? $record->getRawOriginal('url') : null;
                         if (! $raw || str_starts_with($raw, 'http://') || str_starts_with($raw, 'https://') || str_starts_with($raw, 'data:')) {

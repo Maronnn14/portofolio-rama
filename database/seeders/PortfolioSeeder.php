@@ -10,6 +10,7 @@ use App\Models\PortfolioMessage;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Social;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PortfolioSeeder extends Seeder
@@ -115,10 +116,17 @@ class PortfolioSeeder extends Seeder
             ['name' => 'Figma', 'category' => 'Design', 'icon' => 'figma', 'teaser' => 'UI/UX design & prototyping', 'description' => 'Proficient in Figma for UI design, prototyping, and design systems. Experience translating designs to code and collaborating with design teams.', 'proficiency' => 78, 'level' => 'Advanced', 'related_projects' => [], 'gallery' => ['https://picsum.photos/seed/figma1/600/400']],
             ['name' => 'Python', 'category' => 'Backend', 'icon' => 'python', 'teaser' => 'Scripting & automation', 'description' => 'Experience with Python for scripting, automation, data processing, and basic machine learning. Familiar with Flask, pandas, and various utility libraries.', 'proficiency' => 72, 'level' => 'Intermediate', 'related_projects' => [], 'gallery' => []],
             ['name' => 'TypeScript', 'category' => 'Frontend', 'icon' => 'typescript', 'teaser' => 'Type-safe JavaScript development', 'description' => 'Growing expertise in TypeScript for building type-safe applications. Experience with interfaces, generics, and integrating TypeScript into React and Node.js projects.', 'proficiency' => 73, 'level' => 'Intermediate', 'related_projects' => [], 'gallery' => []],
+
+            // Non-coding hard skills — shown in the "Other Skills" section.
+            ['name' => 'Microsoft Excel', 'category' => 'Spreadsheet', 'skill_type' => 'other', 'icon' => null, 'teaser' => 'Formulas, pivot tables & reports', 'description' => 'Comfortable building spreadsheet reports with formulas, pivot tables, data validation, and charts for coursework and organization administration.', 'proficiency' => 85, 'level' => 'Advanced', 'related_projects' => [], 'gallery' => []],
+            ['name' => 'Microsoft Office', 'category' => 'Office', 'skill_type' => 'other', 'icon' => null, 'teaser' => 'Documents & presentation decks', 'description' => 'Daily use of Word, PowerPoint, and Excel for reports, proposals, and presentation decks — including clean formatting and document templates.', 'proficiency' => 88, 'level' => 'Advanced', 'related_projects' => [], 'gallery' => []],
+            ['name' => 'Graphic Design', 'category' => 'Design', 'skill_type' => 'other', 'icon' => null, 'teaser' => 'Posters & social media visuals', 'description' => 'Designing posters, banners, and social media content for campus events and small projects with attention to typography and visual hierarchy.', 'proficiency' => 78, 'level' => 'Advanced', 'related_projects' => [], 'gallery' => []],
+            ['name' => 'Video Editing', 'category' => 'Media', 'skill_type' => 'other', 'icon' => null, 'teaser' => 'Editing & simple motion titles', 'description' => 'Editing short videos and event documentation: cutting, subtitles, transitions, and simple motion titles.', 'proficiency' => 72, 'level' => 'Intermediate', 'related_projects' => [], 'gallery' => []],
+            ['name' => 'Data Entry & Reporting', 'category' => 'Administration', 'skill_type' => 'other', 'icon' => null, 'teaser' => 'Accurate records & summaries', 'description' => 'Handling data entry and periodic reporting for organization activities, keeping records consistent and easy to audit.', 'proficiency' => 80, 'level' => 'Advanced', 'related_projects' => [], 'gallery' => []],
         ];
 
         foreach ($skills as $i => $s) {
-            Skill::create(array_merge($s, ['sort_order' => $i]));
+            Skill::create(array_merge(['skill_type' => 'tech'], $s, ['sort_order' => $i]));
         }
     }
 
@@ -162,7 +170,7 @@ class PortfolioSeeder extends Seeder
 
     private function seedAdminUser(): void
     {
-        \App\Models\User::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin',
@@ -185,12 +193,12 @@ class PortfolioSeeder extends Seeder
 
         foreach ($messages as $i => $m) {
             PortfolioMessage::create([
-                'message_id' => 'seed_' . $i . '_' . time(),
+                'message_id' => 'seed_'.$i.'_'.time(),
                 'name' => $m['name'],
                 'message' => $m['message'],
                 'rating' => $m['rating'],
                 'posted_at_ms' => (int) ((time() - $m['days_ago'] * 86400) * 1000),
-                'session_token' => 'seed_visitor_' . $i,
+                'session_token' => 'seed_visitor_'.$i,
                 'hidden' => false,
                 'flagged' => false,
                 'pinned' => false,

@@ -20,7 +20,9 @@ class PortfolioMessageResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
-    protected static ?int $navigationSort = 4;
+    protected static string|\UnitEnum|null $navigationGroup = 'Home';
+
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Messages';
 

@@ -72,25 +72,6 @@ function initNavbar() {
   }, { passive: true });
 }
 
-function setActiveNavLink() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const navLinks = document.querySelectorAll('.navbar__link, .navbar__mobile-link');
-
-  navLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    const linkPage = href.split('/').pop();
-
-    if (linkPage === currentPage ||
-        (currentPage === '' && linkPage === 'index.html') ||
-        (currentPage === 'index.html' && linkPage === 'index.html') ||
-        (currentPage.startsWith('project-detail') && linkPage === 'projects.html')) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
 
 /* ---- Scroll Reveal ---- */
 function initScrollReveal() {
@@ -237,7 +218,6 @@ function renderStars(rating, readonly = true) {
         }
       });
     }
-    setActiveNavLink();
   });
 })();
 

@@ -16,7 +16,7 @@ class MessageController extends Controller
             ->orderByDesc('posted_at_ms');
 
         // Public visitors see only visible messages; admins see all
-        if (!$this->resolveAdminUser($request)) {
+        if (! $this->resolveAdminUser($request)) {
             $query->where('hidden', false);
         }
 
@@ -36,7 +36,7 @@ class MessageController extends Controller
         ]);
 
         $msg = PortfolioMessage::create([
-            'message_id' => 'msg_' . time() . '_' . substr(md5(uniqid()), 0, 7),
+            'message_id' => 'msg_'.time().'_'.substr(md5(uniqid()), 0, 7),
             'name' => $validated['name'],
             'message' => $validated['message'],
             'rating' => $validated['rating'] ?? 0,
@@ -56,9 +56,9 @@ class MessageController extends Controller
 
         $isAdmin = (bool) $this->resolveAdminUser($request);
 
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $sessionToken = $request->input('session_token');
-            if (!$sessionToken || $sessionToken !== $msg->session_token) {
+            if (! $sessionToken || $sessionToken !== $msg->session_token) {
                 return response()->json(['message' => 'You can only edit your own messages.'], 403);
             }
         }
@@ -99,9 +99,9 @@ class MessageController extends Controller
 
         $isAdmin = (bool) $this->resolveAdminUser($request);
 
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $sessionToken = $request->input('session_token');
-            if (!$sessionToken || $sessionToken !== $msg->session_token) {
+            if (! $sessionToken || $sessionToken !== $msg->session_token) {
                 return response()->json(['message' => 'You can only delete your own messages.'], 403);
             }
         }
@@ -120,7 +120,7 @@ class MessageController extends Controller
 
         PortfolioMessage::whereIn('message_id', $validated['ids'])->delete();
 
-        return response()->json(['message' => count($validated['ids']) . ' messages deleted']);
+        return response()->json(['message' => count($validated['ids']).' messages deleted']);
     }
 
     private function resolveAdminUser(Request $request)
@@ -130,7 +130,7 @@ class MessageController extends Controller
         }
 
         $token = $request->bearerToken();
-        if (!$token) {
+        if (! $token) {
             return null;
         }
 

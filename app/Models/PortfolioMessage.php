@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PortfolioMessage extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'message_id',
         'name',

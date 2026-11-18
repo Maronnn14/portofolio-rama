@@ -3,7 +3,9 @@
 namespace Tests\Unit\Models;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -42,7 +44,7 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create(['email_verified_at' => now()]);
 
-        $this->assertInstanceOf(\Carbon\Carbon::class, $user->email_verified_at);
+        $this->assertInstanceOf(Carbon::class, $user->email_verified_at);
     }
 
     #[Test]
@@ -66,8 +68,8 @@ class UserTest extends TestCase
     #[Test]
     public function it_uses_has_api_tokens_trait()
     {
-        $user = new User();
+        $user = new User;
         $traits = class_uses_recursive(User::class);
-        $this->assertContains(\Laravel\Sanctum\HasApiTokens::class, $traits);
+        $this->assertContains(HasApiTokens::class, $traits);
     }
 }

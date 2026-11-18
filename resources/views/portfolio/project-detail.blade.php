@@ -1,42 +1,57 @@
 @php
-  $pdFullName = $personal['fullName'] ?? $personal['name'] ?? 'Rama Adin';
+  use App\Support\Icon;
+  use Illuminate\Support\Str;
+
+  $body = $project?->body ?: $project?->full_desc;
+  $gallery = $project ? $project->galleryUrls() : [];
 @endphp
 
 @extends('layouts.portfolio')
 
-@section('title', $project ? "$project->name — $pdFullName" : "Project Detail — $pdFullName")
-@section('description', $project ? "Detailed view of $project->name by $pdFullName — description, tech stack, gallery, and links." : "Detailed view of a project by $pdFullName — description, tech stack, gallery, and links.")
+@section('title', $project?->name ?? 'Project Not Found')
+@section('description', $project?->short_desc ?? '')
 
 @section('content')
   <main class="project-detail" id="project-detail">
     @if($project)
       <div class="container">
-        <a class="project-detail__back" onclick="history.back()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back to Projects
+        <a class="project-detail__back" href="{{ route('projects.index') }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back to Projects
         </a>
+
         <header class="project-detail__header reveal">
-          <span class="project-detail__category">{{ $project->category }}</span>
+          <div class="article-meta">
+            @if($project->category)<span class="tag tag--accent">{{ $project->category }}</span>@endif
+            @if($project->published_at)<time datetime="{{ $project->published_at->toDateString() }}">{{ $project->published_at->translatedFormat('F j, Y') }}</time>@endif
+            <span>{{ $project->readingMinutes() }} min read</span>
+          </div>
           <h1 class="project-detail__title">{{ $project->name }}</h1>
-          <p class="project-detail__desc">{{ $project->full_desc }}</p>
+          @if($project->short_desc)<p class="project-detail__desc">{{ $project->short_desc }}</p>@endif
         </header>
-        <div class="project-detail__hero-img reveal stagger-1">
-          <img src="{{ $project->thumbnail }}" alt="{{ $project->name }}" loading="eager" />
-        </div>
+
+        @if($project->thumbnail)
+          <div class="project-detail__hero-img reveal stagger-1">
+            <img src="{{ $project->thumbnail }}" alt="{{ $project->name }} cover image" loading="eager" />
+          </div>
+        @else
+          <div class="project-detail__hero-img project-detail__hero-img--placeholder reveal stagger-1" aria-hidden="true">{{ Icon::initials($project->name) }}</div>
+        @endif
+
         <div class="project-detail__meta reveal stagger-2">
-          <div class="project-detail__meta-item">
-            <h4>Category</h4>
-            <span class="tag tag--accent">{{ $project->category }}</span>
-          </div>
-          <div class="project-detail__meta-item">
-            <h4>Tech Stack</h4>
-            <div class="tags-list">
-              @foreach($project->tech ?? [] as $tech)
-                <span class="tag">{{ $tech }}</span>
-              @endforeach
+          @if($project->category)
+            <div class="project-detail__meta-item">
+              <h2>Category</h2>
+              <span class="tag tag--accent">{{ $project->category }}</span>
             </div>
-          </div>
+          @endif
+          @if(!empty($project->tech))
+            <div class="project-detail__meta-item">
+              <h2>Tech Stack</h2>
+              <div class="tags-list">@foreach($project->tech as $tech)<span class="tag">{{ $tech }}</span>@endforeach</div>
+            </div>
+          @endif
           <div class="project-detail__meta-item">
-            <h4>Links</h4>
+            <h2>Links</h2>
             <div class="project-detail__links">
               @if($project->live_url && $project->live_url !== '#')
                 <a href="{{ $project->live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--sm">Live Demo</a>
@@ -50,25 +65,49 @@
             </div>
           </div>
         </div>
-        @if($project->gallery && count($project->gallery) > 0)
-          <div class="project-detail__gallery reveal stagger-3">
-            <h3>Project <span class="text-accent">Gallery</span></h3>
-            <div class="project-detail__gallery-grid">
-              @foreach($project->gallery as $img)
-                <div class="project-detail__gallery-item" data-lightbox-index="{{ $loop->index }}">
-                  <img src="{{ $img }}" alt="{{ $project->name }} screenshot {{ $loop->iteration }}" loading="lazy" />
-                </div>
+
+        @if($body)
+          <article class="article-content reveal stagger-3">
+            {!! Str::markdown($body, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
+          </article>
+        @endif
+
+        @if(count($gallery))
+          <section class="project-detail__gallery reveal">
+            <h2>Project <span class="text-accent">Gallery</span></h2>
+            <div class="project-detail__gallery-grid" id="project-gallery">
+              @foreach($gallery as $image)
+                <button type="button" class="project-detail__gallery-item gallery-item" data-lightbox-index="{{ $loop->index }}" aria-label="Open screenshot {{ $loop->iteration }}">
+                  <img src="{{ $image['url'] }}" alt="{{ $image['caption'] ?: $project->name.' screenshot '.$loop->iteration }}" loading="lazy" />
+                </button>
               @endforeach
             </div>
-          </div>
+          </section>
         @endif
+
+        <nav class="article-pagination" aria-label="Project navigation">
+          @if($previous)
+            <a href="{{ route('projects.show', $previous) }}" class="article-pagination__link">
+              <span class="article-pagination__label">Previous project</span>
+              <span class="article-pagination__title">← {{ $previous->name }}</span>
+            </a>
+          @else
+            <span></span>
+          @endif
+          @if($next)
+            <a href="{{ route('projects.show', $next) }}" class="article-pagination__link article-pagination__link--next">
+              <span class="article-pagination__label">Next project</span>
+              <span class="article-pagination__title">{{ $next->name }} →</span>
+            </a>
+          @endif
+        </nav>
       </div>
     @else
       <div class="container">
         <div class="project-detail__not-found">
-          <h2>Project Not Found</h2>
-          <p>The project you're looking for doesn't exist.</p>
-          <a href="{{ url('/projects.html') }}" class="btn btn--primary">Back to Projects</a>
+          <h1>Project Not Found</h1>
+          <p>The project you're looking for doesn't exist or is no longer published.</p>
+          <a href="{{ route('projects.index') }}" class="btn btn--primary">Back to Projects</a>
         </div>
       </div>
     @endif
@@ -77,5 +116,18 @@
 
 @push('scripts')
   <script src="{{ asset('js/lightbox.js') }}"></script>
-  <script src="{{ asset('js/project-detail.js') }}"></script>
+  @if($project && count($gallery))
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var images = @json($gallery);
+        var trigger = document.getElementById('project-gallery');
+        if (!trigger || typeof lightbox === 'undefined') return;
+        trigger.addEventListener('click', function (event) {
+          var item = event.target.closest('[data-lightbox-index]');
+          if (!item) return;
+          lightbox.open(images.map(function (img) { return { src: img.url, alt: img.caption || '' }; }), Number(item.dataset.lightboxIndex));
+        });
+      });
+    </script>
+  @endif
 @endpush

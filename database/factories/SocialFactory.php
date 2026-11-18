@@ -12,7 +12,7 @@ class SocialFactory extends Factory
     public function definition(): array
     {
         return [
-            'platform' => 'platform_' . fake()->uuid(),
+            'platform' => 'platform_'.fake()->uuid(),
             'url' => fake()->url(),
             'label' => fake()->word(),
             'icon' => strtolower(fake()->word()),

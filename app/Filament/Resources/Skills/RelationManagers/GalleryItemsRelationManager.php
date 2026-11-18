@@ -30,6 +30,8 @@ class GalleryItemsRelationManager extends RelationManager
                     ->disk('public')
                     ->directory('skill-gallery')
                     ->image()
+                    ->maxSize(5120)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                     ->required(),
 
                 TextInput::make('caption')

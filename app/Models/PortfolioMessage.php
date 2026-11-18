@@ -40,7 +40,6 @@ class PortfolioMessage extends Model
             'message' => $this->message,
             'rating' => $this->rating,
             'timestamp' => $this->posted_at_ms,
-            'sessionToken' => $this->session_token,
             'hidden' => $this->getAttribute('hidden'),
             'flagged' => $this->getAttribute('flagged'),
             'pinned' => $this->getAttribute('pinned'),

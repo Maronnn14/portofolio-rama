@@ -15,6 +15,8 @@ Route::controller(PortfolioController::class)->group(function () {
     Route::get('/about/biodata', 'biodata')->name('about.biodata');
     Route::get('/about/cv', 'cv')->name('about.cv');
     Route::get('/about/interests', 'interests')->name('about.interests');
+    Route::get('/about/blog', 'blog')->name('about.blog');
+    Route::get('/about/blog/{blogPost:slug}', 'blogShow')->name('about.blog.show');
     Route::get('/about.html', 'about')->name('about.html');
 
     Route::get('/skills', 'skills')->name('skills');

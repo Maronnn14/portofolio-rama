@@ -33,8 +33,14 @@ class MobileResponsivenessTest extends TestCase
         $home = $this->readCss('home.css');
         $admin = $this->readCss('admin.css');
 
-        $this->assertStringContainsString('min-height: 100svh;', $home);
-        $this->assertStringContainsString('font-size: clamp(2.25rem, 16vw, 3.25rem);', $home);
+        // Hero memakai komposisi split diagonal dengan potret.
+        $this->assertStringContainsString('min-height: min(100svh, 980px);', $home);
+        $this->assertStringContainsString('clip-path: polygon(', $home);
+        $this->assertStringContainsString('.hero__watermark', $home);
+
+        // Di layar kecil hero turun menjadi satu kolom.
+        $this->assertStringContainsString('grid-template-columns: minmax(0, 1fr);', $home);
+
         $this->assertStringContainsString('width: min(86vw, 280px);', $admin);
         $this->assertStringContainsString('[style*="min-width:260px"]', $admin);
     }

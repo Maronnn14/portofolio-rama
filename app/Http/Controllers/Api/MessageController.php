@@ -32,7 +32,6 @@ class MessageController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'message' => ['required', 'string', 'max:1000'],
             'rating' => ['nullable', 'integer', 'min:0', 'max:5'],
-            'session_token' => ['nullable', 'string', 'max:255'],
         ]);
 
         $msg = PortfolioMessage::create([
@@ -41,7 +40,8 @@ class MessageController extends Controller
             'message' => $validated['message'],
             'rating' => $validated['rating'] ?? 0,
             'posted_at_ms' => (int) (microtime(true) * 1000),
-            'session_token' => $validated['session_token'] ?? null,
+            // Tidak ada token dari klien: pesan tamu tidak bisa disunting sendiri.
+            'session_token' => null,
             'hidden' => false,
             'flagged' => false,
             'pinned' => false,
@@ -54,26 +54,17 @@ class MessageController extends Controller
     {
         $msg = PortfolioMessage::where('message_id', $id)->firstOrFail();
 
-        $isAdmin = (bool) $this->resolveAdminUser($request);
-
-        if (! $isAdmin) {
-            $sessionToken = $request->input('session_token');
-            if (! $sessionToken || $sessionToken !== $msg->session_token) {
-                return response()->json(['message' => 'You can only edit your own messages.'], 403);
-            }
+        // Hanya admin yang boleh menyunting pesan tamu.
+        if (! $this->resolveAdminUser($request)) {
+            return response()->json(['message' => 'Only administrators can edit guestbook messages.'], 403);
         }
 
-        $rules = [
+        $validated = $request->validate([
             'message' => ['sometimes', 'string', 'max:1000'],
-        ];
-
-        if ($isAdmin) {
-            $rules['hidden'] = ['sometimes', 'boolean'];
-            $rules['flagged'] = ['sometimes', 'boolean'];
-            $rules['pinned'] = ['sometimes', 'boolean'];
-        }
-
-        $validated = $request->validate($rules);
+            'hidden' => ['sometimes', 'boolean'],
+            'flagged' => ['sometimes', 'boolean'],
+            'pinned' => ['sometimes', 'boolean'],
+        ]);
 
         if (isset($validated['message'])) {
             $msg->message = $validated['message'];
@@ -97,13 +88,9 @@ class MessageController extends Controller
     {
         $msg = PortfolioMessage::where('message_id', $id)->firstOrFail();
 
-        $isAdmin = (bool) $this->resolveAdminUser($request);
-
-        if (! $isAdmin) {
-            $sessionToken = $request->input('session_token');
-            if (! $sessionToken || $sessionToken !== $msg->session_token) {
-                return response()->json(['message' => 'You can only delete your own messages.'], 403);
-            }
+        // Hanya admin yang boleh menghapus pesan tamu.
+        if (! $this->resolveAdminUser($request)) {
+            return response()->json(['message' => 'Only administrators can delete guestbook messages.'], 403);
         }
 
         $msg->delete();
@@ -113,6 +100,10 @@ class MessageController extends Controller
 
     public function bulkDestroy(Request $request): JsonResponse
     {
+        if (! $this->resolveAdminUser($request)) {
+            return response()->json(['message' => 'Only administrators can delete guestbook messages.'], 403);
+        }
+
         $validated = $request->validate([
             'ids' => ['required', 'array'],
             'ids.*' => ['required', 'string'],

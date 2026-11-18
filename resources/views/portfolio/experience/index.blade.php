@@ -30,11 +30,15 @@
       <div class="article-feed">
         @forelse($experiences as $experience)
           <article class="feed-card reveal stagger-{{ min($loop->iteration, 5) }}">
-            @if($experience->cover_url)
-              <a href="{{ route('experience.show', $experience) }}" class="feed-card__media" tabindex="-1" aria-hidden="true">
-                <img src="{{ $experience->cover_url }}" alt="" loading="lazy" />
-              </a>
-            @endif
+            <a href="{{ route('experience.show', $experience) }}" class="feed-card__media{{ $experience->cover_url ? '' : ' feed-card__media--placeholder' }}" tabindex="-1" aria-hidden="true">
+              <span class="feed-card__media-frame">
+                @if($experience->cover_url)
+                  <img src="{{ $experience->cover_url }}" alt="" loading="lazy" />
+                @else
+                  <span class="feed-card__media-initials">{{ \App\Support\Icon::initials($experience->company ?: $experience->role) }}</span>
+                @endif
+              </span>
+            </a>
             <div class="feed-card__body">
               <div class="article-meta">
                 <span class="tag tag--accent">{{ $experience->type }}</span>

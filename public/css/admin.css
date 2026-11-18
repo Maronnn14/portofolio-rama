@@ -6,7 +6,7 @@
 .admin-body {
   display: flex;
   min-height: 100vh;
-  background: #0d0d0d;
+  background: var(--bg-primary);
 }
 
 /* ====== Sidebar ====== */
@@ -20,6 +20,7 @@
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
+  background: var(--bg-secondary);
   z-index: 100;
   transition: width 0.3s var(--ease-out), transform 0.3s var(--ease-out);
   overflow-x: hidden;
@@ -152,7 +153,7 @@
   justify-content: space-between;
   padding: var(--space-lg) var(--space-2xl);
   border-bottom: 1px solid var(--border-subtle);
-  background: #0a0a0a;
+  background: var(--bg-primary);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -324,7 +325,7 @@
   vertical-align: middle;
 }
 
-.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+.admin-table tr:hover td { background: var(--accent-glow); }
 
 .admin-table__actions {
   display: flex;
@@ -380,7 +381,7 @@
 .admin-modal__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: var(--overlay);
   backdrop-filter: blur(4px);
 }
 
@@ -912,8 +913,8 @@
   justify-content: center;
   text-align: center;
   padding: var(--space-2xl) var(--space-xl);
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
-  border: 1px dashed rgba(212, 168, 83, 0.25);
+  background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 100%);
+  border: 1px dashed var(--border-accent);
   border-radius: var(--radius-xl);
   margin-top: var(--space-md);
   transition: border-color var(--duration-normal) var(--ease-out);

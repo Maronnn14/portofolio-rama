@@ -91,10 +91,12 @@ class PortfolioMessageTest extends TestCase
             'message' => 'Love it!',
             'rating' => 5,
             'timestamp' => 4000000,
-            'sessionToken' => 'token_abc',
             'hidden' => false,
             'flagged' => true,
             'pinned' => false,
         ], $frontend);
+
+        // Token sesi tamu tidak boleh pernah ikut dikirim ke publik.
+        $this->assertArrayNotHasKey('sessionToken', $frontend);
     }
 }

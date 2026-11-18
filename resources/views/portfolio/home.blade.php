@@ -17,39 +17,52 @@
 @section('description', trim($homeRole.' '.$homeTagline) ?: ($siteSettings['meta_description'] ?? ''))
 
 @section('content')
+  @php
+    $heroNameParts = preg_split('/\s+/', trim($homeName)) ?: [];
+    $heroLast = count($heroNameParts) > 1 ? array_pop($heroNameParts) : '';
+    $heroFirst = trim(implode(' ', $heroNameParts));
+  @endphp
   <section class="hero" id="hero">
-    <div class="hero__bg">
-      <div class="hero__gradient"></div>
-      <div class="hero__grid-pattern"></div>
-      <div class="hero__orb hero__orb--1"></div>
-      <div class="hero__orb hero__orb--2"></div>
+    <div class="hero__bg" aria-hidden="true">
+      <div class="hero__panel"></div>
+      <div class="hero__panel-line"></div>
     </div>
-    <div class="container hero__content">
-      <div class="hero__label section-label mb-8">Welcome to my portfolio</div>
-      <h1 class="hero__title">
-        <span class="hero__name" id="hero-name">{{ $homeName }}</span>
-      </h1>
-      @if($homeRole)
-        <p class="hero__role" id="hero-role">{{ $homeRole }}</p>
-      @endif
-      @if($homeTagline)
-        <p class="hero__tagline" id="hero-tagline">{{ $homeTagline }}</p>
-      @endif
-      @if($branding)
-        <p class="hero__tagline hero__branding">{{ $branding }}</p>
-      @endif
-      <div class="hero__cta">
-        <a href="{{ $homeSettings['hero_cta_primary_url'] ?? route('projects.index') }}" class="btn btn--primary btn--lg">
-          {{ $homeSettings['hero_cta_primary_label'] ?? 'View Projects' }}
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="{{ $homeSettings['hero_cta_secondary_url'] ?? route('contact') }}" class="btn btn--secondary btn--lg">
-          {{ $homeSettings['hero_cta_secondary_label'] ?? 'Contact Me' }}
-        </a>
+    <p class="hero__watermark" id="hero-watermark" aria-hidden="true">{{ $heroLast ?: $homeNickname }}</p>
+
+    <div class="hero__inner container">
+      <div class="hero__media">
+        <div class="hero__frame">
+          @if($homeImage)
+            <img src="{{ $homeImage }}" alt="{{ $homeName }}" class="hero__portrait" loading="eager" />
+          @else
+            <div class="hero__portrait hero__portrait--placeholder" aria-hidden="true">{{ Icon::initials($homeName) }}</div>
+          @endif
+        </div>
+        <span class="hero__meta hero__meta--bl">{{ $siteSettings['location'] ?? 'Indonesia' }}</span>
       </div>
-      <div class="hero__scroll-indicator">
-        <span>Scroll</span>
-        <div class="hero__scroll-line"></div>
+
+      <div class="hero__content">
+        <span class="section-label">Welcome to my portfolio</span>
+        <h1 class="hero__title">
+          <span class="hero__name" id="hero-name">{{ $homeName }}</span>
+        </h1>
+
+        @if($homeRole)
+          <p class="hero__role" id="hero-role">{{ $homeRole }}</p>
+        @endif
+        @if($homeTagline)
+          <p class="hero__tagline" id="hero-tagline">{{ $homeTagline }}</p>
+        @endif
+        @if($branding)
+          <p class="hero__tagline hero__branding">{{ $branding }}</p>
+        @endif
+
+        @include('portfolio.partials.hero-cta', ['personal' => $personal, 'homeSettings' => $homeSettings, 'homeName' => $homeName])
+
+        <div class="hero__scroll-indicator">
+          <span>Scroll</span>
+          <div class="hero__scroll-line"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -172,6 +185,48 @@
     </div>
   </section>
 
+  @if($blogPosts->isNotEmpty())
+  <section class="section section--compact home-blog" id="home-blog">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Journal</span>
+        <h2 class="section-heading">Catatan <span class="text-accent">Terbaru</span></h2>
+        <p class="section-subheading">Tulisan harian tentang proses, pelajaran, dan hal kecil yang layak dibagikan</p>
+      </div>
+      <div class="projects-grid">
+        @foreach($blogPosts as $post)
+          <article class="project-card reveal stagger-{{ $loop->iteration }}">
+            <a href="{{ route('about.blog.show', $post) }}" class="project-card__link">
+              <div class="project-card__thumbnail">
+                @if($post->category)<span class="project-card__badge">{{ $post->category }}</span>@endif
+                @if($post->cover_url)
+                  <img src="{{ $post->cover_url }}" alt="{{ $post->title }}" loading="lazy" />
+                @else
+                  <span class="project-card__placeholder" aria-hidden="true">{{ \App\Support\Icon::initials($post->title) }}</span>
+                @endif
+                <span class="project-card__overlay"><span class="project-card__overlay-btn">Baca tulisan <span aria-hidden="true">→</span></span></span>
+              </div>
+              <div class="project-card__body">
+                <span class="project-card__category">
+                  {{ optional($post->display_date)->translatedFormat('d M Y') }} · {{ $post->reading_minutes }} min read
+                </span>
+                <h3 class="project-card__name">{{ $post->title }}</h3>
+                <p class="project-card__desc">{{ $post->summary }}</p>
+                <div class="project-card__tech">
+                  @foreach(array_slice($post->tags ?? [], 0, 4) as $tag)<span class="tag">{{ $tag }}</span>@endforeach
+                </div>
+              </div>
+            </a>
+          </article>
+        @endforeach
+      </div>
+      <div class="reveal mt-12">
+        <a href="{{ route('about.blog') }}" class="btn btn--ghost">Semua Tulisan <span class="btn-arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+  @endif
+
   <section class="section contact-cta" id="contact-cta">
     <div class="contact-cta__bg"></div>
     <div class="container text-center relative z-10">
@@ -180,8 +235,20 @@
         <h2 class="contact-cta__heading">{{ $homeSettings['contact_cta_heading'] ?? "Let's Work Together" }}</h2>
         <p class="contact-cta__text">{{ $homeSettings['contact_cta_text'] ?? '' }}</p>
         <a href="{{ route('contact') }}" class="btn btn--primary btn--lg">Get In Touch <span class="btn-arrow">→</span></a>
-        @if($personal['email'] ?? $siteSettings['contact_email'] ?? null)
-          <a href="mailto:{{ $personal['email'] ?? $siteSettings['contact_email'] }}" class="contact-cta__email">{{ $personal['email'] ?? $siteSettings['contact_email'] }}</a>
+        @php $ctaEmail = $personal['email'] ?? $siteSettings['contact_email'] ?? null; @endphp
+        @if($ctaEmail)
+          <div class="contact-cta__email-row">
+          <a href="mailto:{{ $ctaEmail }}" class="contact-cta__email">
+            <span class="contact-cta__email-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 6.5 9 6 9-6"/></svg>
+            </span>
+            <span class="contact-cta__email-text">
+              <span class="contact-cta__email-label">Email</span>
+              <span class="contact-cta__email-value">{{ $ctaEmail }}</span>
+            </span>
+            <span class="contact-cta__email-arrow" aria-hidden="true">→</span>
+          </a>
+          </div>
         @endif
         @if($socials->isNotEmpty())
           <div class="contact-cta__socials">

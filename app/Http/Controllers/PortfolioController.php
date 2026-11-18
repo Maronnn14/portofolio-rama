@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\ContactSubmission;
 use App\Models\Contribution;
 use App\Models\Education;
@@ -31,6 +32,7 @@ class PortfolioController extends Controller
             'experience' => Experience::published()->work()->orderBy('sort_order')->take(3)->get(),
             'socials' => Social::where('visible', true)->orderBy('sort_order')->get(),
             'gallery' => GalleryImage::where('visible', true)->orderBy('sort_order')->orderByDesc('created_at')->get(),
+            'blogPosts' => BlogPost::published()->latestFirst()->take(3)->get(),
             'metaTitle' => null,
         ]);
     }
@@ -71,6 +73,50 @@ class PortfolioController extends Controller
         return view('portfolio.about.interests', [
             'interests' => Interest::orderBy('sort_order')->get(),
             'metaTitle' => 'Interests & Hobbies',
+        ]);
+    }
+
+    public function blog(Request $request): View
+    {
+        $query = BlogPost::published();
+
+        if ($search = trim((string) $request->query('q'))) {
+            $query->where(function ($sub) use ($search) {
+                $sub->where('title', 'like', "%{$search}%")
+                    ->orWhere('excerpt', 'like', "%{$search}%")
+                    ->orWhere('body', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        if ($category = $request->query('category')) {
+            $query->where('category', $category);
+        }
+
+        return view('portfolio.about.blog', [
+            'posts' => $query->latestFirst()->paginate(9)->withQueryString(),
+            'categories' => BlogPost::published()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category'),
+            'filters' => [
+                'q' => $request->query('q', ''),
+                'category' => $category,
+            ],
+            'metaTitle' => 'Daily Blog',
+        ]);
+    }
+
+    public function blogShow(BlogPost $blogPost): View
+    {
+        abort_unless($blogPost->isPublished(), 404);
+
+        return view('portfolio.about.blog-show', [
+            'post' => $blogPost,
+            'related' => BlogPost::published()
+                ->whereKeyNot($blogPost->getKey())
+                ->latestFirst()
+                ->take(3)
+                ->get(),
+            'metaTitle' => $blogPost->title,
+            'metaDescription' => $blogPost->summary,
         ]);
     }
 

@@ -123,6 +123,8 @@ class PortfolioContentTest extends TestCase
             'role' => 'Backend Engineer',
             'company' => 'Acme',
             'status' => 'published',
+            // 'type' acak bisa menghasilkan 'Education' yang tidak tampil di daftar kerja.
+            'type' => 'Full-time',
             'body' => "### Impact\n\nCut latency in half.",
             'achievements' => ['Cut latency in half'],
         ]);
@@ -136,6 +138,35 @@ class PortfolioContentTest extends TestCase
             ->assertOk()
             ->assertSee('Impact')
             ->assertSee('Cut latency in half');
+    }
+
+    #[Test]
+    public function experience_feed_shows_square_thumbnail_with_placeholder_fallback(): void
+    {
+        Experience::factory()->create([
+            'role' => 'Frontend Engineer',
+            'company' => 'Pixelnest',
+            'status' => 'published',
+            'type' => 'Full-time',
+            'cover_image' => 'experiences/thumb.webp',
+        ]);
+
+        Experience::factory()->create([
+            'role' => 'Backend Engineer',
+            'company' => 'Studio Kecil',
+            'status' => 'published',
+            'type' => 'Full-time',
+            'cover_image' => null,
+        ]);
+
+        $this->get('/experience')
+            ->assertOk()
+            ->assertSee('feed-card__media', false)
+            ->assertSee('storage/experiences/thumb.webp', false)
+            // Tanpa thumbnail tetap ada kotak persegi berisi inisial perusahaan.
+            ->assertSee('feed-card__media--placeholder', false)
+            ->assertSee('feed-card__media-initials', false)
+            ->assertSee('>SK<', false);
     }
 
     #[Test]

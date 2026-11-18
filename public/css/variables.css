@@ -1,43 +1,73 @@
 /* ============================================
-   DESIGN TOKENS — Dark Editorial Luxury
+   DESIGN TOKENS — "Gallery Editorial"
+   Krem · charcoal · emas lembut, dengan mode terang (default) & gelap.
+   Nama variabel dipertahankan agar seluruh CSS lama ikut berubah otomatis.
    ============================================ */
 
 :root {
-  /* ---- Colors ---- */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
-  --bg-elevated: #222222;
+  color-scheme: light;
 
-  --text-primary: #f5f0e8;
-  --text-secondary: #a8a29e;
-  --text-muted: #6b6560;
+  /* ---- Palet dasar ---- */
+  --cream: #faf8f5;
+  --cream-deep: #f3eee6;
+  --charcoal: #4a4a4a;
+  --gold-soft: #b69a68;
 
-  --accent: #d4a853;
-  --accent-light: #e8c97a;
-  --accent-dark: #b8912e;
-  --accent-glow: rgba(212, 168, 83, 0.15);
-  --accent-glow-strong: rgba(212, 168, 83, 0.3);
+  /* ---- Permukaan ---- */
+  --bg-primary: #faf8f5;      /* kanvas kertas galeri */
+  --bg-secondary: #f3eee6;    /* panel, kartu, footer */
+  --bg-tertiary: #ece5d9;     /* input, chip */
+  --bg-elevated: #ffffff;     /* modal, dropdown */
 
-  --border-subtle: #1f1f1f;
-  --border-default: #2a2a2a;
-  --border-hover: #3a3a3a;
-  --border-accent: rgba(212, 168, 83, 0.3);
+  /* ---- Teks ---- */
+  --text-primary: #3c3c3c;
+  --text-secondary: #5f5a52;
+  --text-muted: #625b53;      /* ≥4.9:1 di atas krem & panel → lolos WCAG AA */
+  --text-inverse: #faf8f5;
+  --on-overlay: #faf8f5;
 
-  --success: #22c55e;
-  --success-bg: rgba(34, 197, 94, 0.1);
-  --error: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.1);
-  --warning: #f59e0b;
-  --star: #fbbf24;
+  /* ---- Aksen emas ---- */
+  --accent: #7d5f30;          /* 5.1:1 di atas panel → aman untuk teks kecil */
+  --accent-light: #b69a68;    /* dekoratif / teks besar */
+  --accent-dark: #644a24;
+  --accent-soft: #cbb894;
+  --accent-glow: rgba(182, 154, 104, 0.16);
+  --accent-glow-strong: rgba(182, 154, 104, 0.3);
+  --on-accent: #faf8f5;
 
-  --overlay: rgba(0, 0, 0, 0.7);
-  --overlay-heavy: rgba(0, 0, 0, 0.85);
+  /* ---- Tombol ---- */
+  --btn-primary-bg: #3b3732;
+  --btn-primary-fg: #faf8f5;
+  --btn-primary-bg-hover: #b69a68;
+  --btn-primary-fg-hover: #2f2b26;
 
-  /* ---- Typography ---- */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* ---- Garis ---- */
+  --border-subtle: rgba(74, 58, 40, 0.1);
+  --border-default: rgba(74, 58, 40, 0.22);
+  --border-hover: rgba(74, 58, 40, 0.3);
+  --border-accent: rgba(182, 154, 104, 0.55);
+
+  /* ---- Status ---- */
+  --success: #2f6b4f;
+  --success-bg: rgba(47, 107, 79, 0.1);
+  --error: #8e3b3b;
+  --error-bg: rgba(142, 59, 59, 0.1);
+  --warning: #7d5f30;
+  --star: #7d5f30;
+
+  /* ---- Overlay & ornamen ---- */
+  --overlay: rgba(74, 58, 40, 0.45);
+  --overlay-heavy: rgba(46, 36, 24, 0.7);
+  --grain-opacity: 0.045;
+  --watermark-color: #4a4a4a;
+  --watermark-opacity: 0.07;
+  --sticker-outline: #ffffff;
+
+  /* ---- Tipografi ---- */
+  --font-display: 'Space Grotesk', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Space Grotesk', 'Inter', system-ui, sans-serif;   /* eyebrow / label */
+  --font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;  /* kode */
 
   --fs-xs: clamp(0.7rem, 0.8vw, 0.75rem);
   --fs-sm: clamp(0.8rem, 0.9vw, 0.875rem);
@@ -48,25 +78,25 @@
   --fs-2xl: clamp(1.8rem, 2.5vw, 2.25rem);
   --fs-3xl: clamp(2.2rem, 3.5vw, 3rem);
   --fs-4xl: clamp(2.8rem, 5vw, 4rem);
-  --fs-hero: clamp(3rem, 7vw, 5.5rem);
+  --fs-hero: clamp(3rem, 6.4vw, 5.5rem);
 
   --fw-normal: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  --lh-tight: 1.1;
+  --lh-tight: 1.02;
   --lh-snug: 1.3;
-  --lh-normal: 1.6;
+  --lh-normal: 1.7;
   --lh-relaxed: 1.8;
 
-  --ls-tight: -0.03em;
-  --ls-normal: 0;
+  --ls-tight: -0.01em;
+  --ls-normal: 0.02em;
   --ls-wide: 0.05em;
-  --ls-wider: 0.1em;
+  --ls-wider: 0.12em;
   --ls-widest: 0.2em;
 
-  /* ---- Spacing ---- */
+  /* ---- Spasi ---- */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -82,30 +112,30 @@
   --container-max: 1200px;
   --container-narrow: 800px;
   --container-wide: 1400px;
-  --container-padding: clamp(1.25rem, 4vw, 2rem);
+  --container-padding: clamp(1.25rem, 4vw, 5.5rem);
 
-  /* ---- Border Radius ---- */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
+  /* ---- Radius (kartu 16–20, pil penuh) ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
   --radius-full: 9999px;
 
-  /* ---- Shadows ---- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 30px rgba(212, 168, 83, 0.15);
-  --shadow-glow-strong: 0 0 50px rgba(212, 168, 83, 0.25);
+  /* ---- Bayangan: hangat, blur besar, opasitas < 10% ---- */
+  --shadow-sm: 0 2px 8px rgba(74, 58, 40, 0.06);
+  --shadow-md: 0 10px 28px rgba(74, 58, 40, 0.08);
+  --shadow-lg: 0 24px 60px rgba(74, 58, 40, 0.1);
+  --shadow-xl: 0 32px 80px rgba(74, 58, 40, 0.12);
+  --shadow-glow: 0 18px 44px rgba(182, 154, 104, 0.16);
+  --shadow-glow-strong: 0 24px 60px rgba(182, 154, 104, 0.24);
 
-  /* ---- Transitions ---- */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* ---- Transisi ---- */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --duration-fast: 150ms;
-  --duration-normal: 300ms;
+  --duration-normal: 280ms;
   --duration-slow: 500ms;
   --duration-slower: 700ms;
 
@@ -118,15 +148,12 @@
   --z-lightbox: 1100;
   --z-toast: 1200;
 
-  /* ---- Aliases (bridge naming conventions) ---- */
+  /* ---- Alias ---- */
   --font-heading: var(--font-display);
-
   --accent-gold: var(--accent);
   --accent-gold-light: var(--accent-light);
-
   --transition-base: var(--duration-normal) var(--ease-out);
   --transition-fast: var(--duration-fast) var(--ease-out);
-
   --text-xs: var(--fs-xs);
   --text-sm: var(--fs-sm);
   --text-base: var(--fs-base);
@@ -136,6 +163,63 @@
   --text-2xl: var(--fs-2xl);
   --text-3xl: var(--fs-3xl);
   --text-4xl: var(--fs-4xl);
+  --navbar-height: 78px;
+}
 
-  --navbar-height: 72px;
+/* ============================================
+   MODE GELAP — "galeri malam"
+   Latar ink hangat (bukan hitam murni), teks krem, emas lebih terang.
+   ============================================ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-primary: #16130f;
+  --bg-secondary: #1d1915;
+  --bg-tertiary: #241f1a;
+  --bg-elevated: #2b251f;
+
+  --text-primary: #f4eee4;
+  --text-secondary: #c0b6a7;
+  --text-muted: #9a9080;
+  --text-inverse: #16130f;
+  --on-overlay: #f4eee4;
+
+  --accent: #d9bc8c;
+  --accent-light: #ecd5af;
+  --accent-dark: #b6955f;
+  --accent-soft: #6d5c40;
+  --accent-glow: rgba(217, 188, 140, 0.14);
+  --accent-glow-strong: rgba(217, 188, 140, 0.26);
+  --on-accent: #16130f;
+
+  --btn-primary-bg: #f1e7d7;
+  --btn-primary-fg: #171410;
+  --btn-primary-bg-hover: #d9bc8c;
+  --btn-primary-fg-hover: #171410;
+
+  --border-subtle: rgba(244, 238, 228, 0.08);
+  --border-default: rgba(244, 238, 228, 0.18);
+  --border-hover: rgba(244, 238, 228, 0.26);
+  --border-accent: rgba(217, 188, 140, 0.42);
+
+  --success: #6fbe95;
+  --success-bg: rgba(111, 190, 149, 0.12);
+  --error: #e08080;
+  --error-bg: rgba(224, 128, 128, 0.12);
+  --warning: #d9bc8c;
+  --star: #d9bc8c;
+
+  --overlay: rgba(10, 8, 6, 0.7);
+  --overlay-heavy: rgba(8, 6, 5, 0.85);
+  --grain-opacity: 0.06;
+  --watermark-color: #f4eee4;
+  --watermark-opacity: 0.06;
+  --sticker-outline: #2b251f;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  --shadow-glow-strong: 0 24px 60px rgba(0, 0, 0, 0.5);
 }

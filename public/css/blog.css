@@ -1,0 +1,107 @@
+/* ==========================================================================
+   Daily Blog — daftar tulisan, kartu, dan pagination
+   Semua warna memakai token dari variables.css (mendukung mode gelap).
+   ========================================================================== */
+
+.blog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.blog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+/* Kartu tulisan memakai komponen .project-card (lihat projects.css),
+   jadi tidak ada gaya kartu terpisah di sini. */
+
+/* Pagination sederhana */
+.blog-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-3xl);
+}
+
+.blog-pagination__link {
+  font-size: var(--fs-sm);
+  color: var(--accent);
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.blog-pagination__link:hover {
+  border-color: var(--border-accent);
+  background-color: var(--accent-glow);
+}
+
+.blog-pagination__link.is-disabled {
+  color: var(--text-muted);
+  border-color: var(--border-subtle);
+  opacity: 0.6;
+}
+
+.blog-pagination__status {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .blog-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .blog-toolbar .search-form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .blog-pagination {
+    gap: var(--space-sm);
+  }
+
+  .blog-pagination__link {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* Toolbar blog: input pencarian harus tetap lebar, tombol jangan "melar" */
+.blog-toolbar .search-form {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.blog-toolbar .search-form__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.blog-toolbar .search-form .btn {
+  flex: 0 0 auto;
+  width: auto;
+  padding-inline: var(--space-md);
+}
+
+/* Waktu baca kecil di header artikel */
+.reading-time {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

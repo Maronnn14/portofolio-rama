@@ -41,11 +41,38 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @stack('styles')
-  <script>try{var s=@json(\App\Models\SiteSetting::getSetting('appearance') ?? []);var a=(s&&s.accentColor)?s:JSON.parse(localStorage.getItem('portfolio_appearance')||'{}');if(a.accentColor){var h=a.accentColor.replace('#',''),n=parseInt(h,16),r=(n>>16)&255,g=(n>>8)&255,b=n&255,root=document.documentElement.style,l='#'+[r+(255-r)*0.15,g+(255-g)*0.15,b+(255-b)*0.15].map(function(v){return Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')}).join(''),d='#'+[r*0.85,g*0.85,b*0.85].map(function(v){return Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')}).join('');root.setProperty('--accent',a.accentColor);root.setProperty('--accent-light',l);root.setProperty('--accent-dark',d);root.setProperty('--accent-glow','rgba('+r+','+g+','+b+',0.25)');}if(a.theme){document.documentElement.setAttribute('data-theme',a.theme);}}catch(e){}</script>
+  <script>
+  /* Tema terang/gelap dipasang sebelum paint supaya tidak ada kedipan (FOUC). */
+  (function () {
+    try {
+      var root = document.documentElement;
+      var saved = null;
+      try { saved = localStorage.getItem('portfolio_theme'); } catch (e) {}
+      var s = @json(\App\Models\SiteSetting::getSetting('appearance') ?? []);
+      var adminTheme = s && s.theme ? s.theme : null;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = (saved === 'dark' || saved === 'light') ? saved
+                : (adminTheme === 'dark' || adminTheme === 'light') ? adminTheme
+                : (prefersDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', theme);
+
+      /* Warna aksen kustom dari panel admin tetap dihormati. */
+      var a = (s && s.accentColor) ? s : JSON.parse(localStorage.getItem('portfolio_appearance') || '{}');
+      if (a.accentColor) {
+        var h = a.accentColor.replace('#', ''), n = parseInt(h, 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+        var hex = function (v) { return Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0'); };
+        root.style.setProperty('--accent', a.accentColor);
+        root.style.setProperty('--accent-light', '#' + hex(r + (255 - r) * 0.15) + hex(g + (255 - g) * 0.15) + hex(b + (255 - b) * 0.15));
+        root.style.setProperty('--accent-dark', '#' + hex(r * 0.85) + hex(g * 0.85) + hex(b * 0.85));
+        root.style.setProperty('--accent-glow', 'rgba(' + r + ',' + g + ',' + b + ',0.25)');
+      }
+    } catch (e) {}
+  })();
+  </script>
 
   @if($socialLinks->isNotEmpty())
     <script type="application/ld+json">
@@ -78,6 +105,7 @@
 
   <script src="{{ asset('js/api-client.js') }}"></script>
   <script src="{{ asset('js/data.js') }}"></script>
+  <script src="{{ asset('js/theme.js') }}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
   @stack('scripts')
 </body>

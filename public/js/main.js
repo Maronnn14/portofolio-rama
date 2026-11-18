@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initScrollReveal();
   initSmoothScroll();
+  initHeroParallax();
   // Admin auth modal (rendered once on any page)
   if (typeof renderLoginModal === 'function') {
     document.body.insertAdjacentHTML('beforeend', renderLoginModal());
@@ -222,3 +223,25 @@ function renderStars(rating, readonly = true) {
 })();
 
 
+
+/* ---- Parallax lambat untuk watermark hero ---- */
+function initHeroParallax() {
+  const mark = document.getElementById('hero-watermark');
+  if (!mark) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  let ticking = false;
+  const update = () => {
+    // Faktor 0.12: sangat lambat, hanya terasa sebagai kedalaman.
+    mark.style.transform = `translateX(-50%) translate3d(0, ${window.scrollY * 0.12}px, 0)`;
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+}

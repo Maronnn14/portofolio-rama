@@ -18,9 +18,13 @@ class ExperienceResource extends Resource
 {
     protected static ?string $model = Experience::class;
 
+    protected static ?string $recordRouteKeyName = 'id';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 
-    protected static ?int $navigationSort = 3;
+    protected static string|\UnitEnum|null $navigationGroup = 'Projects & Experience';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

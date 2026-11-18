@@ -2,9 +2,13 @@
    SKILLS.JS — Filtering & Detail Modal (SSR grid)
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await PortfolioData.load();
+// The grids are server-rendered, so filtering must not wait for the API
+// payload (it loads skill details for the modal only).
+document.addEventListener('DOMContentLoaded', () => {
   bindFilterTabs();
+  bindViewToggle();
+  applySkillFilters();
+  PortfolioData.load().catch(() => {});
 });
 
 function _escapeHtml(text) {
@@ -21,20 +25,129 @@ function renderSkillsGrid() {
   initScrollReveal();
 }
 
+let skillView = 'all';
+let skillCategory = 'all';
+
+// Views: 'all' | 'tech' | 'other' | 'soft'. 'hard' is kept as an alias of 'tech'.
+const normalizeView = (view) => (view === 'hard' ? 'tech' : view);
+
 function bindFilterTabs() {
   document.querySelectorAll('#skill-filter-tabs .filter-tab').forEach(tab => {
-    tab.addEventListener('click', () => { document.querySelectorAll('#skill-filter-tabs .filter-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); filterSkills(tab.dataset.filter); });
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#skill-filter-tabs .filter-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      skillCategory = tab.dataset.filter;
+
+      // Categories only exist for tech stack skills, so switch to that view.
+      if (skillView !== 'tech') setSkillView('tech');
+      else applySkillFilters();
+    });
   });
+}
+
+function bindViewToggle() {
+  document.querySelectorAll('#skill-view-toggle .skill-view-toggle__btn').forEach(btn => {
+    btn.addEventListener('click', () => setSkillView(btn.dataset.view));
+  });
+}
+
+function setSkillView(view) {
+  skillView = normalizeView(view);
+
+  document.querySelectorAll('#skill-view-toggle .skill-view-toggle__btn').forEach(btn => {
+    const active = normalizeView(btn.dataset.view) === skillView;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-selected', String(active));
+  });
+
+  if (skillView !== 'tech') {
+    // Category tabs belong to the tech stack view only.
+    skillCategory = 'all';
+    document.querySelectorAll('#skill-filter-tabs .filter-tab').forEach(tab => {
+      const isAll = tab.dataset.filter === 'all';
+      tab.classList.toggle('active', isAll);
+      tab.setAttribute('aria-selected', String(isAll));
+    });
+  }
+
+  applySkillFilters();
+}
+
+function applySkillFilters() {
+  const techWrapper = document.getElementById('skills-groups');
+  const otherSection = document.getElementById('other-skills-section');
+  const softSection = document.getElementById('soft-skills-section');
+  const tabs = document.getElementById('skill-filter-tabs');
+
+  const showTech = skillView === 'all' || skillView === 'tech';
+  const showOther = skillView === 'all' || skillView === 'other';
+  const showSoft = skillView === 'all' || skillView === 'soft';
+
+  if (techWrapper) techWrapper.classList.toggle('hidden', !showTech);
+  if (otherSection) otherSection.classList.toggle('hidden', !showOther);
+  if (softSection) softSection.classList.toggle('hidden', !showSoft);
+
+  // Sections that were hidden never got their scroll-reveal pass, so reveal
+  // them now instead of showing blank space.
+  [showTech && techWrapper, showOther && otherSection, showSoft && softSection]
+    .filter(Boolean)
+    .forEach(section => section
+      .querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
+      .forEach(node => node.classList.add('revealed')));
+  // Category tabs only make sense when the tech stack grid is on screen.
+  if (tabs) tabs.classList.toggle('hidden', !showTech);
+
+  let techCount = 0;
+
+  if (showTech) {
+    document.querySelectorAll('#skills-groups .skill-card').forEach(card => {
+      const match = skillCategory === 'all' || card.dataset.category === skillCategory;
+      card.classList.toggle('hidden', !match);
+      if (match) techCount++;
+    });
+
+    document.querySelectorAll('[data-skill-group]').forEach(group => {
+      const visible = Array.from(group.querySelectorAll('.skill-card')).some(card => !card.classList.contains('hidden'));
+      group.classList.toggle('hidden', !visible);
+    });
+  }
+
+  const otherCount = document.querySelectorAll('#other-skills-section .skill-card').length;
+  const softCount = document.querySelectorAll('#soft-skills-section .soft-skill-card').length;
+  const hint = document.getElementById('skills-view-hint');
+
+  if (hint) {
+    const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+    if (skillView === 'soft') {
+      hint.textContent = `Showing ${plural(softCount, 'soft skill')} — the human side of shipping good work.`;
+    } else if (skillView === 'other') {
+      hint.textContent = `Showing ${plural(otherCount, 'other hard skill')} — spreadsheets, design, media, and daily work tools.`;
+    } else if (skillView === 'tech') {
+      hint.textContent = `Showing ${plural(techCount, 'tech stack skill')}${skillCategory !== 'all' ? ' in ' + skillCategory : ''}.`;
+    } else {
+      hint.textContent = `Showing ${plural(techCount + otherCount, 'hard skill')} and ${plural(softCount, 'soft skill')}.`;
+    }
+  }
 }
 
 function filterSkills(cat) {
-  document.querySelectorAll('.skill-card').forEach(card => {
-    if (cat==='all'||card.dataset.category===cat) { card.classList.remove('hidden'); card.style.animation='fadeInUp 0.4s var(--ease-out) forwards'; } else card.classList.add('hidden');
-  });
+  skillCategory = cat;
+  applySkillFilters();
 }
 
-function openSkillModal(skillId) {
-  const s = PortfolioData.skills.find(x => String(x.id)===String(skillId)); if (!s) return;
+async function openSkillModal(skillId) {
+  let s = PortfolioData.skills.find(x => String(x.id)===String(skillId));
+  if (!s) {
+    // First click before the background load finished.
+    try { await PortfolioData.load(); } catch { return; }
+    s = PortfolioData.skills.find(x => String(x.id)===String(skillId));
+  }
+  if (!s) return;
   const modal = document.getElementById('skill-modal'), content = document.getElementById('skill-modal-content');
   const pl = s.projectLinks || [];
   const gi = s.galleryItems || [];

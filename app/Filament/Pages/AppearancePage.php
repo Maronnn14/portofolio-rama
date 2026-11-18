@@ -20,7 +20,9 @@ class AppearancePage extends Page
 
     protected static ?string $slug = 'appearance';
 
-    protected static ?int $navigationSort = 10;
+    protected static string|\UnitEnum|null $navigationGroup = 'Site Settings';
+
+    protected static ?int $navigationSort = 3;
 
     protected string $view = 'filament.pages.appearance-page';
 

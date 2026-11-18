@@ -81,6 +81,6 @@ class ProjectController extends Controller
 
         Project::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => count($validated['ids']) . ' projects deleted']);
+        return response()->json(['message' => count($validated['ids']).' projects deleted']);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\PersonalInfo;
+use App\Models\SiteSetting;
 use App\Models\Social;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -19,11 +20,23 @@ class AppServiceProvider extends ServiceProvider
         try {
             $personal = PersonalInfo::getAll();
             $socials = Social::where('visible', true)->orderBy('sort_order')->get();
-        } catch (\Exception $e) {
+            $siteSettings = SiteSetting::general();
+            $homeSettings = SiteSetting::home();
+        } catch (\Throwable) {
             $personal = [];
-            $socials = collect([]);
+            $socials = collect();
+            $siteSettings = [
+                'site_title' => 'Portfolio',
+                'meta_description' => 'Personal portfolio, projects, and experience.',
+                'og_image' => null,
+                'footer_text' => null,
+                'copyright_text' => null,
+                'contact_email' => null,
+                'availability' => null,
+            ];
+            $homeSettings = [];
         }
 
-        View::share(compact('personal', 'socials'));
+        View::share(compact('personal', 'socials', 'siteSettings', 'homeSettings'));
     }
 }

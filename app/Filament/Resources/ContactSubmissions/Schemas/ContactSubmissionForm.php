@@ -32,6 +32,10 @@ class ContactSubmissionForm
                     ->label('IP Address')
                     ->disabled(),
 
+                TextInput::make('read_at')
+                    ->label('Read At')
+                    ->disabled(),
+
                 TextInput::make('created_at')
                     ->label('Submitted At')
                     ->disabled(),

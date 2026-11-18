@@ -12,7 +12,7 @@ class PersonalInfoFactory extends Factory
     public function definition(): array
     {
         return [
-            'key' => 'key_' . fake()->uuid(),
+            'key' => 'key_'.fake()->uuid(),
             'value' => fake()->sentence(),
         ];
     }

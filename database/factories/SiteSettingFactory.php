@@ -12,7 +12,7 @@ class SiteSettingFactory extends Factory
     public function definition(): array
     {
         return [
-            'key' => 'setting_' . fake()->uuid(),
+            'key' => 'setting_'.fake()->uuid(),
             'value' => ['value' => fake()->sentence()],
         ];
     }

@@ -24,8 +24,8 @@ class AboutController extends Controller
     public function update(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'quote'       => ['required', 'string', 'max:300'],
-            'stats'       => ['required', 'array', 'size:3'],
+            'quote' => ['required', 'string', 'max:300'],
+            'stats' => ['required', 'array', 'size:3'],
             'stats.*.value' => ['required', 'string', 'max:20'],
             'stats.*.label' => ['required', 'string', 'max:50'],
         ]);

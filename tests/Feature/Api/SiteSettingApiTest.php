@@ -54,6 +54,8 @@ class SiteSettingApiTest extends TestCase
     #[Test]
     public function it_returns_empty_when_no_settings_exist()
     {
+        SiteSetting::query()->delete();
+
         $response = $this->getJson('/api/settings');
 
         $response->assertOk();

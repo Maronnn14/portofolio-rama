@@ -75,6 +75,6 @@ class ExperienceController extends Controller
 
         Experience::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => count($validated['ids']) . ' experiences deleted']);
+        return response()->json(['message' => count($validated['ids']).' experiences deleted']);
     }
 }

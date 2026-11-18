@@ -1,60 +1,228 @@
 /* ============================================
-   CONTACT.JS — Form submission only (SSR data)
+   CONTACT.JS — Accessible contact form submission
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await PortfolioData.load();
+document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
+  initServerSuccess();
+  initCopyEmail();
 });
 
-function renderSocials() {
-  const grid = document.getElementById('contact-socials-grid'); if (!grid) return;
-  const icons = { github:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>', linkedin:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>', instagram:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>', twitter:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', youtube:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' };
-  grid.innerHTML = PortfolioData.socials.map(s => `<a href="${s.url}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="${s.name}"><span class="social-btn__icon">${icons[s.icon]||s.name[0]}</span><span class="social-btn__name">${s.name}</span></a>`).join('');
+function initCopyEmail() {
+  const button = document.getElementById('copy-email-btn');
+  if (!button) return;
+
+  const label = button.querySelector('.contact-info__copy-text');
+  const original = label?.textContent || 'Copy';
+  let timer;
+
+  button.addEventListener('click', async () => {
+    const value = button.dataset.copy || '';
+    if (!value) return;
+
+    const copied = await copyText(value);
+
+    button.classList.toggle('is-copied', copied);
+    if (label) label.textContent = copied ? 'Copied' : 'Copy failed';
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      button.classList.remove('is-copied');
+      if (label) label.textContent = original;
+    }, 2000);
+  });
 }
 
-function renderGitHub() {
-  const c = document.getElementById('github-profile'); if (!c) return;
-  const gh = PortfolioData.github;
-  c.innerHTML = `<a href="${gh.profileUrl}" target="_blank" class="github-profile__card"><div class="github-profile__avatar"><svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></div><div class="github-profile__info"><h3>@${gh.username}</h3><p>View my open source work</p></div></a><div class="github-repos">${gh.repos.map(r=>`<div class="github-repo"><div class="github-repo__name">${r.name}</div><div class="github-repo__desc">${r.desc}</div><div class="github-repo__meta"><span class="github-repo__lang"><span class="github-repo__lang-dot"></span>${r.lang}</span><span class="github-repo__stars">★ ${r.stars}</span></div></div>`).join('')}</div>`;
+async function copyText(value) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch {
+    // fall through to the legacy path below
+  }
+
+  try {
+    const field = document.createElement('textarea');
+    field.value = value;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.top = '-1000px';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    const ok = document.execCommand('copy');
+    field.remove();
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+function initServerSuccess() {
+  const success = document.getElementById('contact-success-server');
+  const form = document.getElementById('contact-form');
+  if (success && form) form.hidden = true;
 }
 
 function initContactForm() {
-  const form = document.getElementById('contact-form'); if (!form) return;
+  const form = document.getElementById('contact-form');
+  if (!form) return;
+
   const messageField = document.getElementById('contact-message');
   const charCount = document.getElementById('contact-char-count');
-  if (messageField&&charCount) messageField.addEventListener('input', () => { charCount.textContent = messageField.value.length; });
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault(); if (!validateContactForm()) return;
+  if (messageField && charCount) {
+    messageField.addEventListener('input', () => {
+      charCount.textContent = messageField.value.length;
+    });
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    clearErrors(form);
+    if (!validateContactForm()) return;
+
     const submitBtn = document.getElementById('contact-submit');
-    const submitText = submitBtn.querySelector('.contact-form__submit-text');
-    const name=document.getElementById('contact-name').value;
-    const email=document.getElementById('contact-email-input').value;
-    const subject=document.getElementById('contact-subject').value;
-    const message=document.getElementById('contact-message').value;
-    submitBtn.disabled = true; submitText.textContent = 'Sending...';
+    const submitText = submitBtn?.querySelector('.contact-form__submit-text');
+    const errorBox = document.getElementById('contact-error');
+    const payload = {
+      name: document.getElementById('contact-name').value.trim(),
+      email: document.getElementById('contact-email-input').value.trim(),
+      subject: document.getElementById('contact-subject').value.trim(),
+      message: document.getElementById('contact-message').value.trim(),
+    };
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = 'Sending...';
+    if (errorBox) errorBox.hidden = true;
+
     try {
-      const resp = await fetch('/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+        },
+        body: JSON.stringify(payload),
       });
-      if (!resp.ok) throw new Error('Failed to send');
-      form.style.display='none'; document.getElementById('contact-success').style.display='block';
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        const message = body.message || 'I could not send your message. Please try again.';
+        showFormError(message, body.errors || {});
+        if (submitText) submitText.textContent = 'Send Message';
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+      }
+
+      form.hidden = true;
+      const success = document.getElementById('contact-success');
+      if (success) {
+        success.style.display = 'block';
+        success.hidden = false;
+        success.focus?.();
+      }
     } catch {
-      submitText.textContent = 'Failed — try again';
-      submitBtn.disabled = false;
-      setTimeout(() => { submitText.textContent = 'Send Message'; }, 3000);
+      showFormError('Network error — please check your connection and try again.');
+      if (submitText) submitText.textContent = 'Send Message';
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 }
 
 function validateContactForm() {
-  const fields = [{id:'contact-name',label:'Name'},{id:'contact-email-input',label:'Email'},{id:'contact-subject',label:'Subject'},{id:'contact-message',label:'Message'}];
-  for (const field of fields) { const el=document.getElementById(field.id); if(!el||!el.value.trim()) { el.focus(); el.classList.add('form-input--error'); setTimeout(()=>el.classList.remove('form-input--error'),2000); return false; } }
-  const emailEl=document.getElementById('contact-email-input');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) { emailEl.focus(); emailEl.classList.add('form-input--error'); setTimeout(()=>emailEl.classList.remove('form-input--error'),2000); return false; }
-  return true;
+  const fields = [
+    { id: 'contact-name', label: 'Name', max: 100 },
+    { id: 'contact-email-input', label: 'Email', max: 190 },
+    { id: 'contact-subject', label: 'Subject', max: 150 },
+    { id: 'contact-message', label: 'Message', max: 2000, min: 10 },
+  ];
+
+  let valid = true;
+  for (const field of fields) {
+    const element = document.getElementById(field.id);
+    if (!element) continue;
+    const value = element.value.trim();
+    let message = '';
+
+    if (!value) message = `${field.label} is required.`;
+    else if (field.max && value.length > field.max) message = `${field.label} must be ${field.max} characters or fewer.`;
+    else if (field.min && value.length < field.min) message = `${field.label} must be at least ${field.min} characters.`;
+
+    if (field.id === 'contact-email-input' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      message = 'Enter a valid email address.';
+    }
+
+    if (message) {
+      setFieldError(element, message);
+      valid = false;
+    }
+  }
+
+  if (!valid) {
+    document.querySelector('#contact-form .form-input--error')?.focus();
+    const errorBox = document.getElementById('contact-error');
+    if (errorBox) {
+      errorBox.textContent = 'Please fix the highlighted fields.';
+      errorBox.hidden = false;
+    }
+  }
+
+  return valid;
 }
 
-function resetContactForm() { const f=document.getElementById('contact-form'),s=document.getElementById('contact-success'); if(f){f.reset();f.style.display='';document.getElementById('contact-char-count').textContent='0';} if(s)s.style.display='none'; }
+function setFieldError(element, message) {
+  element.classList.add('form-input--error');
+  element.setAttribute('aria-invalid', 'true');
+  const group = element.closest('.form-group');
+  if (!group) return;
+  let error = group.querySelector('.form-error--js');
+  if (!error) {
+    error = document.createElement('p');
+    error.className = 'form-error form-error--js';
+    group.appendChild(error);
+  }
+  error.textContent = message;
+}
+
+function showFormError(message, errors) {
+  const errorBox = document.getElementById('contact-error');
+  if (errorBox) {
+    errorBox.textContent = message;
+    errorBox.hidden = false;
+  }
+
+  Object.entries(errors || {}).forEach(([name, messages]) => {
+    const element = document.querySelector(`#contact-form [name="${name}"]`);
+    if (element && messages?.[0]) setFieldError(element, messages[0]);
+  });
+}
+
+function clearErrors(form) {
+  form.querySelectorAll('.form-input--error').forEach((element) => {
+    element.classList.remove('form-input--error');
+    element.removeAttribute('aria-invalid');
+  });
+  form.querySelectorAll('.form-error--js').forEach((element) => element.remove());
+  const errorBox = document.getElementById('contact-error');
+  if (errorBox) errorBox.hidden = true;
+}
+
+function resetContactForm() {
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('contact-success');
+  if (form) {
+    form.reset();
+    form.hidden = false;
+    form.style.display = '';
+    const count = document.getElementById('contact-char-count');
+    if (count) count.textContent = '0';
+    form.querySelectorAll('.form-error--js').forEach((element) => element.remove());
+  }
+  if (success) {
+    success.style.display = 'none';
+    success.hidden = true;
+  }
+}

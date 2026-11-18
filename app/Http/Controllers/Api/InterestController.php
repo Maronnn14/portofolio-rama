@@ -72,7 +72,7 @@ class InterestController extends Controller
         $keptIds = [];
 
         foreach ($validated['interests'] as $index => $data) {
-            if (!empty($data['id'])) {
+            if (! empty($data['id'])) {
                 $interest = Interest::find($data['id']);
                 if ($interest) {
                     $interest->update([
@@ -82,6 +82,7 @@ class InterestController extends Controller
                         'sort_order' => $index,
                     ]);
                     $keptIds[] = $interest->id;
+
                     continue;
                 }
             }

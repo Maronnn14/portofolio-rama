@@ -78,7 +78,7 @@ class SkillController extends Controller
 
         Skill::whereIn('id', $validated['ids'])->each(fn ($skill) => $skill->delete());
 
-        return response()->json(['message' => count($validated['ids']) . ' skills deleted']);
+        return response()->json(['message' => count($validated['ids']).' skills deleted']);
     }
 
     public function syncLinks(Request $request, Skill $skill): JsonResponse

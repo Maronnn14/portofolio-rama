@@ -12,8 +12,9 @@ class SkillFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Skill_' . fake()->bothify('?????-#####'),
+            'name' => 'Skill_'.fake()->bothify('?????-#####'),
             'category' => fake()->randomElement(['Frontend', 'Backend', 'Tools', 'Design']),
+            'skill_type' => 'tech',
             'icon' => fake()->word(),
             'teaser' => fake()->sentence(),
             'description' => fake()->paragraph(),

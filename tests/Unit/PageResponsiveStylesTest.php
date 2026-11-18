@@ -70,7 +70,7 @@ class PageResponsiveStylesTest extends TestCase
 
     private function readStylesheet(string $stylesheet): string
     {
-        $path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public/css/' . $stylesheet;
+        $path = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'public/css/'.$stylesheet;
 
         $this->assertFileExists($path);
 

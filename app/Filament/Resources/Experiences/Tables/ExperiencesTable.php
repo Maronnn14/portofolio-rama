@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Experiences\Tables;
 
+use App\Models\Experience;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ExperiencesTable
@@ -15,7 +18,13 @@ class ExperiencesTable
     {
         return $table
             ->defaultSort('sort_order', 'asc')
+            ->reorderable('sort_order')
             ->columns([
+                ImageColumn::make('cover_image')
+                    ->label('Cover')
+                    ->square()
+                    ->toggleable(),
+
                 TextColumn::make('role')
                     ->searchable()
                     ->sortable()
@@ -33,17 +42,33 @@ class ExperiencesTable
                     ->sortable(),
 
                 TextColumn::make('end_date')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('Present'),
 
-                TextColumn::make('location')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => $state === 'published' ? 'success' : 'warning')
+                    ->sortable(),
 
                 TextColumn::make('sort_order')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'published' => 'Published',
+                        'draft' => 'Draft',
+                    ]),
+
+                SelectFilter::make('type')
+                    ->options(fn () => Experience::query()
+                        ->select('type')
+                        ->distinct()
+                        ->orderBy('type')
+                        ->pluck('type', 'type')
+                        ->all()),
             ])
             ->recordActions([
                 EditAction::make(),

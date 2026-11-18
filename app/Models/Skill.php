@@ -14,11 +14,13 @@ class Skill extends Model
     protected $fillable = [
         'name',
         'category',
+        'skill_type',
         'icon',
         'teaser',
         'description',
         'proficiency',
         'level',
+        'featured',
         'related_projects',
         'gallery',
         'sort_order',
@@ -28,6 +30,7 @@ class Skill extends Model
     {
         return [
             'proficiency' => 'integer',
+            'featured' => 'boolean',
             'related_projects' => 'array',
             'gallery' => 'array',
             'sort_order' => 'integer',
@@ -42,6 +45,23 @@ class Skill extends Model
     public function galleryItems(): HasMany
     {
         return $this->hasMany(SkillGalleryItem::class)->orderBy('sort_order');
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
+    }
+
+    /** Coding / tech stack skills. */
+    public function scopeTech($query)
+    {
+        return $query->where('skill_type', 'tech');
+    }
+
+    /** Non-coding hard skills shown in the "Beyond the Code" section. */
+    public function scopeOther($query)
+    {
+        return $query->where('skill_type', 'other');
     }
 
     protected static function booted(): void

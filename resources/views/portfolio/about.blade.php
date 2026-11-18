@@ -1,15 +1,42 @@
 @php
-  $aboutFullName = $personal['fullName'] ?? $personal['name'] ?? 'Rama Adin';
-  $aboutImageSrc = $personal['aboutProfileImage'] ?? $personal['photo'] ?? $personal['profileImage'] ?? null;
-  $defaultAboutImage = 'https://picsum.photos/seed/ramaprofile/400/500';
-  $aboutStory = $personal['fullBio'] ?? $personal['shortBio'] ?? '';
-  $aboutStoryParagraphs = $aboutStory ? explode("\n\n", $aboutStory) : [];
+  use App\Models\PersonalInfo;
+  use App\Support\Icon;
+
+  $aboutName = PersonalInfo::displayName($personal);
+  $aboutImage = $personal['aboutProfileImage'] ?? $personal['photo'] ?? $personal['profileImage'] ?? null;
+  $aboutStory = $personal['fullBio'] ?? $personal['shortBio'] ?? $personal['branding_statement'] ?? '';
+  $aboutStoryParagraphs = array_filter(preg_split('/\R{2,}/', $aboutStory));
+  $stats = collect(range(1, 3))
+      ->map(fn ($i) => [
+          'value' => $personal["stat_{$i}_value"] ?? null,
+          'label' => $personal["stat_{$i}_label"] ?? null,
+      ])
+      ->filter(fn ($stat) => filled($stat['value']) || filled($stat['label']));
+  $timeline = collect($education->map(fn ($item) => [
+      'role' => $item->program,
+      'company' => $item->institution,
+      'start_date' => $item->start_year,
+      'end_date' => $item->end_year,
+      'type' => 'Education',
+      'description' => $item->description,
+      'tech' => [],
+      'url' => route('about.biodata').'#education',
+  ]))->merge($experience->map(fn ($item) => [
+      'role' => $item->role,
+      'company' => $item->company,
+      'start_date' => $item->start_date,
+      'end_date' => $item->end_date,
+      'type' => $item->type,
+      'description' => $item->description,
+      'tech' => $item->tech ?? [],
+      'url' => route('experience.index'),
+  ]));
 @endphp
 
 @extends('layouts.portfolio')
 
-@section('title', "About Me — $aboutFullName")
-@section('description', "Learn about $aboutFullName — background, experience, interests, and journey as a Full Stack Developer.")
+@section('title', 'About Me')
+@section('description', trim(($personal['shortBio'] ?? '').' '.($personal['branding_statement'] ?? '')))
 
 @section('content')
   <header class="page-header">
@@ -18,28 +45,34 @@
     <p class="page-header__subtitle reveal stagger-1">The story behind the code</p>
   </header>
 
+  <nav class="container about-subnav reveal" aria-label="About sections">
+    <a href="{{ route('about.biodata') }}" class="about-subnav__link">Biodata &amp; Branding</a>
+    <a href="{{ route('about.cv') }}" class="about-subnav__link">Download CV</a>
+    <a href="{{ route('about.interests') }}" class="about-subnav__link">Interests &amp; Hobbies</a>
+  </nav>
+
   <section class="section about-story">
     <div class="container">
       <div class="about-story__grid">
         <div class="about-story__image-col reveal-left">
           <div class="about-story__image-wrapper">
-            <img src="{{ $aboutImageSrc ?? $defaultAboutImage }}" alt="{{ $aboutFullName }}" class="about-story__image" id="about-profile-image" loading="eager" />
+            @if($aboutImage)
+              <img src="{{ $aboutImage }}" alt="{{ $aboutName }}" class="about-story__image" id="about-profile-image" loading="eager" />
+            @else
+              <div class="about-story__image about-story__image--placeholder" aria-hidden="true">{{ Icon::initials($aboutName) }}</div>
+            @endif
             <div class="about-story__image-accent"></div>
           </div>
-          <div class="about-story__stats" id="about-stats-container">
-            <div class="about-story__stat">
-              <span class="about-story__stat-number skeleton-text" id="stat-1-value">&nbsp;</span>
-              <span class="about-story__stat-label skeleton-text" id="stat-1-label">&nbsp;</span>
+          @if($stats->isNotEmpty())
+            <div class="about-story__stats">
+              @foreach($stats as $stat)
+                <div class="about-story__stat">
+                  <span class="about-story__stat-number">{{ $stat['value'] }}</span>
+                  <span class="about-story__stat-label">{{ $stat['label'] }}</span>
+                </div>
+              @endforeach
             </div>
-            <div class="about-story__stat">
-              <span class="about-story__stat-number skeleton-text" id="stat-2-value">&nbsp;</span>
-              <span class="about-story__stat-label skeleton-text" id="stat-2-label">&nbsp;</span>
-            </div>
-            <div class="about-story__stat">
-              <span class="about-story__stat-number skeleton-text" id="stat-3-value">&nbsp;</span>
-              <span class="about-story__stat-label skeleton-text" id="stat-3-label">&nbsp;</span>
-            </div>
-          </div>
+          @endif
         </div>
         <div class="about-story__content reveal-right">
           <h2 class="section-heading">My <span class="text-accent">Story</span></h2>
@@ -51,9 +84,11 @@
               <p>No background story has been added yet.</p>
             @endforelse
           </div>
-          <blockquote class="about-story__quote" id="about-quote-container">
-            <p id="about-quote-text" class="skeleton-text">&nbsp;</p>
-          </blockquote>
+          @if($personal['about_quote'] ?? null)
+            <blockquote class="about-story__quote">
+              <p>{{ $personal['about_quote'] }}</p>
+            </blockquote>
+          @endif
         </div>
       </div>
     </div>
@@ -63,35 +98,29 @@
     <div class="container">
       <div class="section-header section-header--center reveal">
         <span class="section-label justify-center">Career Path</span>
-        <h2 class="section-heading">Experience & <span class="text-accent">Education</span></h2>
+        <h2 class="section-heading">Experience &amp; <span class="text-accent">Education</span></h2>
         <p class="section-subheading">My professional journey and growth over the years</p>
       </div>
       <div class="timeline" id="timeline">
-        @forelse($experience as $exp)
+        @forelse($timeline as $item)
           <div class="timeline__item reveal {{ $loop->index % 2 === 0 ? 'timeline__item--left' : 'timeline__item--right' }} stagger-{{ min($loop->iteration, 6) }}">
             <div class="timeline__dot"></div>
             <div class="timeline__content">
-              <span class="timeline__date">{{ $exp->start_date }} — {{ $exp->end_date ?? 'Present' }}</span>
-              <span class="timeline__type tag tag--accent">{{ $exp->type }}</span>
-              <h3 class="timeline__role">{{ $exp->role }}</h3>
-              <h4 class="timeline__company">{{ $exp->company }}</h4>
-              <p class="timeline__desc">{{ $exp->description }}</p>
-              @if(!empty($exp->tech))
+              <span class="timeline__date">{{ $item['start_date'] }} — {{ $item['end_date'] ?: 'Present' }}</span>
+              <span class="timeline__type tag tag--accent">{{ $item['type'] }}</span>
+              <h3 class="timeline__role">{{ $item['role'] }}</h3>
+              <h4 class="timeline__company">{{ $item['company'] }}</h4>
+              <p class="timeline__desc">{{ $item['description'] }}</p>
+              @if(!empty($item['tech']))
                 <div class="tags-list mt-4">
-                  @foreach($exp->tech as $tech)
-                    <span class="tag">{{ $tech }}</span>
-                  @endforeach
+                  @foreach($item['tech'] as $tech)<span class="tag">{{ $tech }}</span>@endforeach
                 </div>
               @endif
             </div>
           </div>
-          @unless($loop->last)
-            <div class="timeline__connector"></div>
-          @endunless
+          @unless($loop->last)<div class="timeline__connector"></div>@endunless
         @empty
-          <div class="empty-state">
-            <p class="empty-state__text">No experience entries yet.</p>
-          </div>
+          <div class="empty-state"><p class="empty-state__text">No experience entries yet.</p></div>
         @endforelse
       </div>
     </div>
@@ -101,59 +130,28 @@
     <div class="container">
       <div class="section-header section-header--center reveal">
         <span class="section-label justify-center">Beyond Code</span>
-        <h2 class="section-heading">Interests & <span class="text-accent">Hobbies</span></h2>
+        <h2 class="section-heading">Interests &amp; <span class="text-accent">Hobbies</span></h2>
       </div>
       <div class="interests-grid" id="interests-grid">
         @forelse($interests as $int)
           <div class="interest-card reveal stagger-{{ min($loop->iteration, 6) }}">
             <div class="interest-card__icon-wrapper">
               @if($int->icon)
-                <img class="interest-card__icon" src="{{ $int->icon }}" alt="{{ $int->name }}" loading="lazy" />
+                <img class="interest-card__icon" src="{{ $int->icon }}" alt="" loading="lazy" />
               @else
-                <span class="interest-card__icon">🎯</span>
+                <span class="interest-card__icon" aria-hidden="true">{{ Icon::initials($int->name) }}</span>
               @endif
             </div>
             <h3 class="interest-card__name">{{ $int->name }}</h3>
             <p class="interest-card__desc">{{ $int->description }}</p>
           </div>
         @empty
-          <div class="empty-state col-span-full">
-            <p class="empty-state__text">No interests listed yet.</p>
-          </div>
+          <div class="empty-state col-span-full"><p class="empty-state__text">No interests listed yet.</p></div>
         @endforelse
+      </div>
+      <div class="text-center mt-12">
+        <a href="{{ route('about.interests') }}" class="btn btn--ghost">Explore Interests <span class="btn-arrow">→</span></a>
       </div>
     </div>
   </section>
 @endsection
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', async function loadAbout() {
-  var quoteEl = document.getElementById('about-quote-text');
-  var statIds = [
-    'stat-1-value', 'stat-1-label',
-    'stat-2-value', 'stat-2-label',
-    'stat-3-value', 'stat-3-label',
-  ];
-  var statEls = statIds.map(function (id) { return document.getElementById(id); });
-  try {
-    var data = await API.about.get();
-    if (quoteEl) {
-      quoteEl.textContent = '"' + (data.quote || '') + '"';
-      quoteEl.classList.remove('skeleton-text');
-    }
-    if (data.stats && data.stats.length) {
-      data.stats.forEach(function (s, i) {
-        var valueEl = statEls[i * 2];
-        var labelEl = statEls[i * 2 + 1];
-        if (valueEl) { valueEl.textContent = s.value || ''; valueEl.classList.remove('skeleton-text'); }
-        if (labelEl) { labelEl.textContent = s.label || ''; labelEl.classList.remove('skeleton-text'); }
-      });
-    }
-  } catch (_) {
-    if (quoteEl) { quoteEl.textContent = ''; quoteEl.classList.remove('skeleton-text'); }
-    statEls.forEach(function (el) { if (el) { el.textContent = ''; el.classList.remove('skeleton-text'); } });
-  }
-});
-</script>
-@endpush

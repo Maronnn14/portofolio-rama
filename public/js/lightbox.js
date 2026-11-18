@@ -1,115 +1,79 @@
 /* ============================================
-   LIGHTBOX — Reusable Image Viewer Component
+   LIGHTBOX.JS — Accessible image viewer
    ============================================ */
 
-class Lightbox {
-  constructor() {
-    this.images = [];
-    this.currentIndex = 0;
-    this.element = null;
-    this.isOpen = false;
-    this.createDOM();
-    this.bindEvents();
-  }
+(function () {
+  let modal = null;
+  let images = [];
+  let index = 0;
+  let lastFocus = null;
 
-  createDOM() {
-    const div = document.createElement('div');
-    div.className = 'lightbox';
-    div.id = 'lightbox';
-    div.innerHTML = `
-      <button class="lightbox__close" aria-label="Close lightbox">&times;</button>
-      <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous image">&#8249;</button>
-      <div class="lightbox__image-wrapper">
-        <img class="lightbox__image" src="" alt="" />
-      </div>
-      <button class="lightbox__nav lightbox__nav--next" aria-label="Next image">&#8250;</button>
-      <div class="lightbox__counter"></div>
-    `;
-    document.body.appendChild(div);
-    this.element = div;
-    this.imgEl = div.querySelector('.lightbox__image');
-    this.counterEl = div.querySelector('.lightbox__counter');
-    this.prevBtn = div.querySelector('.lightbox__nav--prev');
-    this.nextBtn = div.querySelector('.lightbox__nav--next');
-    this.closeBtn = div.querySelector('.lightbox__close');
-  }
+  function ensureModal() {
+    if (modal) return modal;
 
-  bindEvents() {
-    this.closeBtn.addEventListener('click', () => this.close());
-    this.prevBtn.addEventListener('click', () => this.prev());
-    this.nextBtn.addEventListener('click', () => this.next());
+    modal = document.createElement('div');
+    modal.className = 'lightbox';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Image viewer');
+    modal.innerHTML = [
+      '<button type="button" class="lightbox__close" aria-label="Close image viewer">&times;</button>',
+      '<button type="button" class="lightbox__nav lightbox__nav--prev" aria-label="Previous image">&#10095;</button>',
+      '<div class="lightbox__image-wrapper"><img class="lightbox__image" alt="" /></div>',
+      '<button type="button" class="lightbox__nav lightbox__nav--next" aria-label="Next image">&#10095;</button>',
+      '<div class="lightbox__counter" aria-live="polite"></div>',
+    ].join('');
+    document.body.appendChild(modal);
 
-    this.element.addEventListener('click', (e) => {
-      if (e.target === this.element) this.close();
+    modal.querySelector('.lightbox__close').addEventListener('click', close);
+    modal.querySelector('.lightbox__nav--prev').addEventListener('click', () => show(index - 1));
+    modal.querySelector('.lightbox__nav--next').addEventListener('click', () => show(index + 1));
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal || event.target.classList.contains('lightbox__image-wrapper')) close();
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (!this.isOpen) return;
-      if (e.key === 'Escape') this.close();
-      if (e.key === 'ArrowLeft') this.prev();
-      if (e.key === 'ArrowRight') this.next();
-    });
+    return modal;
   }
 
-  open(images, startIndex = 0) {
-    this.images = images;
-    this.currentIndex = startIndex;
-    this.show();
-    this.element.classList.add('open');
-    this.isOpen = true;
+  function show(next) {
+    if (!images.length) return;
+    index = (next + images.length) % images.length;
+    const image = images[index];
+    const src = typeof image === 'string' ? image : image.src;
+    const alt = typeof image === 'string' ? '' : (image.alt || '');
+
+    modal.querySelector('.lightbox__image').src = src;
+    modal.querySelector('.lightbox__image').alt = alt;
+    modal.querySelector('.lightbox__counter').textContent = `${index + 1} / ${images.length}`;
+    modal.querySelector('.lightbox__nav--prev').hidden = images.length < 2;
+    modal.querySelector('.lightbox__nav--next').hidden = images.length < 2;
+  }
+
+  function open(list, startIndex = 0) {
+    images = (list || []).filter(Boolean);
+    if (!images.length) return;
+    lastFocus = document.activeElement;
+    ensureModal();
+    show(Number(startIndex) || 0);
+    modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    modal.querySelector('.lightbox__close').focus();
   }
 
-  close() {
-    this.element.classList.remove('open');
-    this.isOpen = false;
+  function close() {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.querySelector('.lightbox__image').src = '';
     document.body.style.overflow = '';
+    lastFocus?.focus?.();
   }
 
-  prev() {
-    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-    this.show();
-  }
-
-  next() {
-    this.currentIndex = (this.currentIndex + 1) % this.images.length;
-    this.show();
-  }
-
-  show() {
-    const img = this.images[this.currentIndex];
-    const src = typeof img === 'string' ? img : img.src;
-    const alt = typeof img === 'string' ? '' : (img.alt || '');
-    this.imgEl.src = src;
-    this.imgEl.alt = alt;
-    this.counterEl.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
-
-    // Hide nav if only one image
-    const singleImage = this.images.length <= 1;
-    this.prevBtn.style.display = singleImage ? 'none' : '';
-    this.nextBtn.style.display = singleImage ? 'none' : '';
-    this.counterEl.style.display = singleImage ? 'none' : '';
-  }
-}
-
-// Initialize global lightbox instance
-const lightbox = new Lightbox();
-
-/* ---- Helper: attach lightbox to a set of images ---- */
-function initLightboxGallery(containerSelector) {
-  const containers = document.querySelectorAll(containerSelector);
-  containers.forEach(container => {
-    const images = container.querySelectorAll('[data-lightbox]');
-    const srcs = Array.from(images).map(img => ({
-      src: img.dataset.lightbox || img.src,
-      alt: img.alt || ''
-    }));
-
-    images.forEach((img, index) => {
-      img.style.cursor = 'pointer';
-      img.addEventListener('click', () => {
-        lightbox.open(srcs, index);
-      });
-    });
+  document.addEventListener('keydown', (event) => {
+    if (!modal?.classList.contains('open')) return;
+    if (event.key === 'Escape') close();
+    if (event.key === 'ArrowRight') show(index + 1);
+    if (event.key === 'ArrowLeft') show(index - 1);
   });
-}
+
+  window.lightbox = { open, close, next: () => show(index + 1), prev: () => show(index - 1) };
+})();

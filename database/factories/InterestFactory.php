@@ -12,7 +12,7 @@ class InterestFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'interest_' . fake()->uuid(),
+            'name' => 'interest_'.fake()->uuid(),
             'icon' => fake()->randomElement([
                 'https://cdn-icons-png.flaticon.com/128/5968/5968891.png',
                 'https://cdn-icons-png.flaticon.com/128/1042/1042344.png',

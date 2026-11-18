@@ -12,7 +12,7 @@ class PortfolioMessageFactory extends Factory
     public function definition(): array
     {
         return [
-            'message_id' => 'msg_' . time() . '_' . substr(md5(uniqid()), 0, 7),
+            'message_id' => 'msg_'.time().'_'.substr(md5(uniqid()), 0, 7),
             'name' => fake()->name(),
             'message' => fake()->paragraph(),
             'rating' => fake()->numberBetween(0, 5),

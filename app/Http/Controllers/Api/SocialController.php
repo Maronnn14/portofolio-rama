@@ -11,7 +11,7 @@ class SocialController extends Controller
 {
     public function index(): JsonResponse
     {
-        $socials = Social::orderBy('sort_order')->get();
+        $socials = Social::where('visible', true)->orderBy('sort_order')->get();
 
         return response()->json($socials);
     }
@@ -69,6 +69,6 @@ class SocialController extends Controller
 
         Social::whereIn('id', $validated['ids'])->delete();
 
-        return response()->json(['message' => count($validated['ids']) . ' social links deleted']);
+        return response()->json(['message' => count($validated['ids']).' social links deleted']);
     }
 }

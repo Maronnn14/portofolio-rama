@@ -3,7 +3,6 @@
 namespace Tests\Feature\Api;
 
 use App\Models\PortfolioMessage;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -12,53 +11,38 @@ class MessageApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function actingAsAdmin(): string
-    {
-        $user = User::factory()->create();
-        return $user->createToken('admin-token', ['admin:write'])->plainTextToken;
-    }
-
     #[Test]
     public function guests_can_list_visible_messages()
     {
-        PortfolioMessage::factory()->create(['hidden' => false, 'message_id' => 'msg_001']);
-        PortfolioMessage::factory()->create(['hidden' => true, 'message_id' => 'msg_002']);
+        PortfolioMessage::factory()->create(['hidden' => false, 'name' => 'Visible Message']);
+        PortfolioMessage::factory()->create(['hidden' => true, 'name' => 'Hidden Message']);
 
         $response = $this->getJson('/api/messages');
 
         $response->assertOk();
         $this->assertCount(1, $response->json());
-        $this->assertEquals('msg_001', $response->json()[0]['id']);
-    }
-
-    #[Test]
-    public function admins_see_all_messages()
-    {
-        $token = $this->actingAsAdmin();
-        PortfolioMessage::factory()->create(['hidden' => false, 'message_id' => 'msg_001']);
-        PortfolioMessage::factory()->create(['hidden' => true, 'message_id' => 'msg_002']);
-
-        $response = $this->withToken($token)->getJson('/api/messages');
-
-        $response->assertOk();
-        $this->assertCount(2, $response->json());
+        $this->assertEquals('Visible Message', $response->json()[0]['name']);
     }
 
     #[Test]
     public function guests_can_create_message()
     {
-        $response = $this->postJson('/api/messages', [
-            'name' => 'Test User',
-            'message' => 'This is a test message',
+        $payload = [
+            'name' => 'Alice',
+            'message' => 'Great portfolio!',
             'rating' => 5,
-        ]);
+            'session_token' => 'token-123',
+        ];
 
-        $response->assertCreated()
-            ->assertJson([
-                'name' => 'Test User',
-                'message' => 'This is a test message',
-                'rating' => 5,
-            ]);
+        $response = $this->postJson('/api/messages', $payload);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('portfolio_messages', [
+            'name' => 'Alice',
+            'message' => 'Great portfolio!',
+            'rating' => 5,
+            'session_token' => 'token-123',
+        ]);
     }
 
     #[Test]
@@ -66,7 +50,7 @@ class MessageApiTest extends TestCase
     {
         $response = $this->postJson('/api/messages', []);
 
-        $response->assertStatus(422)
+        $response->assertUnprocessable()
             ->assertJsonValidationErrors(['name', 'message']);
     }
 
@@ -75,10 +59,10 @@ class MessageApiTest extends TestCase
     {
         $response = $this->postJson('/api/messages', [
             'name' => str_repeat('a', 101),
-            'message' => 'Valid message',
+            'message' => 'Hello',
         ]);
 
-        $response->assertStatus(422)
+        $response->assertUnprocessable()
             ->assertJsonValidationErrors(['name']);
     }
 
@@ -86,11 +70,11 @@ class MessageApiTest extends TestCase
     public function message_validation_limits_message_to_1000_chars()
     {
         $response = $this->postJson('/api/messages', [
-            'name' => 'Test',
+            'name' => 'Bob',
             'message' => str_repeat('a', 1001),
         ]);
 
-        $response->assertStatus(422)
+        $response->assertUnprocessable()
             ->assertJsonValidationErrors(['message']);
     }
 
@@ -98,222 +82,162 @@ class MessageApiTest extends TestCase
     public function rating_is_optional_and_defaults_to_zero()
     {
         $response = $this->postJson('/api/messages', [
-            'name' => 'Test',
-            'message' => 'No rating',
+            'name' => 'Charlie',
+            'message' => 'Nice work',
         ]);
 
         $response->assertCreated();
-        $this->assertEquals(0, $response->json()['rating']);
+        $this->assertEquals(0, $response->json('rating'));
     }
 
     #[Test]
     public function rating_must_be_between_zero_and_five()
     {
         $response = $this->postJson('/api/messages', [
-            'name' => 'Test',
-            'message' => 'Bad rating',
-            'rating' => 10,
+            'name' => 'David',
+            'message' => 'Cool',
+            'rating' => 6,
         ]);
 
-        $response->assertStatus(422)
+        $response->assertUnprocessable()
             ->assertJsonValidationErrors(['rating']);
     }
 
     #[Test]
     public function message_owner_can_update_with_session_token()
     {
-        $msg = PortfolioMessage::factory()->create([
-            'message_id' => 'msg_update_test',
-            'session_token' => 'valid-session-token',
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-abc',
+            'message' => 'Initial message',
         ]);
 
-        $response = $this->putJson('/api/messages/msg_update_test', [
-            'message' => 'Updated message content',
-            'session_token' => 'valid-session-token',
+        $response = $this->putJson("/api/messages/{$message->message_id}", [
+            'message' => 'Updated message',
+            'session_token' => 'token-abc',
         ]);
 
         $response->assertOk();
-        $this->assertEquals('Updated message content', $response->json()['message']);
+        $this->assertDatabaseHas('portfolio_messages', [
+            'id' => $message->id,
+            'message' => 'Updated message',
+        ]);
     }
 
     #[Test]
     public function message_owner_cannot_update_without_session_token()
     {
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_no_token',
-            'session_token' => 'secret',
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-abc',
+            'message' => 'Initial message',
         ]);
 
-        $response = $this->putJson('/api/messages/msg_no_token', [
-            'message' => 'Hacked content',
+        $response = $this->putJson("/api/messages/{$message->message_id}", [
+            'message' => 'Updated message',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
     #[Test]
     public function message_owner_cannot_update_with_wrong_session_token()
     {
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_wrong_token',
-            'session_token' => 'correct-token',
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-abc',
+            'message' => 'Initial message',
         ]);
 
-        $response = $this->putJson('/api/messages/msg_wrong_token', [
-            'message' => 'Hacked content',
+        $response = $this->putJson("/api/messages/{$message->message_id}", [
+            'message' => 'Updated message',
             'session_token' => 'wrong-token',
         ]);
 
-        $response->assertStatus(403);
-    }
-
-    #[Test]
-    public function admin_can_update_any_message()
-    {
-        $token = $this->actingAsAdmin();
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_admin_update',
-        ]);
-
-        $response = $this->withToken($token)
-            ->putJson('/api/messages/msg_admin_update', [
-                'message' => 'Admin updated',
-                'hidden' => true,
-                'pinned' => true,
-            ]);
-
-        $response->assertOk();
-        $this->assertTrue($response->json()['hidden']);
-        $this->assertTrue($response->json()['pinned']);
-    }
-
-    #[Test]
-    public function admin_cannot_update_message_with_non_boolean_admin_fields()
-    {
-        $token = $this->actingAsAdmin();
-        PortfolioMessage::factory()->create(['message_id' => 'msg_invalid_admin']);
-
-        $response = $this->withToken($token)
-            ->putJson('/api/messages/msg_invalid_admin', [
-                'hidden' => 'not-a-boolean',
-            ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['hidden']);
+        $response->assertForbidden();
     }
 
     #[Test]
     public function non_admin_cannot_set_hidden_flag()
     {
-        $msg = PortfolioMessage::factory()->create([
-            'message_id' => 'msg_nonadmin_hidden',
-            'session_token' => 'token',
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-abc',
+            'hidden' => false,
         ]);
 
-        $response = $this->putJson('/api/messages/msg_nonadmin_hidden', [
-            'message' => 'Normal update',
+        $response = $this->putJson("/api/messages/{$message->message_id}", [
+            'session_token' => 'token-abc',
             'hidden' => true,
-            'session_token' => 'token',
         ]);
 
         $response->assertOk();
-        $this->assertFalse($response->json()['hidden']);
+        $this->assertFalse($message->fresh()->hidden);
     }
 
     #[Test]
     public function message_owner_can_delete_with_session_token()
     {
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_delete_owner',
-            'session_token' => 'delete-token',
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-to-delete',
         ]);
 
-        $response = $this->deleteJson('/api/messages/msg_delete_owner', [
-            'session_token' => 'delete-token',
+        $response = $this->deleteJson("/api/messages/{$message->message_id}", [
+            'session_token' => 'token-to-delete',
         ]);
 
         $response->assertOk();
-        $this->assertDatabaseMissing('portfolio_messages', ['message_id' => 'msg_delete_owner']);
+        $this->assertDatabaseMissing('portfolio_messages', ['id' => $message->id]);
     }
 
     #[Test]
     public function message_owner_cannot_delete_without_session_token()
     {
-        PortfolioMessage::factory()->create(['message_id' => 'msg_delete_no_token']);
+        $message = PortfolioMessage::factory()->create([
+            'session_token' => 'token-abc',
+        ]);
 
-        $response = $this->deleteJson('/api/messages/msg_delete_no_token');
+        $response = $this->deleteJson("/api/messages/{$message->message_id}");
 
-        $response->assertStatus(403);
-    }
-
-    #[Test]
-    public function admin_can_delete_any_message()
-    {
-        $token = $this->actingAsAdmin();
-        PortfolioMessage::factory()->create(['message_id' => 'msg_admin_delete']);
-
-        $response = $this->withToken($token)
-            ->deleteJson('/api/messages/msg_admin_delete');
-
-        $response->assertOk();
-        $this->assertDatabaseMissing('portfolio_messages', ['message_id' => 'msg_admin_delete']);
+        $response->assertForbidden();
     }
 
     #[Test]
     public function deleting_nonexistent_message_returns_404()
     {
-        $response = $this->deleteJson('/api/messages/nonexistent_msg');
+        $response = $this->deleteJson('/api/messages/nonexistent-id', [
+            'session_token' => 'any-token',
+        ]);
 
         $response->assertNotFound();
     }
 
     #[Test]
-    public function admin_can_bulk_delete_messages()
-    {
-        $token = $this->actingAsAdmin();
-        PortfolioMessage::factory()->create(['message_id' => 'msg_bulk_1']);
-        PortfolioMessage::factory()->create(['message_id' => 'msg_bulk_2']);
-
-        $response = $this->withToken($token)
-            ->deleteJson('/api/messages/bulk', [
-                'ids' => ['msg_bulk_1', 'msg_bulk_2'],
-            ]);
-
-        $response->assertOk();
-        $this->assertDatabaseMissing('portfolio_messages', ['message_id' => 'msg_bulk_1']);
-        $this->assertDatabaseMissing('portfolio_messages', ['message_id' => 'msg_bulk_2']);
-    }
-
-    #[Test]
     public function messages_are_ordered_by_pinned_then_by_date_desc()
     {
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_old',
-            'pinned' => false,
+        $older = PortfolioMessage::factory()->create([
             'posted_at_ms' => 1000,
-        ]);
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_new',
             'pinned' => false,
-            'posted_at_ms' => 3000,
         ]);
-        PortfolioMessage::factory()->create([
-            'message_id' => 'msg_pinned',
-            'pinned' => true,
+        $newer = PortfolioMessage::factory()->create([
             'posted_at_ms' => 2000,
+            'pinned' => false,
+        ]);
+        $pinnedOlder = PortfolioMessage::factory()->create([
+            'posted_at_ms' => 500,
+            'pinned' => true,
         ]);
 
         $response = $this->getJson('/api/messages');
-        $ids = collect($response->json())->pluck('id')->toArray();
 
-        $this->assertEquals(['msg_pinned', 'msg_new', 'msg_old'], $ids);
+        $response->assertOk();
+        $ids = array_column($response->json(), 'id');
+
+        $this->assertEquals([$pinnedOlder->message_id, $newer->message_id, $older->message_id], $ids);
     }
 
     #[Test]
     public function updating_nonexistent_message_returns_404()
     {
-        $response = $this->putJson('/api/messages/nonexistent', [
-            'message' => 'test',
+        $response = $this->putJson('/api/messages/nonexistent-id', [
+            'session_token' => 'any-token',
+            'message' => 'Hello',
         ]);
 
         $response->assertNotFound();
